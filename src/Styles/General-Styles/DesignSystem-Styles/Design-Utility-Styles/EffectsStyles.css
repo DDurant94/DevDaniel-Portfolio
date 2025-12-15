@@ -1,0 +1,150 @@
+/**
+ * Design System Effects Utilities
+ * 
+ * @description Reusable animation effects for viewport reveal, stagger, and progressive enhancement.
+ * Features custom timing per property, stagger utilities, and spotlight effects.
+ * 
+ * Utilities:
+ * - .fx-fade: Fade in with vertical slide
+ * - .fx-scale: Scale-up fade in
+ * - .fx-stagger-sm: Stagger child animations
+ * - [data-fx-stagger]: Stagger via custom property index
+ * - .fx-spotlight-layer: Spotlight mask overlay
+ * 
+ * Fade Effect (.fx-fade):
+ * - Initial: opacity 0, translateY(--fx-y)
+ * - Revealed: opacity 1, translateY(0)
+ * - Triggered via data-fx-state="in" (JS controlled)
+ * 
+ * Fade Custom Properties:
+ * - --fx-y: Start distance (default 24px)
+ * - --fx-dur-op: Opacity duration (0.65s)
+ * - --fx-dur-tr: Transform duration (0.65s)
+ * - --fx-ease-op: Opacity easing (custom cubic-bezier)
+ * - --fx-ease-tr: Transform easing (spring cubic-bezier)
+ * 
+ * Independent Timing:
+ * - Opacity and transform have separate durations/easings
+ * - Allows opacity to ease differently than motion
+ * - Smoother perceived animation
+ * 
+ * Stagger Small (.fx-stagger-sm):
+ * - Applies incremental delay to direct children
+ * - Uses --motion-stagger-sm token
+ * - nth-child(1) through nth-child(10) supported
+ * - Formula: calc(n * var(--motion-stagger-sm))
+ * - Resets transition-delay: 0ms first
+ * 
+ * Stagger Attribute ([data-fx-stagger]):
+ * - Parent attribute for custom index-based stagger
+ * - Children use --fx-index custom property
+ * - Formula: calc(var(--fx-index, 0) * 70ms)
+ * - More flexible than nth-child (JS can set index)
+ * 
+ * Scale Effect (.fx-scale):
+ * - Initial: opacity 0, scale(--fx-scale-from)
+ * - Revealed: opacity 1, scale(1)
+ * - --fx-scale-from: 0.94 (subtle scale-up)
+ * - --fx-dur: 0.6s duration
+ * - Easing: cubic-bezier spring for transform
+ * - Triggered via data-fx-state="in"
+ * 
+ * Spotlight Layer (.fx-spotlight-layer):
+ * - position: fixed, inset: 0 (full viewport)
+ * - pointer-events: none (non-interactive)
+ * - mix-blend-mode: normal (customizable)
+ * - z-index: 9999 (top layer)
+ * - Progressive enhancement for cursor effects
+ * 
+ * Keyframes:
+ * - @keyframes fx-pulse-soft: Subtle opacity pulse
+ * - 0%: opacity 0.85
+ * - 50%: opacity 1
+ * - 100%: opacity 0.85
+ * 
+ * State Management:
+ * - data-fx-state="in": Element is visible
+ * - data-fx-state="out": Element is hidden (default)
+ * - Controlled via Intersection Observer (JS)
+ * - Once animated, typically stays visible
+ * 
+ * Usage Patterns:
+ * - Apply .fx-fade to elements
+ * - JS adds data-fx-state="in" when in viewport
+ * - Stagger applies to container, not individual items
+ * - --fx-index set via JS for dynamic stagger
+ * 
+ * Performance:
+ * - transform and opacity: GPU accelerated
+ * - Intersection Observer: Efficient viewport detection
+ * - will-change hints recommended during animation
+ * - Stagger prevents simultaneous animations
+ * 
+ * Accessibility:
+ * - Respects prefers-reduced-motion (should be added)
+ * - Animations enhance, not block content
+ * - No layout shift during animation
+ * - Content readable before/during/after animation
+ * 
+ * Browser Compatibility:
+ * - CSS custom properties: All modern browsers
+ * - transform/opacity: Universal support
+ * - Intersection Observer: All modern browsers
+ * - nth-child(): Universal support
+ * - data-* attributes: Universal support
+ * 
+ * @layer utilities
+ * @requires Motion tokens, Intersection Observer JS
+ */
+
+/* Design System Effects Utilities */
+
+/* Fade In (viewport)
+	 Now supports channel-specific timing so opacity can ease differently than motion.
+	 Vars:
+		 --fx-y: start translateY distance
+		 --fx-dur-op: opacity duration
+		 --fx-dur-tr: transform duration
+		 --fx-ease-op: opacity easing
+		 --fx-ease-tr: transform easing
+*/
+.fx-fade {
+	--fx-y: 24px;
+	--fx-dur-op: .65s;
+	--fx-dur-tr: .65s;
+	--fx-ease-op: cubic-bezier(.22,.61,.36,1); /* smoother accel then ease-out */
+	--fx-ease-tr: var(--ease-spring, cubic-bezier(.4,.7,.25,1));
+	opacity:0;
+	transform: translateY(var(--fx-y));
+	transition:
+		opacity var(--fx-dur-op) var(--fx-ease-op),
+		transform var(--fx-dur-tr) var(--fx-ease-tr);
+}
+.fx-fade[data-fx-state='in'] { opacity:1; transform: translateY(0); }
+
+/* Stagger utility class (small) - applies incremental delay to direct children */
+.fx-stagger-sm > * { transition-delay: 0ms; }
+.fx-stagger-sm > *:nth-child(1) { transition-delay: calc(0 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(2) { transition-delay: calc(1 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(3) { transition-delay: calc(2 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(4) { transition-delay: calc(3 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(5) { transition-delay: calc(4 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(6) { transition-delay: calc(5 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(7) { transition-delay: calc(6 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(8) { transition-delay: calc(7 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(9) { transition-delay: calc(8 * var(--motion-stagger-sm)); }
+.fx-stagger-sm > *:nth-child(10) { transition-delay: calc(9 * var(--motion-stagger-sm)); }
+
+/* Scale subtle */
+.fx-scale { --fx-scale-from:.94; --fx-dur:.6s; opacity:0; transform: scale(var(--fx-scale-from)); transition: opacity var(--fx-dur) ease, transform var(--fx-dur) cubic-bezier(.4,.7,.25,1); }
+.fx-scale[data-fx-state='in'] { opacity:1; transform: scale(1); }
+
+/* Stagger container attribute (applied to parent) */
+[data-fx-stagger] > * { --_stagger: calc(var(--fx-index, 0) * 70ms); transition-delay: var(--_stagger); }
+
+/* Spotlight mask utility (optional progressive enhancement) */
+.fx-spotlight-layer { position:fixed; inset:0; pointer-events:none; mix-blend-mode:normal; z-index: 9999; }
+
+/* Keyframes palette */
+@keyframes fx-pulse-soft { 0%,100% { opacity: .85;} 50% { opacity: 1; } }
+.fx-pulse { animation: fx-pulse-soft 3s ease-in-out infinite; }

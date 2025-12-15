@@ -1,0 +1,119 @@
+/**
+ * Skills Page Styles
+ * 
+ * @description Layout and typography for Skills page sections including intro,
+ * tech stack grid, and logo carousel. Features gradient text and responsive sizing.
+ * 
+ * Sections:
+ * - Intro: Centered heading with gradient text and description
+ * - Logo Loop: Technology icons carousel container
+ * - Tech Stack: Interactive skill category grid (styled separately)
+ * 
+ * Key Features:
+ * - Gradient text on main heading (--gradient-brand-horizontal)
+ * - Fluid typography (clamp-based sizing)
+ * - Centered content alignment
+ * - Consistent spacing using design tokens
+ * - Main content offset by 100vh (hero height)
+ * 
+ * Typography:
+ * - H1: calc(1.775rem + 1.5vw) with gradient
+ * - Body: calc(1.0rem + 0.3vw), max-width 55ch
+ * - Color: --color-text-soft for secondary text
+ * 
+ * Layout:
+ * - Flexbox centering for intro section
+ * - Full width sections
+ * - Responsive padding using --space tokens
+ * 
+ * Accessibility:
+ * - Max-width 55ch for optimal readability
+ * - Sufficient color contrast on text
+ * - Gradient text maintains readability
+ * 
+ * Browser Compatibility:
+ * - background-clip: text requires -webkit prefix
+ * - Chrome 119+, Safari 14+, Firefox 49+
+ * 
+ * @layer pages
+ */
+
+/* === Intro Section === */
+#skills-intro-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-block: 0;
+  padding-inline: var(--space-2);
+}
+
+#skills-intro-container {
+  margin: 0 1rem;
+}
+
+#skills-intro-container h1 {
+  font-size: calc(1.775rem + 1.5vw);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-brand-horizontal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: var(--space-4);
+}
+
+#skills-intro-container p {
+  font-size: calc(1.0rem + 0.3vw);
+  padding: 0.25rem 0;
+  margin: 1rem 0 1.5rem 0;
+  color: var(--color-text-soft);
+  max-width: 55ch;
+}
+
+#skills-main-content{
+  padding-inline:0;
+  margin-top: 100vh;
+}
+
+/* === Tech Section === */
+#skills-tech-section {
+  width: 100%;
+  padding-block: 0rem;
+  padding-inline: var(--space-2);
+}
+
+#logo-loop-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0 1rem 0;
+}
+
+#logo-loop-inner{
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius-md);
+
+}
+
+#skills-cta-btn-container{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  
+}
+
+/* === Call to Action Button === */
+#skills-cta-btn-container .base-btn { margin: var(--space-4) var(--space-2) 0 var(--space-2); }
+
+/* === Signoff === */
+#skills-signoff {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  padding: 1rem;
+}
+

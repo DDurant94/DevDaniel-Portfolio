@@ -1,0 +1,131 @@
+/**
+ * ScrollStack Component Styles
+ * 
+ * @description Styles for scroll-driven stacking card animation with smooth Lenis scrolling.
+ * Cards stack and scale with perspective as user scrolls, creating depth effect.
+ * 
+ * Components:
+ * - .scroll-stack-scroller: Container with smooth scroll behavior
+ * - .scroll-stack-inner: Content wrapper with padding for scroll space
+ * - .scroll-stack-card-wrapper: Measurement wrapper (not transformed)
+ * - .scroll-stack-card: Animated card element (transformed)
+ * - .scroll-stack-end: Spacer for clean pin release
+ * 
+ * Layout:
+ * - Scroller: Full height, smooth scroll, GPU composited
+ * - Inner: Top/bottom padding (20vh/8.5rem) for scroll range
+ * - Wrappers: will-change: transform (compositing hint)
+ * - Cards: transform-origin top center, backface-visibility hidden
+ * 
+ * Card Styling:
+ * - Height: 20rem (flexible)
+ * - Background: White with dark text (override for themes)
+ * - Border: Subtle border (--color-border-subtle)
+ * - Shadow: Elevation shadow (--box-shadow)
+ * - Radius: Large radius (--radius-lg)
+ * - Grid: Auto-fit columns (min 200px)
+ * 
+ * Typography:
+ * - h2: Fluid size (1.175rem + 1vw), text-stroke for depth
+ * - p: Standard paragraph styling
+ * 
+ * Performance Optimizations:
+ * - will-change on wrappers (not cards) to avoid jitter
+ * - translateZ(0) for GPU layer promotion
+ * - backface-visibility: hidden for smoother transforms
+ * - transform-style: preserve-3d (use sparingly)
+ * - overscroll-behavior: contain (prevents scroll chaining)
+ * 
+ * Smooth Scrolling:
+ * - -webkit-overflow-scrolling: touch (iOS momentum)
+ * - Lenis integration via JavaScript (not CSS)
+ * - Scroll position is will-change hint
+ * 
+ * Accessibility:
+ * - outline: none on wrapper (custom focus in JS)
+ * - Keyboard navigation supported in component
+ * - Respects prefers-reduced-motion in JS logic
+ * 
+ * Browser Compatibility:
+ * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+ * - -webkit prefixes for iOS Safari support
+ * - Grid auto-fit (IE11 not supported)
+ * 
+ * @layer components
+ * @requires ScrollStack.jsx for animation logic
+ */
+
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+.scroll-stack-inner {
+  padding: 20vh 0.25rem 8.5rem;
+  min-height: 100vh;
+  margin: 0 0 5rem 0;
+}
+
+.scroll-stack-card-wrapper {
+  position: relative;
+  will-change: transform; /* hint compositing on the measurement wrapper */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  outline: none;
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  backface-visibility: hidden;
+  transform-style:preserve-3d; /* avoid 3D context unless necessary; reduces jitter */
+  box-shadow: var(--box-shadow);
+  background-color: white;
+  color: #000;
+  text-align: center;
+  height: 20rem;
+  width: 100%;
+  margin: 30px 0;
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+  grid-auto-rows:auto;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 auto;
+
+  
+  h2{
+    font-size: calc(1.175rem + 1vw);
+    padding: 0 0.25rem 0 0.25rem;
+    font-weight: 600;
+    -webkit-text-stroke: 0.01rem var(--color-primary);
+  }
+
+  p{
+    font-size: calc(0.9rem + 0.5vw);
+    padding: 0 0.25rem 0 0.25rem;
+  }
+}
+
+/* Focus styles for keyboard users */
+.scroll-stack-card-wrapper:focus-visible .scroll-stack-card {
+  box-shadow: 0 0 0 3px var(--color-accent, #3b82f6), var(--box-shadow);
+}
+
+.scroll-stack-end {
+  width: 100%;
+  height: 1px;
+}

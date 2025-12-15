@@ -1,0 +1,183 @@
+/**
+ * Button Utility Classes
+ * 
+ * @description Token-based button variants for consistent UI interactions.
+ * Features primary, accent, outline, gradient, and subtle button styles.
+ * 
+ * Classes:
+ * - .btn-base: Base button structure
+ * - .btn-primary-token: Primary action buttons
+ * - .btn-accent-token: Accent/secondary buttons
+ * - .btn-outline-token: Outlined ghost buttons
+ * - .btn-gradient-token: Gradient CTA buttons
+ * - .btn-subtle-token: Subtle background tint buttons
+ * 
+ * Base Button (.btn-base):
+ * - display: inline-flex
+ * - align-items: center, justify-content: center
+ * - font-weight: var(--btn-font-weight)
+ * - padding: var(--btn-padding-y) var(--btn-padding-x)
+ * - border-radius: var(--radius-md)
+ * - line-height: 1.2
+ * - cursor: pointer
+ * - text-decoration: none (for link buttons)
+ * - position: relative (for pseudo-elements)
+ * - border: 1px solid transparent
+ * 
+ * Transitions:
+ * - background: var(--motion-fade)
+ * - color: var(--motion-fade)
+ * - box-shadow: var(--motion-fade)
+ * - border-color: var(--motion-fade)
+ * - Unified pressable affordances
+ * 
+ * Primary Button:
+ * - background: var(--btn-primary-bg)
+ * - color: var(--btn-primary-text)
+ * - box-shadow: var(--elev-1)
+ * - hover/focus: var(--btn-primary-bg-hover)
+ * - active: translateY(1px) for press effect
+ * 
+ * Accent Button:
+ * - background: var(--btn-accent-bg)
+ * - color: var(--btn-accent-text)
+ * - box-shadow: var(--elev-1)
+ * - hover/focus: var(--btn-accent-bg-hover)
+ * 
+ * Outline Button:
+ * - background: transparent
+ * - color: var(--btn-outline-text)
+ * - border-color: var(--btn-outline-border)
+ * - hover/focus: border-color + bg hover
+ * - Ghost button style
+ * 
+ * Gradient Button:
+ * - background: var(--btn-gradient-bg) (gradient)
+ * - color: var(--btn-primary-text)
+ * - box-shadow: var(--elev-2) (higher elevation)
+ * - hover/focus: var(--btn-gradient-bg-hover)
+ * - Used for primary CTAs
+ * 
+ * Subtle Button:
+ * - background: 10% primary color-mix
+ * - color: var(--color-primary) (matches tint)
+ * - Minimal visual weight
+ * - hover: Increased opacity or border
+ * 
+ * States:
+ * - Default: Base styling
+ * - :hover: Background/border changes
+ * - :focus-visible: Same as hover (keyboard)
+ * - :active: translateY(1px) press effect
+ * - :disabled: Reduced opacity, no pointer
+ * 
+ * Accessibility:
+ * - cursor: pointer indicates interactivity
+ * - :focus-visible for keyboard navigation
+ * - Sufficient color contrast on all variants
+ * - Disabled state with aria-disabled
+ * - Text buttons also support these classes
+ * 
+ * Token System:
+ * - All colors from design tokens
+ * - --btn-* custom properties
+ * - --motion-fade for consistent timing
+ * - --radius-md for rounded corners
+ * - --elev-* for elevation shadows
+ * 
+ * Performance:
+ * - Simple property transitions
+ * - No complex transforms (except active)
+ * - GPU acceleration on hover/active
+ * - Minimal repaints
+ * 
+ * Browser Compatibility:
+ * - Flexbox: Universal support
+ * - Custom properties: All modern browsers
+ * - color-mix(): Safari 16.4+, Chrome 111+ (for subtle)
+ * - transform: Universal support
+ * 
+ * @layer components
+ * @requires Design tokens (--btn-*, --motion-*, --elev-*)
+ */
+
+/* Button utility classes generated from design tokens */
+
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--btn-font-weight);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  /* Was var(--btn-radius) (alias). Use scale token directly. */
+  border-radius: var(--radius-md);
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  /* Motion: unify pressable affordances to fade token (color/bg/shadow/border) */
+  transition: background var(--motion-fade),
+              color var(--motion-fade),
+              box-shadow var(--motion-fade),
+              border-color var(--motion-fade);
+  border: 1px solid transparent;
+  position: relative;
+}
+
+/* Primary */
+.btn-primary-token {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--elev-1);
+}
+.btn-primary-token:hover,
+.btn-primary-token:focus-visible { background: var(--btn-primary-bg-hover); }
+.btn-primary-token:active { transform: translateY(1px); }
+
+/* Accent */
+.btn-accent-token { background: var(--btn-accent-bg); color: var(--btn-accent-text); box-shadow: var(--elev-1); }
+.btn-accent-token:hover,
+.btn-accent-token:focus-visible { background: var(--btn-accent-bg-hover); }
+
+/* Outline */
+.btn-outline-token { background: transparent; color: var(--btn-outline-text); border-color: var(--btn-outline-border); }
+.btn-outline-token:hover,
+.btn-outline-token:focus-visible { border-color: var(--btn-outline-border-hover); background: var(--btn-outline-bg-hover); }
+
+/* Gradient CTA */
+.btn-gradient-token { background: var(--btn-gradient-bg); color: var(--btn-primary-text); box-shadow: var(--elev-2); }
+.btn-gradient-token:hover,
+.btn-gradient-token:focus-visible { background: var(--btn-gradient-bg-hover); }
+
+/* Subtle (background tint only) */
+.btn-subtle-token {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+}
+.btn-subtle-token:hover,
+.btn-subtle-token:focus-visible { background: color-mix(in srgb, var(--color-primary) 18%, transparent); }
+
+/* Status variants (semantic) */
+.btn-danger-token { background: var(--color-danger); color: var(--btn-primary-text); }
+.btn-danger-token:hover,
+.btn-danger-token:focus-visible { background: color-mix(in srgb, var(--color-danger) 90%, black 10%); }
+
+.btn-success-token { background: var(--color-success); color: var(--btn-primary-text); }
+.btn-success-token:hover,
+.btn-success-token:focus-visible { background: color-mix(in srgb, var(--color-success) 90%, black 10%); }
+
+/* High contrast theme adjustments */
+[data-theme='contrast'] .btn-outline-token { border-color: var(--color-text); color: var(--color-text); }
+[data-theme='contrast'] .btn-outline-token:hover,
+[data-theme='contrast'] .btn-outline-token:focus-visible { background: color-mix(in srgb, var(--color-text) 12%, transparent); }
+
+[data-theme='contrast'] .btn-subtle-token { background: color-mix(in srgb, var(--color-primary) 25%, transparent); color: var(--color-text); }
+[data-theme='contrast'] .btn-subtle-token:hover { background: color-mix(in srgb, var(--color-primary) 35%, transparent); }
+
+[data-theme='contrast'] .btn-gradient-token { box-shadow: 0 0 0 1px var(--color-text); }
+
+/* Focus styles */
+.btn-base:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+/* Disabled state */
+.btn-base[aria-disabled='true'],
+.btn-base:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }

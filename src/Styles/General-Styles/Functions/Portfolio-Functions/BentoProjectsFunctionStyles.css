@@ -1,0 +1,221 @@
+/**
+ * Bento Projects Grid Layout
+ * 
+ * @description Responsive masonry-style grid for project cards with variable sizing.
+ * Features CSS Grid with auto-fit columns, dense packing, and five size variants.
+ * 
+ * Components:
+ * - .bento-projects-container: Outer wrapper
+ * - .bento-grid: CSS Grid layout container
+ * - .bento-item: Individual project card wrapper
+ * - Size modifiers: .bento-small, .bento-medium, .bento-large, .bento-wide, .bento-tall
+ * 
+ * Container:
+ * - width: 100%
+ * - margin: 2rem 0 (vertical spacing)
+ * - Wraps grid layout
+ * 
+ * Grid Layout:
+ * - display: grid
+ * - grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
+ * - grid-auto-rows: 250px (base row height)
+ * - gap: 1.5rem (spacing between items)
+ * - margin: 0 auto (centered)
+ * - max-width: 1400px
+ * - grid-auto-flow: row dense (fills gaps efficiently)
+ * 
+ * Auto-Fit Behavior:
+ * - Automatically creates columns based on available space
+ * - Minimum column width: 300px
+ * - Maximum column width: 1fr (equal distribution)
+ * - Responsive without media queries
+ * 
+ * Dense Packing:
+ * - grid-auto-flow: row dense
+ * - Fills gaps left by larger items
+ * - Creates tighter masonry layout
+ * - May reorder visual sequence
+ * 
+ * Bento Item:
+ * - position: relative (for absolute children)
+ * - overflow: hidden (commented, clips content)
+ * - Base container for size variants
+ * 
+ * Size Variants:
+ * - .bento-small: grid-column span 1, grid-row span 1 (1x1, 250px tall)
+ * - .bento-medium: grid-column span 1, grid-row span 2 (1x2, 500px tall)
+ * - .bento-large: grid-column span 2, grid-row span 2 (2x2, 500px tall, featured)
+ * - .bento-wide: grid-column span 2, grid-row span 1 (2x1, 250px tall)
+ * - .bento-tall: grid-column span 1, grid-row span 2+ (1x2+, variable height)
+ * 
+ * Sizing Strategy:
+ * - Small: Standard grid cell, most projects
+ * - Medium: Taller, more content
+ * - Large: Featured projects, 2x2 prominence
+ * - Wide: Horizontal aspect ratio
+ * - Tall: Vertical aspect ratio, infographics
+ * 
+ * Responsive Behavior:
+ * - Mobile (< 600px): Single column (300px min forces 1 col)
+ * - Tablet (600-900px): 2 columns
+ * - Desktop (> 900px): 3-4 columns
+ * - auto-fit adjusts automatically
+ * 
+ * Layout Algorithm:
+ * 1. Grid calculates columns based on container width
+ * 2. Items placed in order (DOM sequence)
+ * 3. Dense packing fills gaps with smaller items
+ * 4. Larger items may create visual hierarchy breaks
+ * 
+ * Accessibility:
+ * - Visual order may differ from DOM order (consider aria-label)
+ * - Keyboard navigation follows DOM order
+ * - Screen readers announce in DOM sequence
+ * - Sufficient gap for touch targets
+ * 
+ * Performance:
+ * - CSS Grid: GPU accelerated layout
+ * - auto-fit: Efficient responsive calculation
+ * - No JavaScript required for layout
+ * - Minimal reflows with dense packing
+ * 
+ * Browser Compatibility:
+ * - CSS Grid: All modern browsers (Safari 10.1+, Chrome 57+, Firefox 52+)
+ * - auto-fit: Same as Grid support
+ * - grid-auto-flow: dense: Modern browsers
+ * - minmax(): Same as Grid support
+ * 
+ * @layer components
+ * @requires BentoCard component for card content
+ */
+
+/* === Bento Projects Container === */
+.bento-projects-container {
+  width: 100%;
+  margin: 2rem 0;
+}
+
+/* === Bento Grid Layout === */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: 250px;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 1400px;
+  grid-auto-flow: row dense; /* Fill gaps more efficiently */
+}
+
+/* === Bento Item Sizes === */
+.bento-item {
+  position: relative;
+  /* overflow: hidden; */
+}
+
+/* Small items - standard single grid cell */
+.bento-item.bento-small {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+/* Medium items - taller */
+.bento-item.bento-medium {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+/* Large items - prominent featured projects */
+.bento-item.bento-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Wide items - spanning multiple columns */
+.bento-item.bento-wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+/* Tall items - spanning multiple rows */
+.bento-item.bento-tall {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+/* Featured items get special treatment */
+.bento-item.bento-featured {
+  z-index: 2;
+}
+
+/* === Responsive Grid Adjustments === */
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-rows: 220px;
+    gap: 1rem;
+  }
+
+  /* On tablet, maintain some size differences */
+  .bento-item.bento-large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .bento-item.bento-wide {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .bento-item.bento-tall {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+
+  .bento-item.bento-medium {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 200px;
+    gap: 1rem;
+  }
+
+  /* Single column on very small screens - still maintain some height differences */
+  .bento-item.bento-large,
+  .bento-item.bento-tall,
+  .bento-item.bento-medium {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .bento-item.bento-wide,
+  .bento-item.bento-small {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+/* === No Results Styling === */
+.bento-no-results {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  color: var(--color-border-secondary);
+}
+
+.no-results-content h3 {
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.no-results-content p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}

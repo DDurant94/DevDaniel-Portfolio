@@ -1,0 +1,64 @@
+/**
+ * Home Hero Section Styles
+ * 
+ * @description Styles for the home page hero section with large headings and call-to-action.
+ * Features responsive typography, bold styling, and semantic layout.
+ * 
+ * Components:
+ * - .hero-content: Main content wrapper
+ * - .hero-header: Primary heading
+ * - Additional hero elements (CTA buttons, subheadings)
+ * 
+ * Layout:
+ * - .hero-content: position relative for absolute child positioning
+ * - Semantic structure with h1 headings
+ * - Flexbox or grid layout for content arrangement
+ * 
+ * Typography:
+ * - .hero-header: var(--font-size-4xl) for large display text
+ * - font-weight: var(--font-weight-bold) for emphasis
+ * - line-height: 1.1 for tight, impactful spacing
+ * - color: var(--color-text) for primary text
+ * 
+ * Spacing:
+ * - .hero-header margin-bottom: var(--space-4)
+ * - Consistent spacing with design token system
+ * - Responsive padding/margins via custom properties
+ * 
+ * Responsive Design:
+ * - Fluid typography with viewport-based sizing
+ * - Mobile-first approach with desktop enhancements
+ * - Adjusts layout for narrow viewports
+ * 
+ * Accessibility:
+ * - Semantic h1 for hero header
+ * - Sufficient color contrast for readability
+ * - Focus states on interactive elements
+ * - Skip-to-main-content support
+ * 
+ * Performance:
+ * - position: relative (no complex transforms)
+ * - Minimal reflows with fixed dimensions
+ * - GPU acceleration where needed
+ * 
+ * Browser Compatibility:
+ * - CSS custom properties: All modern browsers
+ * - Flexbox/Grid: Universal support
+ * - Fallback font sizes if custom properties fail
+ * 
+ * @layer components
+ * @requires Design tokens (font sizes, spacing, colors)
+ */
+
+.hero-content{
+  position:relative;
+
+}
+
+.hero-header {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}

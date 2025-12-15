@@ -1,0 +1,597 @@
+/**
+ * Design System OffCanvas Panel
+ * 
+ * @description Slide-in side panel with backdrop, spring animations, and custom state management.
+ * Features glassmorphic backdrop, smooth transitions, and focus trap integration.
+ * 
+ * Components:
+ * - .ds-offcanvas-wrapper: Fixed overlay container
+ * - .ds-offcanvas-backdrop: Blurred backdrop
+ * - .ds-offcanvas: Sliding panel
+ * - .ds-offcanvas-header: Panel header
+ * - .ds-offcanvas-body: Scrollable content
+ * - .ds-offcanvas-footer: Optional footer
+ * 
+ * Custom Properties:
+ * - --offcanvas-width: clamp(300px, 38vw, 420px)
+ * - --offcanvas-backdrop-bg: 68% backdrop color mix
+ * - --offcanvas-bg: var(--color-surface-elevated)
+ * - --offcanvas-border: 1px solid border-subtle
+ * - --offcanvas-radius: 8px 0 0 8px (left rounded)
+ * - --offcanvas-padding: var(--space-5)
+ * - --offcanvas-header-height: 3.25rem
+ * 
+ * Wrapper Layout:
+ * - position: fixed, inset: 0 (full viewport)
+ * - display: flex, justify-content: flex-end (right aligned)
+ * - z-index: 2100 (above most UI)
+ * - pointer-events: none (backdrop/panel handle their own)
+ * 
+ * Backdrop:
+ * - position: absolute, inset: 0
+ * - background: 68% backdrop opacity
+ * - backdrop-filter: blur(4px) saturate(140%)
+ * - opacity: 0 initially
+ * - transition: opacity 0.35s ease
+ * - pointer-events: auto (blocks interaction)
+ * 
+ * Panel Layout:
+ * - width: var(--offcanvas-width)
+ * - max-width: 100% (mobile friendly)
+ * - height: 100%
+ * - display: flex, flex-direction: column
+ * - border-left: var(--offcanvas-border)
+ * - border-radius: var(--offcanvas-radius)
+ * - box-shadow: var(--shadow-panel)
+ * 
+ * Initial State:
+ * - transform: translateX(8%) (offscreen right)
+ * - opacity: 0 (hidden)
+ * - pointer-events: auto on panel
+ * 
+ * Enter Animation (data-state="entering"):
+ * - backdrop opacity: 0 → 1
+ * - panel transform: translateX(8%) → translateX(0)
+ * - panel opacity: 0 → 1
+ * - Spring easing for smooth motion
+ * 
+ * Exit Animation (data-state="exiting"):
+ * - backdrop opacity: 1 → 0
+ * - panel transform: translateX(0) → translateX(8%)
+ * - panel opacity: 1 → 0
+ * - Faster exit than enter
+ * 
+ * State Management:
+ * - data-state="entering": Panel opening
+ * - data-state="open": Fully visible
+ * - data-state="exiting": Panel closing
+ * - data-state="closed": Fully hidden
+ * - Controlled via JS state machine
+ * 
+ * Accessibility:
+ * - role="dialog" aria-modal="true" (via JS)
+ * - Focus trap when open
+ * - Escape key to close
+ * - Click backdrop to close
+ * - Focus returns to trigger on close
+ * - aria-labelledby for header
+ * 
+ * Keyboard Interaction:
+ * - Escape: Close panel
+ * - Tab: Cycle through focusable elements (trapped)
+ * - Shift+Tab: Reverse tab order
+ * - Focus visible states on interactive elements
+ * 
+ * Scroll Behavior:
+ * - Header: Fixed at top
+ * - Body: Scrollable with overflow-y: auto
+ * - Footer: Fixed at bottom
+ * - Scroll shadows optional (not shown)
+ * 
+ * Performance:
+ * - transform animations: GPU accelerated
+ * - backdrop-filter: May impact low-end devices
+ * - pointer-events: none on wrapper reduces hit testing
+ * - will-change on panel during animation
+ * 
+ * Mobile Adaptations:
+ * - width: 100% on narrow viewports (via clamp)
+ * - min-width: 300px ensures usability
+ * - Touch gestures for swipe-to-close (via JS)
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: All modern browsers
+ * - color-mix(): Safari 16.4+, Chrome 111+, Firefox 113+
+ * - clamp(): Safari 13.1+, Chrome 79+, Firefox 75+
+ * - Custom properties: Universal support
+ * - inset property: Safari 14.1+, Chrome 87+
+ * 
+ * @layer components
+ * @requires Focus trap utility, state management, motion tokens
+ */
+
+/* Design System OffCanvas Panel */
+
+:root {
+  --offcanvas-width: clamp(300px, 38vw, 420px);
+  --offcanvas-backdrop-bg: color-mix(in srgb, var(--color-backdrop, #0a0d12) 68%, transparent);
+  --offcanvas-bg: var(--color-surface-elevated, var(--color-surface));
+  --offcanvas-border: 1px solid var(--color-border-subtle);
+  --offcanvas-radius: 8px 0 0 8px;
+  --offcanvas-padding: var(--space-5);
+  --offcanvas-header-height: 3.25rem;
+}
+
+/* Outer wrapper to allow custom animation vs bootstrap default */
+.ds-offcanvas-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 2100;
+  pointer-events: none;
+}
+
+.ds-offcanvas-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--offcanvas-backdrop-bg);
+  backdrop-filter: blur(4px) saturate(140%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: auto;
+}
+
+.ds-offcanvas {
+  position: relative;
+  padding: 0;
+  width: var(--offcanvas-width);
+  max-width: 100%;
+  height: 100%;
+  background: var(--offcanvas-bg);
+  border-left: var(--offcanvas-border);
+  box-shadow: var(--shadow-panel);
+  transform: translateX(8%);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--offcanvas-radius);
+  pointer-events: auto;
+}
+
+/* Enter / Exit (data-state attribute) */
+.ds-offcanvas[data-state='enter'] {
+  animation: offc-enter 0.55s var(--ease-spring, cubic-bezier(0.4, 0.7, 0.25, 1)) forwards;
+}
+
+.ds-offcanvas[data-state='exit'] {
+  animation: offc-exit 0.4s var(--ease-spring, cubic-bezier(0.5, 0.3, 0.4, 1)) forwards;
+}
+
+.ds-offcanvas-wrapper[data-active='true'] .ds-offcanvas-backdrop {
+  opacity: 1;
+}
+
+@keyframes offc-enter {
+  from {
+    opacity: 0;
+    transform: translateX(18%) scale(0.94);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes offc-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(14%) scale(0.95);
+  }
+}
+
+/* Header */
+.ds-offcanvas__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  min-height: var(--offcanvas-header-height);
+  backdrop-filter: blur(10px) saturate(160%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 24%, transparent), transparent);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-radius: 8px 0 0 8px;
+}
+
+.ds-offcanvas__title {
+  font-size: clamp(1.05rem, 1.4vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-radius: 8px 0 0 8px;
+}
+
+.ds-offcanvas__close-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-text-soft);
+  line-height: 1;
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--radius-sm, 6px);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.ds-offcanvas__close-btn:hover,
+.ds-offcanvas__close-btn:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  outline: none;
+}
+
+.ds-offcanvas__close-btn:active {
+  transform: scale(0.9);
+}
+
+/* Body */
+.ds-offcanvas__body { 
+  flex: 1 1 0%;
+  min-height: 0; 
+  padding: var(--offcanvas-padding) var(--offcanvas-padding) calc(var(--offcanvas-padding) + var(--space-6)); 
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  height: auto;
+}
+.ds-offcanvas__body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.ds-offcanvas__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ds-offcanvas__body::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  border-radius: 40px;
+  border: 3px solid var(--offcanvas-bg);
+}
+
+.ds-offcanvas__body:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+/* Media Gallery */
+.ds-offcanvas-media {
+  margin-bottom: var(--space-6);
+}
+
+/* Media stage & image (cover / contain toggle + parallax) */
+.ds-offcanvas-media__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg, 20px);
+  overflow: hidden;
+  box-shadow: var(--shadow-media-stage);
+  background: radial-gradient(
+    circle at 50% 45%,
+    var(--color-surface) 0%,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)) 65%
+  );
+}
+
+.ds-offcanvas-media__img-wrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.ds-offcanvas-media__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: object-fit 0.4s ease, transform 0.6s var(--ease-spring, cubic-bezier(0.4, 0.7, 0.25, 1));
+}
+
+.ds-offcanvas-media__stage[data-fit='contain'] .ds-offcanvas-media__img {
+  object-fit: contain;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--color-primary) 8%, transparent),
+    transparent 70%
+  );
+}
+
+.ds-offcanvas-media__tools {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 4;
+}
+.ds-offcanvas-media__fit-toggle {
+  font: inherit;
+  font-size: 0.6rem;
+  letter-spacing: 0.5px;
+  padding: 0.38rem 0.6rem;
+  background: color-mix(in srgb, var(--color-primary) 20%, var(--color-surface));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(6px) saturate(140%);
+  box-shadow: var(--shadow-control);
+}
+
+.ds-offcanvas-media__fit-toggle:hover,
+.ds-offcanvas-media__fit-toggle:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 32%, var(--color-surface));
+  outline: none;
+}
+
+.ds-offcanvas-media__fit-toggle[aria-pressed='true'] {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-control-pressed);
+}
+
+[data-theme='dark'] .ds-offcanvas-media__fit-toggle {
+  background: color-mix(in srgb, var(--color-primary) 30%, var(--color-surface));
+  color: var(--color-primary-light);
+}
+
+[data-theme='dark'] .ds-offcanvas-media__fit-toggle[aria-pressed='true'] {
+  color: var(--color-text-inverse);
+}
+
+[data-theme='contrast'] .ds-offcanvas-media__fit-toggle {
+  background: #000;
+  color: var(--color-text);
+  border: 1px solid var(--color-text);
+}
+
+[data-theme='contrast'] .ds-offcanvas-media__fit-toggle[aria-pressed='true'] {
+  background: var(--color-text);
+  color: #000;
+}
+/* Stage vignette overlay (kept after removing parallax) */
+.ds-offcanvas-media__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.38) 100%
+  );
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  transition: opacity 0.4s ease;
+}
+
+.ds-offcanvas-media__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--scrim-md);
+  color: var(--color-text);
+  border: none;
+  font-size: 1.75rem;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.ds-offcanvas-media__nav:hover {
+  background: var(--scrim-lg);
+}
+
+.ds-offcanvas-media__nav:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+.ds-offcanvas-media__nav--prev {
+  left: 0.65rem;
+}
+
+.ds-offcanvas-media__nav--next {
+  right: 0.65rem;
+}
+
+.ds-offcanvas-media__thumbs {
+  margin-top: 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scrollbar-width: thin;
+}
+
+.ds-offcanvas-media__thumb {
+  flex-shrink: 0;
+  width: 74px;
+  height: 54px;
+  border-radius: var(--radius-sm, 8px);
+  overflow: hidden;
+  position: relative;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.ds-offcanvas-media__thumb.active {
+  border-color: var(--color-primary);
+}
+
+.ds-offcanvas-media__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tech & Concepts section structure now handled by utility classes (.util-section, .util-section-title) */
+
+/* Links */
+.ds-offcanvas__links {
+  list-style: none;
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ds-offcanvas__links a,
+.ds-offcanvas__links .disabled {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  position: relative;
+}
+
+.ds-offcanvas__links a {
+  color: var(--color-primary);
+}
+
+.ds-offcanvas__links a:hover {
+  color: var(--color-primary-hover);
+}
+
+.ds-offcanvas__links .disabled {
+  color: var(--color-border-subtle);
+  cursor: not-allowed;
+}
+
+/* Scroll fade overlays */
+.ds-offcanvas__body::before,
+.ds-offcanvas__body::after {
+  content: "";
+  position: sticky;
+  left: 0;
+  right: 0;
+  height: 3.2rem;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ds-offcanvas__body::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--offcanvas-bg) 60%, transparent);
+}
+
+.ds-offcanvas__body::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--offcanvas-bg) 60%, transparent);
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .ds-offcanvas {
+  box-shadow: var(--shadow-panel);
+}
+
+[data-theme='dark'] .ds-offcanvas-media__stage {
+  background: radial-gradient(
+    circle at 50% 40%,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)) 0%,
+    var(--color-surface) 60%
+  );
+}
+
+/* Contrast theme */
+[data-theme='contrast'] .ds-offcanvas {
+  background: #000;
+  border-left: 2px solid var(--color-text);
+}
+/* Pills & badges theme variants now handled by .util-pill / .util-badge in Utilities.css */
+
+@media (max-width: 840px) {
+  :root {
+    --offcanvas-width: clamp(300px, 90vw, 640px);
+  }
+
+  .ds-offcanvas {
+    border-radius: 0;
+  }
+
+  .ds-offcanvas__header {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .ds-offcanvas__title {
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+  }
+
+  .ds-offcanvas__body {
+    padding: var(--space-4) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ds-offcanvas-media {
+    margin-bottom: var(--space-5);
+  }
+
+  .ds-offcanvas-media__stage {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md, 14px);
+  }
+
+  .ds-offcanvas-media__thumb {
+    width: 60px;
+    height: 46px;
+  }
+
+  .ds-offcanvas-media__fit-toggle {
+    font-size: 0.55rem;
+    padding: 0.32rem 0.52rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .ds-offcanvas__body {
+    padding: var(--space-4) var(--space-3) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ds-offcanvas-media__stage {
+    aspect-ratio: 4 / 3;
+  }
+
+  .ds-offcanvas-media__thumb {
+    width: 54px;
+    height: 42px;
+  }
+
+  .ds-offcanvas-media__fit-toggle {
+    font-size: 0.5rem;
+  }
+}

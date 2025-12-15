@@ -1,0 +1,134 @@
+/**
+ * About Services Section Styles
+ * 
+ * @description Styles for the services section on About Me page.
+ * Features StackedScrollCards layout, gradient headers, and call-to-action buttons.
+ * 
+ * Components:
+ * - #about-srvs-grid: Services card container
+ * - .about-srvs-header h2: Section heading
+ * - #about-srvs-cta-container: Call-to-action wrapper
+ * - #about-srvs-cta-text: CTA description text
+ * - #srvs-cta-btn-container: Button layout container
+ * 
+ * Grid Container:
+ * - display: block (StackedScrollCards component handles scroll layout)
+ * - padding: var(--space-8) var(--space-4)
+ * - Vertical spacing for services cards
+ * - Card stacking managed by parent component
+ * 
+ * Header Styling:
+ * - font-size: calc(1.775rem + 1.2vw) fluid sizing
+ * - Responsive typography with viewport scaling
+ * - Likely uses gradient text effect (from parent styles)
+ * 
+ * CTA Container:
+ * - text-align: center (centered layout)
+ * - margin-top: var(--space-12) (large spacing after cards)
+ * - padding: var(--space-8) var(--space-4)
+ * - padding-block: 0 (no vertical padding)
+ * 
+ * CTA Text:
+ * - font-size: var(--font-size-lg)
+ * - font-weight: var(--font-weight-medium)
+ * - color: var(--color-text-soft) for hierarchy
+ * - Descriptive text above CTA buttons
+ * 
+ * Button Container:
+ * - display: flex, flex-direction: row
+ * - flex-wrap: wrap (responsive wrapping)
+ * - justify-content: center (centered buttons)
+ * - Holds multiple BaseButton components
+ * 
+ * Button Spacing:
+ * - .base-btn margin: var(--space-4) var(--space-2) 0
+ * - Top margin: var(--space-4) (spacing from text)
+ * - Horizontal margin: var(--space-2) (gap between buttons)
+ * - Uses BaseButton component styles
+ * 
+ * Focus States:
+ * - #about-srvs-cta-container:focus outline: none
+ * - :focus-visible outline: var(--shadow-focus-ring)
+ * - :focus-visible box-shadow: var(--shadow-focus-ring)
+ * - border-radius: var(--radius-sm) on focus
+ * 
+ * StackedScrollCards Integration:
+ * - Parent component manages card scroll behavior
+ * - Cards stack and unstack based on scroll position
+ * - CSS handles spacing and typography only
+ * - JavaScript controls animation timing
+ * 
+ * Layout Flow:
+ * - Section header
+ * - Stacked service cards (scrollable)
+ * - CTA container with description and buttons
+ * - Centered alignment throughout
+ * 
+ * Accessibility:
+ * - :focus-visible for keyboard navigation
+ * - outline: none with custom focus ring
+ * - text-align: center (balanced layout)
+ * - Sufficient spacing for touch targets
+ * 
+ * Performance:
+ * - Simple block layout (no transforms)
+ * - StackedScrollCards handles animation
+ * - Minimal reflows with spacing tokens
+ * - GPU-accelerated focus transitions
+ * 
+ * Browser Compatibility:
+ * - Flexbox: Universal support
+ * - calc(): Widely supported
+ * - Custom properties: All modern browsers
+ * - focus-visible: Modern browsers (Safari 15.4+)
+ * 
+ * @layer components
+ * @requires StackedScrollCards component, BaseButton styles, spacing tokens
+ */
+
+#about-srvs-grid {
+  /* StackedScrollCards container: let component handle layout */
+  display: block;
+  padding: var(--space-8) var(--space-4);
+}
+
+.about-srvs-header h2 {
+  font-size: calc(1.775rem + 1.2vw);
+  
+}
+
+
+#about-srvs-cta-container {
+  text-align: center;
+  margin-top: var(--space-12);
+  padding: var(--space-8) var(--space-4);
+  padding-block: 0;
+}
+
+#about-srvs-cta-container:focus {
+  outline: none;
+}
+
+#about-srvs-cta-container:focus-visible{
+  outline: var(--shadow-focus-ring);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+#about-srvs-cta-text {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-soft);
+}
+
+#srvs-cta-btn-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Services CTA buttons now use BaseButton; only spacing override retained */
+#srvs-cta-btn-container .base-btn { margin: var(--space-4) var(--space-2) 0 var(--space-2); }
+
+

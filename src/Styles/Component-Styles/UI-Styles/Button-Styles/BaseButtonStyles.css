@@ -1,0 +1,171 @@
+/**
+ * BaseButton Component Styles
+ * 
+ * @description Unified button system with 3D pressable effects, gradients, and glow overlays.
+ * Replaces legacy per-page button classes with consistent, token-based styling.
+ * 
+ * Visual Effects:
+ * - 3D pressable appearance with gradient layers
+ * - Highlight overlay (::before) with soft-light blend
+ * - Edge ring overlay (::after) with inset glow
+ * - Glass reflection effect (-webkit-box-reflect)
+ * - Hover: Lift transform + enhanced glow
+ * - Active: Compress scale + shadow inset
+ * 
+ * Pseudo-Elements:
+ * - ::before: Gradient highlight overlay (soft-light, opacity 0.7)
+ * - ::after: Edge ring (inset box-shadow, opacity 0.5)
+ * - Both fade on hover/focus (opacity transitions)
+ * 
+ * States:
+ * - Rest: Base gradient + medium shadow
+ * - Hover/Focus: Elevated (-2px translateY) + glow stack
+ * - Active: Compressed (scale 0.985) + pressed shadow
+ * - .is-pressed: Extended pressed state (JS-controlled)
+ * - .is-disabled/[aria-disabled]: Reduced opacity, no interaction
+ * - .is-loading: Progress cursor + faded label
+ * 
+ * CSS Custom Properties:
+ * - --_pad-y: Vertical padding (default: --space-3)
+ * - --_pad-x: Horizontal padding (default: --space-5)
+ * - --btn-font-weight: Font weight (default: 600)
+ * - --btn-primary-text: Text color (default: --color-text)
+ * 
+ * Tokens Used:
+ * - Gradients: --gradient-pressable-base/hover/highlight
+ * - Shadows: --shadow-pressable-rest/hover/active, --pressable-pressed-stack
+ * - Motion: --motion-scale (transform), --motion-fade (colors/shadows)
+ * - Focus: --focus-ring, --shadow-focus-ring
+ * - Spacing: --space-2/3/4/5
+ * - Radius: --radius-md
+ * 
+ * Transitions:
+ * - Transform: Uses --motion-scale timing
+ * - Background/color/shadow: Uses --motion-fade timing
+ * - Respects prefers-reduced-motion (via tokens)
+ * 
+ * Migration Notes:
+ * - Replaces .skills-cta-button, .about-srvs-cta-button, etc.
+ * - Add 'base-btn' class to existing buttons gradually
+ * - Legacy classes can coexist during transition
+ * 
+ * Accessibility:
+ * - Focus-visible ring (not focus for mouse users)
+ * - ARIA disabled support ([aria-disabled])
+ * - Keyboard activation styling matches mouse
+ * - Reduced motion respected via token system
+ * 
+ * Browser Compatibility:
+ * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+ * - -webkit-box-reflect: Chrome/Safari only (progressive enhancement)
+ * - color-mix(): Chrome 111+, Safari 16.2+, Firefox 113+ (has fallbacks in tokens)
+ * 
+ * @layer components
+ */
+
+/* BaseButton shared styles.
+   These unify previous per-page CTA button rules (e.g., .skills-cta-button, .about-srvs-cta-button)
+   without overwriting them yet. Migrate legacy classes gradually by adding 'base-btn'.
+*/
+
+.base-btn {
+  --_pad-y: var(--space-3);
+  --_pad-x: var(--space-5);
+  margin: var(--space-4) var(--space-2) var(--space-4) var(--space-2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: var(--btn-font-weight, 600);
+  line-height: 1.2;
+  font-size: 1rem;
+  padding: var(--_pad-y) var(--_pad-x);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  background: var(--gradient-pressable-base);
+  color: var(--btn-primary-text, var(--color-text));
+  /* Motion: use semantic tokens (scale for transform, fade for color/background/shadow) */
+  transition: transform var(--motion-scale),
+              background var(--motion-fade),
+              box-shadow var(--motion-fade),
+              color var(--motion-fade);
+  box-shadow: var(--shadow-pressable-rest);
+  -webkit-box-reflect: below 3px linear-gradient(transparent 0 30%, var(--reflect-stop-faint), var(--reflect-stop-strong));
+}
+
+.base-btn:focus { outline: none; }
+.base-btn:focus-visible { outline: var(--focus-ring); box-shadow: var(--shadow-focus-ring); }
+.base-btn.is-pressed, .base-btn:active { box-shadow: var(--pressable-pressed-stack); }
+
+/* Glow highlight overlay replicating previous ::before pattern */
+/* Highlight overlay (from previous 3D button system) */
+/* Overlay fades: map 350ms ease -> fade (sm std) */
+.base-btn::before { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: var(--gradient-pressable-highlight); mix-blend-mode: soft-light; opacity: .7; transition: opacity var(--motion-fade); }
+/* Edge ring overlay (from legacy 3D button system) */
+.base-btn::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: 0 0 0 1px color-mix(in srgb,var(--color-primary) 55%, transparent) inset; mix-blend-mode: normal; opacity: .5; transition: opacity var(--motion-fade); }
+.base-btn:hover::after, .base-btn:focus-visible::after { opacity: .85; }
+
+/* Hover / focus elevated state */
+/* Hover / focus elevated state (add subtle glow lift) */
+.base-btn:hover,
+.base-btn:focus-visible { background: var(--gradient-pressable-hover); transform: translateY(-2px); color: var(--color-text); box-shadow: var(--shadow-pressable-hover), var(--pressable-glow-stack-outline); }
+
+/* Active: slightly compress & use active stack */
+.base-btn:active { transform: translateY(0) scale(.985); box-shadow: var(--shadow-pressable-active), var(--pressable-pressed-stack); }
+
+/* Transitional pressed class (JS can add .is-pressed for longer holding interactions) */
+.base-btn.is-pressed { box-shadow: var(--pressable-pressed-stack-active); }
+
+/* Disabled / Loading */
+.base-btn.is-disabled, .base-btn[aria-disabled='true'] { opacity: .55; cursor: not-allowed; transform: none; }
+.base-btn.is-loading { cursor: progress; }
+.base-btn.is-loading .btn-label { opacity: .55; }
+/* Spinner: keep linear rotation but use ambient duration primitive for consistency */
+.base-btn .btn-spinner { width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: btn-spin var(--motion-duration-ambient) linear infinite; }
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Variants */
+/* Primary inherits base gradient intentionally */
+.btn-variant-secondary { background: var(--gradient-surface, var(--color-surface-alt)); color: var(--color-text); }
+.btn-variant-ghost { background: transparent; box-shadow: none; border: 1px solid var(--border-subtle, rgba(255,255,255,0.15)); }
+.btn-variant-ghost:hover { background: var(--gradient-pressable-hover); }
+.btn-variant-outline { background: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); box-shadow: none; }
+.btn-variant-outline:hover { background: color-mix(in srgb, var(--color-primary) 15%, transparent); }
+.btn-variant-danger { background: linear-gradient(135deg, var(--color-danger, #d03333), color-mix(in srgb, var(--color-danger, #d03333) 70%, black)); color: #fff; }
+.btn-variant-danger:hover { background: linear-gradient(135deg, color-mix(in srgb, var(--color-danger, #d03333) 85%, black), var(--color-danger, #d03333)); }
+
+/* Sizes */
+.btn-size-sm { --_pad-y: var(--space-2); --_pad-x: var(--space-3); font-size: .85rem; }
+.btn-size-lg { --_pad-y: var(--space-4); --_pad-x: var(--space-6); font-size: 1.15rem; }
+
+.btn-block { width: 100%; }
+
+/* Icon positioning */
+.base-btn .btn-icon { display: inline-flex; align-items: center; }
+.base-btn .btn-icon.left { margin-right: var(--space-1); }
+.base-btn .btn-icon.right { margin-left: var(--space-1); }
+
+/* Contrast Theme Adjustments */
+[data-theme='contrast'] .base-btn { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: 0 0 0 0.005rem #ffffff, 0 2px 4px rgba(0,0,0,0.65), 0 6px 14px -4px rgba(0,0,0,0.75); }
+[data-theme='contrast'] .base-btn:hover { background: color-mix(in srgb, var(--color-primary) 90%, black 10%); }
+[data-theme='contrast'] .base-btn:active { background: color-mix(in srgb, var(--color-primary) 85%, black 15%); }
+
+/* Dark theme: ensure pressed state looks 3D and visible */
+[data-theme='dark'] .base-btn:hover {
+  /* slightly stronger outer glow to lift from dark bg */
+  box-shadow: var(--shadow-pressable-hover), var(--pressable-glow-stack-outline);
+}
+[data-theme='dark'] .base-btn:active,
+[data-theme='dark'] .base-btn.is-pressed {
+  /* Add a thin luminous outline + inset depth so press is readable on dark */
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 45%, transparent),
+    0 2px 6px rgba(0,0,0,0.4) inset,
+    0 2px 6px rgba(0,0,0,0.28),
+    0 6px 14px -5px color-mix(in srgb, var(--brand-orange-600) 45%, transparent);
+}
+
+

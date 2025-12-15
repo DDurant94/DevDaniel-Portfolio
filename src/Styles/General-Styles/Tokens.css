@@ -1,0 +1,676 @@
+/**
+ * Design Tokens (Core)
+ * 
+ * @description Central design system defining all primitive and semantic tokens for colors,
+ * spacing, typography, shadows, gradients, and motion. All component styles should consume
+ * these tokens instead of hardcoded values for consistency and theme support.
+ * 
+ * Token Categories:
+ * - Color Primitives: Base colors for backgrounds, surfaces, borders, text
+ * - Brand Colors: Orange monochromatic scale (primary palette)
+ * - Complementary: Blue scale for accents and contrast
+ * - Semantic Mappings: Intent-based tokens (primary, accent, success, danger, etc.)
+ * - Gradients: Pre-defined gradient combinations
+ * - Spacing: Consistent spacing scale (space-1 through space-10)
+ * - Typography: Font sizes, weights, line heights
+ * - Shadows/Elevation: Layered shadow system for depth
+ * - Motion: Animation durations and easing functions
+ * - Border Radius: Consistent corner rounding scale
+ * - Pressable System: 3D interactive button effects
+ * 
+ * Theme Support:
+ * - Default: Dark theme
+ * - [data-theme='light']: Light theme overrides
+ * - [data-theme='contrast']: High contrast accessibility theme
+ * 
+ * Usage Guidelines:
+ * - ALWAYS use semantic tokens (--color-primary) over primitives (--brand-orange-500)
+ * - Component CSS should reference tokens, not raw values
+ * - Add new primitives here first, then map to semantic layer
+ * - Test all new tokens in light, dark, and contrast themes
+ * 
+ * Pressable/Interactive System:
+ * - Apply classes: .pressable .pressable-edge + glow variant
+ * - Variants: .pressable-glow-outline or .pressable-glow-inset
+ * - Pressed state: .is-pressed (applied via JS)
+ * - Customize via token overrides in this file
+ * 
+ * Browser Compatibility:
+ * - Uses CSS custom properties (IE11 not supported)
+ * - color-mix() for transparency (Chrome 111+, Safari 16.2+, Firefox 113+)
+ * - @supports used for graceful degradation where needed
+ */
+
+/* ====================================================================
+   DESIGN TOKENS (CORE)
+   --------------------------------------------------------------------
+   This file defines primitive + semantic tokens used by the entire UI.
+   Keep component CSS free of raw hex, px (except 1px borders), or timing.
+   Add new tokens here first; then consume via semantic layer.
+==================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------
+     PRESSABLE / INTERACTIVE TOKEN GUIDE
+     ------------------------------------------------------------------
+     These variables power the 3D interaction system (buttons, tabs, CTAs).
+     Usage:
+       Add classes: .pressable .pressable-edge and one glow variant:
+         .pressable-glow-outline  (outer ring glow)
+         .pressable-glow-inset    (inset + outer ambient glow)
+       The pressed state is applied via JS helper adding .is-pressed.
+     Adjusting look:
+       - Tweak ring intensity: --pressable-glow-ring-color
+       - Outer lift softness:  --pressable-glow-lift-color
+       - Edge crisp line:      --pressable-edge-color
+       - Stacks:               outline vs inset token stacks
+       - Pressed depth:        --pressable-pressed-stack
+     Contrast theme overrides redefine the stacks for accessibility.
+  ------------------------------------------------------------------ */
+  /* Color Primitives (Dark-First) */
+  --color-bg: #0b0d12;
+  --color-bg-alt: #0f1217;
+  --color-surface: #12151b;
+  --color-surface-alt: #161b23;
+  --color-surface-inset: #1d242f;
+  --color-border: #2c323b;
+  --color-border-subtle: #1f252d;
+  --color-text: #eef1f7;
+  --color-text-soft: #c4c9d1;
+  --color-text-mute: #9aa3af;
+  --color-text-inverse: #0b0d12;
+  /* Alias used by some component styles (tabs hover/active) */
+  --color-text-light: var(--color-text-inverse);
+  --color-overlay-scrim: rgba(0,0,0,0.7);
+
+  /* Brand & Accents (Primary Palette: Orange #FFA500) */
+  /* Monochromatic Orange Scale */
+  --brand-orange-50:  #FFF8E6;
+  --brand-orange-100: #FFE8B3;
+  --brand-orange-200: #FFD280;
+  --brand-orange-300: #FFBB4D;
+  --brand-orange-400: #FFA51A; /* Slightly lighter than base for hover on dark */
+  --brand-orange-500: #FFA500; /* Base / requested primary */
+  --brand-orange-600: #E68F00;
+  --brand-orange-700: #CC7E00;
+  --brand-orange-800: #A36200;
+  --brand-orange-900: #7A4800;
+
+  /* Warm Neutral (Amber-Grey) Scale (optional future mapping) */
+  --neutral-warm-50:  #FFF9F1;
+  --neutral-warm-100: #FCEFDA;
+  --neutral-warm-200: #F6E2C0;
+  --neutral-warm-300: #E9CDA0;
+  --neutral-warm-400: #D9B37F;
+  --neutral-warm-500: #C0975E;
+  --neutral-warm-600: #9D7946;
+  --neutral-warm-700: #7A5B34;
+  --neutral-warm-800: #523C23;
+  --neutral-warm-900: #362616;
+
+  /* Complementary (Blue) Scale to Orange */
+  --comp-blue-50:  #E6F0FF;
+  --comp-blue-100: #B3D1FF;
+  --comp-blue-200: #80B3FF;
+  --comp-blue-300: #4D94FF;
+  --comp-blue-400: #1A75FF;
+  --comp-blue-500: #0066FF; /* Complement base */
+  --comp-blue-600: #0059E6;
+  --comp-blue-700: #004DCC;
+  --comp-blue-800: #003A99;
+  --comp-blue-900: #002966;
+
+  /* Semantic mappings */
+  --color-primary: var(--brand-orange-500);
+  --color-primary-hover: var(--brand-orange-400);
+  --color-primary-light: var(--brand-orange-300); /* subtle hover accents */
+  --color-accent: var( --brand-orange-200);
+  --color-accent-two: var( --brand-orange-700);
+  --color-accent-hover: var(--comp-blue-400);
+  --color-accent-alt: var(--comp-blue-300);
+  --color-highlight-warm: var(--brand-orange-400); /* active markers */
+  /* Accessibility contrast helpers (NOT for direct theming, for conditional usage) */
+  --color-primary-contrast-on-light: var(--brand-orange-800); /* >=4.5:1 on white for normal text */
+  --color-accent-contrast-on-light: var(--comp-blue-700);
+  --color-primary-outline-on-light: var(--brand-orange-700); /* >=3:1 acceptable for focus ring */
+  --color-success: #3fbf6c;
+  --color-danger: #ff4d55;
+  --color-warning: #ffb347;
+  --color-info: var(--color-primary);
+  --color-info-hover: var(--color-primary-hover);
+  --color-border-secondary: var(--color-border-subtle); /* legacy alias */
+
+  /* Gradients */
+  --gradient-brand-horizontal: linear-gradient(90deg,var(--color-accent-two), var(--color-primary), var(--color-accent));
+  --gradient-brand-diagonal: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+  /* Pressable surface monochrome orange depth gradients (centralized) */
+  /* These unify the repeated 180deg gradients used by .btn, tabs, and CTA buttons. */
+  --gradient-pressable-base: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-primary) 90%, white 10%) 0%,
+    color-mix(in srgb, var(--color-primary) 84%, black 16%) 100%
+  );
+  --gradient-pressable-hover: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-orange-500) 92%, white 8%) 0%,
+    color-mix(in srgb, var(--brand-orange-600) 90%, black 10%) 100%
+  );
+  --gradient-pressable-active: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-primary) 92%, white 8%) 0%,
+    color-mix(in srgb, var(--color-primary) 82%, black 18%) 100%
+  );
+  /* Highlight overlay (soft-light mix) reused via ::before pseudo element */
+  --gradient-pressable-highlight: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.15) 45%, rgba(0,0,0,0.25) 100%);
+  /* Accent (blue) pressable gradients (optional use for secondary actions) */
+  --gradient-pressable-accent-base: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--comp-blue-500) 90%, white 10%) 0%,
+    color-mix(in srgb, var(--comp-blue-500) 84%, black 16%) 100%
+  );
+  --gradient-pressable-accent-hover: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--comp-blue-500) 92%, white 8%) 0%,
+    color-mix(in srgb, var(--comp-blue-600) 90%, black 10%) 100%
+  );
+  --gradient-pressable-accent-active: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--comp-blue-500) 92%, white 8%) 0%,
+    color-mix(in srgb, var(--comp-blue-500) 82%, black 18%) 100%
+  );
+
+  /* Spacing Scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  /* Added to cover 28px (1.75rem) usages (header heights / large buttons) */
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-section-y: var(--space-12);
+  --gap-sm: var(--space-2);
+  --gap-md: var(--space-4);
+  --gap-lg: var(--space-8);
+
+  /* Layout / Containers */
+  --container-max-width: 1400px;
+  --container-readable: 72ch;
+  --container-narrow: 900px;
+  --top-margin: var(--space-10);
+  
+  /* Container Widths for specific components */
+  --container-xs: 200px;
+  --container-sm: 300px;
+  --container-md: 600px;
+  --container-lg: 800px;
+
+  /* Responsive Breakpoints (for CSS media queries) */
+  /* Mobile-first approach: base styles apply to mobile, override at larger breakpoints */
+  /* Usage: @media (min-width: var(--bp-tablet)) { } */
+  --bp-xs: 480px;          /* Extra small devices (phones in portrait) */
+  --bp-mobile: 768px;      /* Mobile/Tablet boundary - most common breakpoint */
+  --bp-tablet: 768px;      /* Tablets and small laptops */
+  --bp-desktop: 1024px;    /* Desktops and large laptops */
+  --bp-large: 1440px;      /* Large desktops and monitors */
+  --bp-xlarge: 1920px;     /* Extra large screens (optional) */
+  
+  /* Legacy support: Use max-width for mobile-specific overrides */
+  --bp-mobile-max: 767px;  /* Use with max-width for mobile-only styles */
+
+  /* Typography */
+  --font-family-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-family-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', 'Courier New', monospace;
+  --line-height-base: 1.55;
+  --line-height-tight: 1.2;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  /* Radii */
+  /* Added --radius-xs to cover very small curvature (was using raw 2px / 3px). */
+  --radius-xs: 2px; /* NEW: maps previous ad‑hoc 2px & 3px usages; visually close enough */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Shadows / Elevation */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 10px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
+  --shadow-lg: 0 14px 34px rgba(0,0,0,0.55), 0 8px 16px rgba(0,0,0,0.45);
+  --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary), transparent 55%);
+  /* Integrated luminous composites (previously variant) */
+  /* Layer primitives for reuse */
+  --shadow-layer-ambient-sm: rgba(255,255,255,0.05) 0px 10px 55px -20px;
+  --shadow-layer-ambient-md: rgba(255,255,255,0.065) 0px 10px 55px -20px;
+  --shadow-layer-ambient-lg: rgba(255,255,255,0.027) 0px 50px 100px -20px;
+  --shadow-layer-lift-sm: rgba(255,255,255,0.118) 0px 20px 50px -10px;
+  --shadow-layer-lift-md: rgba(255,255,255,0.145) 0px 20px 50px -10px;
+  --shadow-layer-lift-lg: rgba(255,255,255,0.112) 0px 30px 60px -30px;
+  --shadow-layer-inset-warm-sm: rgba(245,218,191,0.22) 0px -2px 5px 0px inset;
+  --shadow-layer-inset-warm-md: rgba(245,218,191,0.20) 0px -2px 5px 0px inset;
+  --shadow-layer-inset-warm-lg: rgba(245,218,191,0.175) 0px -2px 5px 0px inset;
+
+  /* Composites assembled from primitives */
+  --shadow-composite-default: var(--shadow-layer-ambient-md), var(--shadow-layer-lift-md), var(--shadow-layer-inset-warm-md);
+  --shadow-composite-project-card: var(--shadow-layer-ambient-sm), var(--shadow-layer-lift-sm), var(--shadow-layer-inset-warm-sm);
+  --shadow-composite-container: var(--shadow-layer-ambient-lg), var(--shadow-layer-lift-lg), var(--shadow-layer-inset-warm-lg);
+
+  /* New semantic composite shadows (deduplicating ad‑hoc component patterns) */
+  --shadow-pressable-rest: 0 1px 0 0 rgba(255,255,255,0.25) inset,
+                          0 1px 2px rgba(0,0,0,0.2),
+                          0 4px 10px -2px color-mix(in srgb, var(--color-primary) 35%, transparent),
+                          var(--shadow-sm);
+  --shadow-pressable-hover: 0 1px 0 0 rgba(255,255,255,0.35) inset,
+                           0 2px 4px rgba(0,0,0,0.28),
+                           0 7px 18px -5px color-mix(in srgb, var(--brand-orange-600) 55%, transparent),
+                           var(--shadow-md);
+  --shadow-pressable-active: 0 0 0 0 rgba(255,255,255,0.35) inset,
+                            0 2px 6px rgba(0,0,0,0.4) inset,
+                            0 2px 6px rgba(0,0,0,0.3);
+  --shadow-tab-active: 0 1px 0 rgba(255,255,255,0.10) inset,
+                      0 2px 6px rgba(0,0,0,0.35),
+                      0 6px 14px -4px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  --shadow-control: 0 2px 6px -2px rgba(0,0,0,.35);
+  --shadow-control-pressed: 0 0 0 1px color-mix(in srgb, var(--color-primary) 55%, transparent),
+                            0 4px 10px -3px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  --shadow-media-stage: 0 4px 14px -6px rgba(0,0,0,.4),
+                        0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  --shadow-panel: 0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent),
+                  0 10px 40px -8px rgba(0,0,0,.55);
+  /* Double halo focus (tabs, combo toggle) */
+  --shadow-focus-double: 0 0 0 2px color-mix(in srgb,var(--color-primary) 65%, transparent),
+                         0 0 0 4px color-mix(in srgb,var(--color-primary) 25%, transparent);
+  --box-shadow: var(--shadow-composite-default);
+  --box-shadow-container: var(--shadow-composite-container);
+  --box-shadow-projects: var(--shadow-composite-project-card);
+  --elev-1: var(--shadow-sm);
+  --elev-2: var(--shadow-md);
+  --elev-3: var(--shadow-lg);
+  --elev-focus: var(--shadow-focus-ring);
+
+  /* Z Layers */
+  --z-base: 0;
+  --z-above: 10;
+  --z-overlay: 100;
+  --z-max: 9999;
+
+  /* Motion Primitives (Legacy --transition-* removed 2025-10-07) */
+  /* Duration primitives */
+  --motion-duration-xs: 120ms; /* micro affordance */
+  --motion-duration-sm: 180ms; /* standard hover / color */
+  --motion-duration-md: 260ms; /* pressable elevation, tabs */
+  --motion-duration-lg: 400ms; /* panel / overlay entering */
+  --motion-duration-xl: 600ms; /* large compositional */
+  --motion-duration-ambient: 650ms; /* decorative / background */
+
+  /* Easing curves */
+  --ease-standard: cubic-bezier(.4,0,.2,1); /* material-esque */
+  --ease-entrance: cubic-bezier(.4,.7,.25,1); /* springy entrance */
+  --ease-exit: cubic-bezier(.5,.3,.4,1); /* graceful exit */
+  --ease-squish: cubic-bezier(.4,.6,.3,1); /* already referenced */
+  --ease-emphasis: cubic-bezier(.3,.8,.35,1.15); /* subtle pop */
+
+  /* Semantic motion aliases (compose duration + easing) */
+  --motion-fade: var(--motion-duration-xl) var(--ease-standard);
+  --motion-scale: var(--motion-duration-sm) var(--ease-entrance);
+  
+  /* Transform tokens for hover/interaction effects */
+  --transform-lift-sm: -4px;
+  --transform-lift-md: -5px;
+  --transform-lift-lg: -8px;
+
+  /* Outline tokens for focus states */
+  --outline-width-default: 2px;
+  --outline-width-thick: 4px;
+  --outline-offset-default: 4px;
+  --outline-offset-sm: 2px;
+  
+  /* Special effect tokens */
+  --text-stroke-thin: 0.5px;
+  --perspective-default: 2000px;
+  --reflect-offset: -8px;
+  --motion-overlay: var(--motion-duration-md) var(--ease-standard);
+  --motion-panel-enter: var(--motion-duration-lg) var(--ease-entrance);
+  --motion-panel-exit: var(--motion-duration-lg) var(--ease-exit);
+  --motion-chip: var(--motion-duration-sm) var(--ease-squish);
+  /* Composite list entrance (vertical rise + fade) */
+  --motion-list-rise: var(--motion-duration-md) var(--ease-entrance);
+  /* Underline-specific semantics */
+  --motion-underline-move: var(--motion-duration-lg) var(--ease-standard);
+  --motion-underline-opacity: var(--motion-duration-sm) var(--ease-standard);
+  --motion-underline-opacity-advance: 80ms; /* opacity starts this much before movement */
+  /* Stagger intervals (apply via calc(index * var(--motion-stagger-sm))) */
+  --motion-stagger-xxs: 80ms;
+  --motion-stagger-xs: 200ms;
+  --motion-stagger-sm: 300ms;
+  --motion-stagger-md: 500ms;
+
+  /* Migration guidance:
+    Replace patterns:
+     background .25s ease                -> background var(--motion-fade)
+     transform .25s ease                 -> transform var(--motion-fade)
+     opacity .35s ease                   -> opacity var(--motion-fade) (or md if weightier)
+     transform .3s/.35s ease             -> transform var(--motion-scale)
+     object-fit .4s ease                 -> object-fit var(--motion-panel-enter)
+     transform .6s cubic-bezier(.4,.7,.25,1) -> transform var(--motion-scale) (if entrance) / panel-enter for large surfaces
+     width 0.4s ease-in-out              -> width var(--motion-panel-enter)
+     opacity/transform 0.6s ease-in-out  -> opacity/transform var(--motion-duration-xl) var(--ease-standard)
+  */
+
+  /* Buttons */
+  --btn-padding-y: var(--space-2);
+  --btn-padding-x: var(--space-5);
+  --btn-font-weight: var(--font-weight-medium);
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-bg-hover: var(--color-primary-hover);
+  --btn-primary-text: var(--color-text-inverse);
+  /* (Reverted) Additional button variant tokens removed */
+
+  /* Inputs */
+  --input-padding-y: var(--space-2);
+  --input-padding-x: var(--space-3);
+  --input-bg: var(--color-surface-alt);
+  --input-text: var(--color-text);
+  /* Placeholder token to ensure theme-appropriate contrast */
+  --input-placeholder-color: var(--color-text-mute);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-primary);
+  --input-shadow-focus: var(--shadow-focus-ring);
+
+  /* Cards / Surfaces */
+  --card-bg: var(--color-surface);
+  --card-border-color: var(--color-border-subtle);
+  /* Legacy aliases (3D carousel & older components) */
+  --bg-card: var(--card-bg);
+  --marker-size: 0.9rem;
+  --marker-bg: var(--carousel-marker-bg);
+  --marker-hover-bg: var(--carousel-marker-hover-bg);
+  --marker-active-color: var(--color-primary);
+
+  /* Additional line-height scale */
+  --line-height-loose: 1.75;
+
+  /* Text semantic alias used in about styles */
+  --color-text-primary: var(--color-text);
+
+  /* Focus ring base color (used by legacy shadow-focus-ring formula) */
+  --color-focus-ring: var(--color-primary);
+
+  /* Legacy uppercase variable some pages used */
+  --TOP-MARGIN: var(--top-margin);
+
+  /* Shadow convenience aliases */
+  --shadow-soft: var(--shadow-sm);
+  --shadow: var(--box-shadow);
+
+  /* Carousel Specific */
+  --carousel-marker-bg: var(--color-border-subtle);
+  --carousel-marker-hover-bg: var(--color-text-soft);
+  --carousel-marker-active-bg: var(--color-primary);
+
+  /* Focus */
+  --focus-ring: 2px solid var(--color-primary);
+
+  /* Scrims / Overlays */
+  --scrim-xs: rgba(0,0,0,0.25);
+  --scrim-sm: rgba(0,0,0,0.3);
+  --scrim-md: rgba(0,0,0,0.45);
+  --scrim-lg: rgba(0,0,0,0.6);
+  --scrim-xl: rgba(0,0,0,0.75);
+  /* Component-level scrim for image card overlays (theme-tuned below) */
+  /* Default (dark/system): slightly stronger than md to counter bright imagery */
+  --overlay-scrim-card: rgba(0,0,0,0.5);
+  /* Stronger variant for always-on overlays (e.g., mobile) */
+  --overlay-scrim-card-strong: rgba(0,0,0,0.6);
+  /* Overlay text color (ensures correct polarity per theme) */
+  --overlay-card-text-color: var(--color-text);
+
+  /* Translucent accent / utility */
+  --bg-accent-translucent: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --bg-accent-translucent-strong: color-mix(in srgb, var(--color-primary) 25%, transparent);
+
+  /* Ripple / interactive */
+  --ripple-bg: rgba(255,255,255,0.4);
+
+  /* Text / decoration helpers */
+  --text-shadow-soft: 0 0.3px 0 rgba(0,0,0,0.35);
+  --text-inverse: var(--color-text-inverse);
+  /* Reflection & glass helpers */
+  --reflect-stop-faint: rgba(255,255,255,0.05);
+  --reflect-stop-strong: rgba(255,255,255,0.20);
+  --card-glass-bg: rgba(255,255,255,0.95);
+  --color-text-emphasis-soft: color-mix(in srgb, var(--color-text-inverse) 65%, transparent);
+
+  /* Pressable / Interactive (3D buttons, tabs, CTA) */
+  --pressable-glow-ring-color: color-mix(in srgb, var(--brand-orange-500) 70%, transparent);
+  --pressable-glow-lift-color: color-mix(in srgb, var(--brand-orange-600) 55%, transparent);
+  --pressable-glow-outline-color: color-mix(in srgb, var(--brand-orange-600) 60%, transparent);
+  --pressable-edge-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+  --pressable-shadow-hover-rest: 0 2px 4px rgba(0,0,0,0.28);
+  --pressable-glow-stack-outline: 0 0 0 0.5px var(--pressable-glow-outline-color),
+                                  var(--pressable-shadow-hover-rest),
+                                  0 7px 18px -5px var(--pressable-glow-lift-color),
+                                  0 0 14px -2px var(--pressable-glow-ring-color),
+                                  var(--shadow-md);
+  --pressable-glow-stack-inset: 0 1px 0 0 rgba(255,255,255,0.35) inset,
+                                var(--pressable-shadow-hover-rest),
+                                0 7px 18px -5px var(--pressable-glow-lift-color),
+                                0 0 14px -2px var(--pressable-glow-ring-color),
+                                var(--shadow-md);
+  --pressable-pressed-stack: 0 0 0 0 rgba(255,255,255,0.3) inset,
+                             0 2px 6px rgba(0,0,0,0.45) inset,
+                             0 1px 2px rgba(0,0,0,0.25);
+  /* Slightly different active stack (outer shadow instead of small 1px) */
+  --pressable-pressed-stack-active: 0 0 0 0 rgba(255,255,255,0.35) inset,
+                                    0 2px 6px rgba(0,0,0,0.4) inset,
+                                    0 2px 6px rgba(0,0,0,0.3);
+  --pressable-edge-inset: 0 0 0 1px var(--pressable-edge-color) inset;
+}
+
+/* Theme Toggle tokens (base: dark-first) */
+:root {
+  /* Glass gradients */
+  --tt-grad-seg: linear-gradient(180deg,
+    color-mix(in oklab, canvas 62%, transparent) 0%,
+    color-mix(in oklab, var(--color-primary) 8%, transparent) 30%,
+    color-mix(in oklab, canvas 46%, transparent) 100%
+  );
+  --tt-grad-thumb: var(--tt-grad-seg);
+  --tt-grad-handle: var(--tt-grad-seg);
+
+  /* Focus ring */
+  --tt-focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary) 45%, transparent),
+                   0 0 10px color-mix(in srgb, var(--color-primary) 35%, transparent);
+
+  /* Icon and handle glyph styling (dark) */
+  --tt-icon-stroke: color-mix(in oklab, white 99%, transparent);
+  --tt-icon-stroke-width: 2.25;
+  --tt-icon-filter: drop-shadow(0 1px 1px color-mix(in oklab, black 74%, transparent));
+  --tt-handle-stroke: var(--tt-icon-stroke);
+  --tt-handle-stroke-width: var(--tt-icon-stroke-width);
+  --tt-handle-filter: var(--tt-icon-filter);
+}
+
+/* Dedicated Skills Tech Card Shadow (now always luminous-styled) */
+:root {
+  --tech-card-ambient-warm: color-mix(in srgb, var(--brand-orange-200) 22%, white 78%);
+  --tech-card-halo-warm: color-mix(in srgb, var(--brand-orange-100) 35%, white 65%);
+  --shadow-tech-card: 0 26px 64px -22px rgba(255,255,255,0.02),
+                      0 26px 64px -22px color-mix(in srgb, var(--tech-card-ambient-warm) 30%, transparent 79.5%),
+                      0 11px 28px -11px rgba(0,0,0,0.26),
+                      0 4px 11px -4px rgba(0,0,0,0.24),
+                      0 0 34px -6px color-mix(in srgb, var(--tech-card-halo-warm) 30%, transparent 89%),
+                      0 0 0 1px rgba(0,0,0,0.05),
+                      inset 0 1px 0 rgba(255,255,255,0.78),
+                      inset 0 -2px 4px rgba(0,0,0,0.16),
+                      inset 0 0 0 1px rgba(0,0,0,0.06),
+                      inset 0 0 18px rgba(245,218,191,0.22);
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f4f8;
+  --color-surface-inset: #e8edf3;
+  --color-border: #d9dee5;
+  --color-border-subtle: #e4e8ed;
+  --color-text: #1e2227;
+  --color-text-soft: #4a545f;
+  --color-text-mute: #5a6472;
+  --color-text-inverse: #ffffff;
+  --color-text-light: #ffffff;
+  --color-overlay-scrim: rgba(0,0,0,0.4);
+  /* Light theme re-map (slightly deeper primary for hover contrast) */
+  --color-primary: var(--brand-orange-500);
+  --color-primary-hover: var(--brand-orange-600);
+  --color-primary-light: var(--brand-orange-300);
+  --color-accent: var(--brand-orange-200);
+  --color-accent-two: var(--brand-orange-700);
+  --color-accent-hover: var(--comp-blue-600);
+  --color-accent-alt: var(--comp-blue-300);
+  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-accent-two), var(--color-primary), var(--color-accent));
+  --gradient-brand-diagonal: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 10px rgba(0,0,0,0.14), 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-lg: 0 14px 34px rgba(0,0,0,0.18), 0 8px 16px rgba(0,0,0,0.12);
+  --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary), transparent 55%);
+  --shadow-composite-default: rgba(10,37,64,0.07) 0px 10px 55px -20px,
+                              rgba(10,37,64,0.15) 0px 20px 50px -10px,
+                              rgba(0,0,0,0.06) 0px -2px 6px 0px inset;
+  --shadow-composite-project-card: rgba(10,37,64,0.04) 0px 10px 55px -20px,
+                                   rgba(10,37,64,0.12) 0px 20px 50px -10px,
+                                   rgba(0,0,0,0.06) 0px -2px 6px 0px inset;
+  --shadow-composite-container: rgba(10,37,64,0.03) 0px 50px 100px -20px,
+                                rgba(10,37,64,0.10) 0px 30px 60px -30px,
+                                rgba(0,0,0,0.08) 0px -2px 6px 0px inset;
+  --box-shadow: var(--shadow-composite-default);
+  --box-shadow-container: var(--shadow-composite-container);
+  --box-shadow-projects: var(--shadow-composite-project-card);
+  --btn-primary-text: #ffffff;
+  /* Light theme: slightly stronger placeholder vs. on white BG */
+  --input-placeholder-color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  /* Light theme card overlays need darker scrim for readability on bright images */
+  --overlay-scrim-card: rgba(0,0,0,0.5);
+  --overlay-scrim-card-strong: rgba(0,0,0,0.5);
+  --overlay-card-text-color: #111214;
+
+  /* Theme Toggle (light): reversed glass feel, lighter brand band */
+  --tt-grad-seg: linear-gradient(0deg,
+    color-mix(in oklab, canvas 40%, transparent) 0%,
+    color-mix(in oklab, var(--color-primary) 3%, transparent) 30%,
+    color-mix(in oklab, canvas 55%, transparent) 100%
+  );
+  --tt-grad-thumb: linear-gradient(180deg,
+    color-mix(in oklab, canvas 55%, transparent) 0%,
+    color-mix(in oklab, var(--color-primary) 3%, transparent) 30%,
+    color-mix(in oklab, canvas 40%, transparent) 100%
+  );
+  --tt-grad-handle: var(--tt-grad-thumb);
+  --tt-focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary) 45%, transparent),
+                   0 0 10px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  --tt-icon-stroke: color-mix(in oklab, black 86%, transparent);
+  --tt-icon-stroke-width: 2;
+  --tt-icon-filter: drop-shadow(0 -1px 1px color-mix(in oklab, white 50%, transparent));
+  --tt-handle-stroke: var(--tt-icon-stroke);
+  --tt-handle-stroke-width: var(--tt-icon-stroke-width);
+  --tt-handle-filter: var(--tt-icon-filter);
+}
+
+/* High Contrast Theme (accessibility focused) */
+[data-theme='contrast'] {
+  color-scheme: dark;
+  --color-bg: #000000;
+  --color-bg-alt: #050505;
+  --color-surface: #0d0d0d;
+  --color-surface-alt: #141414;
+  --color-surface-inset: #1c1c1c;
+  --color-text: #ffffff;
+  --color-text-soft: #e6e6e6;
+  --color-text-mute: #cccccc;
+  --color-text-inverse: #000000;
+  --color-text-light: #ffffff;
+  --color-border: #ffffff;
+  --color-border-subtle: #666;
+  --color-primary: var(--brand-orange-500);
+  --color-primary-hover: var(--brand-orange-400);
+  --color-primary-light: var(--brand-orange-300);
+  --color-accent: var(--brand-orange-200);
+  --color-accent-two: var(--brand-orange-700);
+  --color-accent-hover: var(--brand-orange-700);
+  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-accent-two), var(--color-primary), var(--color-accent));
+  --gradient-brand-diagonal: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  --shadow-sm: 0 0 0 1px #ffffff, 0 2px 4px rgba(0,0,0,0.6);
+  --shadow-md: 0 0 0 1px #ffffff, 0 4px 10px rgba(0,0,0,0.7);
+  --shadow-lg: 0 0 0 1px #ffffff, 0 12px 28px rgba(0,0,0,0.75);
+  --shadow-focus-ring: 0 0 0 1px #00ccff;
+  /* Add subtle warm inset for depth while retaining contrast strokes */
+  --box-shadow: var(--shadow-sm), rgba(245,218,191,0.18) 0 -2px 5px 0 inset;
+  --box-shadow-container: var(--shadow-md), rgba(245,218,191,0.20) 0 -2px 5px 0 inset;
+  --box-shadow-projects: var(--shadow-lg), rgba(245,218,191,0.22) 0 -2px 5px 0 inset;
+  /* Elevation semantic overrides (contrast keeps strong outline) */
+  --shadow-panel: 0 0 0 1px #ffffff, 0 18px 60px -16px rgba(0,0,0,.75);
+  --shadow-tab-active: 0 0 0 1px var(--color-text);
+  --shadow-control: 0 0 0 1px var(--color-text);
+  --btn-primary-text: #000000;
+  --carousel-marker-bg: #666;
+  --carousel-marker-hover-bg: #aaa;
+  --carousel-marker-active-bg: var(--color-primary);
+  /* Contrast overrides for glow (brighter rings, thicker outline) */
+  --pressable-glow-stack-outline: 0 0 0 1px #ffffff,
+                                  0 0 0 4px color-mix(in srgb,var(--color-primary) 55%, transparent),
+                                  0 2px 6px rgba(0,0,0,0.8),
+                                  0 0 18px -2px color-mix(in srgb,var(--color-primary) 70%, transparent);
+  --pressable-glow-stack-inset: var(--pressable-glow-stack-outline);
+  --pressable-pressed-stack: 0 0 0 1px #ffffff, 0 2px 6px rgba(0,0,0,0.85) inset;
+  /* High contrast: placeholder should remain legible but de-emphasized */
+  --input-placeholder-color: #d9d9d9;
+  /* High contrast overlays: keep transparency minimal to ensure text clarity */
+  --overlay-scrim-card: rgba(0,0,0,0.7);
+  --overlay-scrim-card-strong: rgba(0,0,0,0.75);
+  --overlay-card-text-color: #ffffff;
+
+  /* Theme Toggle (contrast): neutral glass, crisper separation, white accents */
+  --tt-grad-seg: linear-gradient(180deg,
+    color-mix(in oklab, canvas 72%, transparent) 0%,
+    color-mix(in oklab, canvas 44%, transparent) 100%
+  );
+  --tt-grad-thumb: var(--tt-grad-seg);
+  --tt-grad-handle: var(--tt-grad-seg);
+  --tt-focus-ring: 0 0 0 3px color-mix(in srgb, white 85%, transparent),
+                   0 0 10px color-mix(in srgb, white 55%, transparent);
+  --tt-icon-stroke: #ffffff;
+  --tt-icon-stroke-width: 2.25;
+  --tt-icon-filter: none;
+  --tt-handle-stroke: var(--tt-icon-stroke);
+  --tt-handle-stroke-width: var(--tt-icon-stroke-width);
+  --tt-handle-filter: var(--tt-icon-filter);
+}
+
+/* System Preference (if no explicit theme) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { color-scheme: dark; }
+}
+
+/* Focus visibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}

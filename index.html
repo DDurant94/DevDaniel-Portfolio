@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Daniel Durant - Full Stack Developer Portfolio">
+    <meta name="description" content="Full Stack Developer specializing in React, Node.js, and modern web technologies. Explore my projects, skills, and experience in creating dynamic, user-focused applications.">
+    <meta name="keywords" content="Full Stack Developer, Frontend Developer, Backend Developer, React, Node.js, JavaScript, Portfolio, Web Development, UI/UX, Three.js, Daniel Durant">
+    <meta name="author" content="Daniel Durant">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/">
+    <meta property="og:title" content="Daniel Durant - Full Stack Developer Portfolio">
+    <meta property="og:description" content="Full Stack Developer specializing in React, Node.js, and modern web technologies. Explore my projects, skills, and experience.">
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+    <meta property="og:image:alt" content="Daniel Durant Portfolio Preview">
+    <meta property="og:site_name" content="Daniel Durant Portfolio">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://yourdomain.com/">
+    <meta name="twitter:title" content="Daniel Durant - Full Stack Developer Portfolio">
+    <meta name="twitter:description" content="Full Stack Developer specializing in React, Node.js, and modern web technologies. Explore my projects and skills.">
+    <meta name="twitter:image" content="https://yourdomain.com/twitter-card.jpg">
+    <meta name="twitter:image:alt" content="Daniel Durant Portfolio Preview">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yourdomain.com/">
+
+    <link rel="icon" href="./src/Assets/SVGS/LogoIconOnly.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="/src/Assets/Photos/Logo.png" fetchpriority="high">
+
+  <!-- Design tokens & root styles are imported through global.css for ordering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+          
+
+    <!-- <script src="https://cdn.lordicon.com/lordicon.js"></script> -->
+
+    <!-- No-flash theme script: apply stored theme or system preference before React mounts -->
+    <script>
+      (function() {
+        try {
+          let STORAGE_KEY = 'site-theme';
+          let saved = localStorage.getItem(STORAGE_KEY); // 'light' | 'dark' | 'contrast' | 'system' | null
+          let root = document.documentElement;
+          let systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          let resolved = systemDark ? 'dark' : 'light';
+            let USER_KEY = 'site-theme-user-set-v1';
+            let userSet = localStorage.getItem(USER_KEY);
+            let choice = userSet ? (saved || 'system') : 'system';
+            let appliedAttr = (choice === 'system') ? resolved : choice;
+            root.setAttribute('data-theme', appliedAttr);
+          // Useful dataset flags for CSS/JS that may key off of these on first paint
+          root.dataset.themeMode = choice;
+          root.dataset.themeResolved = resolved;
+        } catch (e) {
+          // On any error, fall back to system preference
+          let systemDark2 = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', systemDark2 ? 'dark' : 'light');
+        }
+      })();
+    </script>
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Daniel Durant",
+      "jobTitle": "Full Stack Developer",
+      "url": "https://yourdomain.com",
+      "sameAs": [
+        "https://github.com/yourusername",
+        "https://linkedin.com/in/yourusername"
+      ],
+      "description": "Full Stack Developer specializing in React, Node.js, and modern web technologies.",
+      "knowsAbout": ["React", "Node.js", "JavaScript", "TypeScript", "Three.js", "Full Stack Development", "UI/UX Design"]
+    }
+    </script>
+
+    <title>Daniel's Personal Website and Portfolio</title>
+
+  </head>
+
+  <body id="main-body">
+
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+
+  </body>
+</html>

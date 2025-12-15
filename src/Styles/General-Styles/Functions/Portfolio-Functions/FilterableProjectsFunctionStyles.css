@@ -1,0 +1,441 @@
+/**
+ * Filterable Projects Component
+ * 
+ * @description Interactive project filtering system with glassmorphic filter bar and animated chips.
+ * Features search, tag filtering, category tabs, and Framer Motion animations.
+ * 
+ * Components:
+ * - .filterable-projects: Main container
+ * - .filters-bar-top: Glassmorphic filter panel
+ * - .filter-toggle: Expand/collapse button
+ * - .filter-chips: Tag selection area
+ * - .project-grid: Filtered project layout
+ * - .filter-chip: Individual filter tags
+ * 
+ * Filter Bar:
+ * - Animated height expansion (Framer Motion controlled)
+ * - overflow: hidden for smooth animation
+ * - border-radius: var(--radius-lg)
+ * - padding: var(--space-4)
+ * - box-shadow: var(--box-shadow-container)
+ * 
+ * Glassmorphic Effect:
+ * - backdrop-filter: blur(10px) saturate(120%)
+ * - -webkit-backdrop-filter for Safari
+ * - Dual-layer gradient background
+ * - Content: 92% surface → 86% surface-alt
+ * - Border: 18% orange → 6% orange gradient
+ * - border-box vs padding-box technique
+ * 
+ * Border Gradient:
+ * - border: 1px solid transparent (base)
+ * - linear-gradient on border-box layer
+ * - Vertical gradient (180deg)
+ * - color-mix(in srgb, var(--brand-orange-500) 18%, transparent)
+ * - Fades from top (18%) to bottom (6%)
+ * 
+ * Filter Toggle:
+ * - width: fit-content
+ * - display: inline-flex with gap 0.45rem
+ * - background: transparent base
+ * - border: 1px solid var(--color-border-subtle)
+ * - color: var(--color-primary)
+ * - font-size: clamp(0.65rem, 2.2vw, 0.95rem)
+ * - font-weight: 600
+ * - padding: 0.45rem 0.9rem (matches chips)
+ * - border-radius: var(--radius-full)
+ * 
+ * Toggle States:
+ * - Hover: 8% primary background
+ * - Hover color: var(--color-primary-hover)
+ * - Hover border: 45% primary mix
+ * - Focus-visible: Same as hover
+ * - Active: Scale/transform feedback
+ * 
+ * Transitions:
+ * - background: var(--motion-fade)
+ * - color: var(--motion-fade)
+ * - border-color: var(--motion-fade)
+ * - box-shadow: var(--motion-fade)
+ * - transform: var(--motion-scale)
+ * 
+ * Filter Chips:
+ * - Selectable tags for filtering
+ * - Active/inactive states
+ * - Color-coded by category
+ * - Animated selection feedback
+ * - Keyboard accessible
+ * 
+ * Project Grid:
+ * - Filtered results display
+ * - Framer Motion layout animations
+ * - Smooth item additions/removals
+ * - Responsive grid columns
+ * 
+ * Animation System:
+ * - Framer Motion AnimatePresence
+ * - Height transitions on filter bar
+ * - Layout animations on grid items
+ * - Stagger effects on multiple changes
+ * 
+ * Accessibility:
+ * - :focus-visible states on toggle
+ * - ARIA labels on filter controls
+ * - Keyboard navigation (Tab, Enter, Space)
+ * - Screen reader announcements for filter changes
+ * - Live region for result counts
+ * 
+ * Performance:
+ * - backdrop-filter: May impact low-end devices
+ * - Framer Motion: GPU accelerated
+ * - Virtual scrolling for large lists (optional)
+ * - Debounced search input
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: All modern browsers
+ * - -webkit-backdrop-filter: Safari prefix
+ * - color-mix(): Safari 16.4+, Chrome 111+
+ * - clamp(): Safari 13.1+, Chrome 79+
+ * - border-box gradients: Universal support
+ * 
+ * @layer components
+ * @requires Framer Motion, design tokens, filter utilities
+ */
+
+/* === Filterable Projects Layout === */
+.filterable-projects {
+  margin-top: var(--space-3); /* 0.75rem */
+}
+
+/* === Filter bar container (animated by Framer Motion) === */
+.filters-bar-top {
+  margin-bottom: 1rem;
+  overflow: hidden; /* smooth height animation */
+  /* Glassy, elevated panel with subtle brand border */
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background:
+    /* content layer */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-surface) 92%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface-alt) 86%, transparent) 100%) padding-box,
+    /* border ring */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--brand-orange-500) 18%, transparent) 0%,
+      color-mix(in srgb, var(--brand-orange-500) 6%, transparent) 100%) border-box;
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  padding: var(--space-4);
+  box-shadow: var(--box-shadow-container);
+}
+
+/* === Filter toggle button === */
+.filter-toggle {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-primary);
+  font-size: clamp(0.65rem, 2.2vw, 0.95rem);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.45rem 0.9rem; /* match chip base */
+  border-radius: var(--radius-full);
+  transition: background var(--motion-fade), color var(--motion-fade), border-color var(--motion-fade), box-shadow var(--motion-fade), transform var(--motion-scale);
+  box-shadow: none;
+}
+
+.filter-toggle:hover,
+.filter-toggle:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary-hover);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  outline: none;
+}
+
+.filter-toggle::after {
+  content: '\25BC'; /* down chevron */
+  display: inline-block;
+  font-size: 0.75rem;
+  margin-left: .2rem;
+  transform: translateY(-1px) rotate(0deg);
+  transition: transform var(--motion-scale), color var(--motion-fade);
+  color: currentColor;
+}
+
+.filter-toggle[data-expanded="true"]::after {
+  transform: translateY(-1px) rotate(180deg);
+}
+
+/* === Clear filters button === */
+.clear-filters-btn {
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-primary);
+  font-size: clamp(0.65rem, 2.2vw, 0.95rem);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.45rem 0.9rem; /* align with chip proportions */
+  border-radius: var(--radius-full);
+  transition: background var(--motion-fade), color var(--motion-fade), border-color var(--motion-fade), box-shadow var(--motion-fade), transform var(--motion-scale);
+  box-shadow: none;
+  align-self: auto;
+}
+
+.clear-filters-btn:hover,
+.clear-filters-btn:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary-hover);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  outline: none;
+}
+
+.clear-filters-btn svg {
+  width: 1rem; /* slightly smaller for better text balance */
+  height: 1rem;
+}
+
+/* === No results message === */
+.no-results {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--color-border-secondary);
+  font-size: 0.95rem;
+}
+
+/* === Filter Group (used inside FilterableProjects) === */
+/* === Filter group label === */
+.filter-group-label {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: .06em;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  
+}
+
+.filter-group-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 40%;
+  height: 2px;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-xs);
+  transition: width var(--motion-panel-enter);
+}
+
+.filter-group-label:hover::after,
+.filter-group-label:focus-visible::after {
+  width: 100%;
+}
+
+/* === Filter Chips === */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Keep label/header at the top of the group */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header row aligns label left and Clear All right */
+.filter-group-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap; /* allow Clear All to break below when space is tight */
+  margin-bottom: var(--space-3);
+  /* Enable container queries based on header inline size */
+  container-type: inline-size;
+}
+
+.filter-group-header .filter-group-label {
+  margin-bottom: 0; /* reset since header arranges it */
+}
+
+.filter-group-header .clear-filters-btn {
+  margin-left: auto; /* keep it pushed to the right on its row */
+}
+
+/* Mobile: when it wraps under the title, give Clear All a little top spacing and keep it right-aligned */
+@media (max-width: 640px) {
+  .filter-group-header {
+    row-gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+  .filter-group-header .clear-filters-btn {
+    /* default: keep aligned right on the same line */
+    margin-left: auto;
+  }
+}
+
+/* When the header itself is 263px or narrower (wrap point), align Clear All left and add top spacing */
+@container (max-width: 263px) {
+  .filter-group-header .clear-filters-btn {
+    margin-left: 0;
+    margin-top: var(--space-2);
+  }
+}
+
+/* Row wrapper to place the More/Less toggle inline with chips */
+.filter-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  
+  margin: 0.25rem 0 0 0;
+}
+
+/* Keep toggle visually at the end of the row */
+.filter-chips-row .filter-toggle { margin-left: auto; }
+
+.filter-chip {
+  text-align: center;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  font-size: clamp(0.6rem, 2.2vw, .85rem);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  transition: background var(--motion-fade),
+              color var(--motion-fade),
+              transform var(--motion-scale),
+              box-shadow var(--motion-fade),
+              border-color var(--motion-fade);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset,
+              0 2px 6px rgba(0,0,0,0.22),
+              0 6px 14px -6px color-mix(in srgb, var(--color-primary) 28%, transparent);
+}
+
+/* Hover / focus tactile lift */
+.filter-chip:hover,
+.filter-chip:focus-visible {
+  background: var(--gradient-pressable-hover);
+  color: var(--btn-primary-text);
+  transform: translateY(-2px);
+  box-shadow: var(--pressable-glow-stack-outline);
+  outline: none;
+}
+
+/* Active (selected) state */
+.filter-chip.active {
+  background: var(--gradient-pressable-active);
+  color: var(--btn-primary-text);
+  border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+  box-shadow: var(--pressable-glow-stack-outline);
+}
+
+/* Disabled state */
+.filter-chip.disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Press feedback */
+.filter-chip:active:not(.disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: var(--pressable-pressed-stack-active);
+}
+
+/* Checkmark for selected chips */
+.chip-check {
+  margin-left: 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+/* Ripple Effect */
+.filter-chip::after {
+  content: "";
+  position: absolute;
+  top: var(--ripple-y, 50%);
+  left: var(--ripple-x, 50%);
+  transform: translate(-50%, -50%) scale(0);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--ripple-bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* .filter-chip:active::after {
+  animation: chipRipple 0.6s ease-out;
+}
+
+@keyframes chipRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+} */
+
+/* Entrance animation for chips */
+/* .filter-chip {
+  animation: chipFadeSlide 0.35s ease forwards;
+  animation-delay: calc(var(--index) * 0.05s);
+}
+
+@keyframes chipFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} */
+
+/* === Mobile adjustments === */
+@media (max-width: 600px) {
+  .filter-chip {
+    padding: 0.25rem .5rem;
+    /* font-size: 0.9rem; */
+  }
+}
+
+/* Compact padding on very small screens to match chip compaction */
+@media (max-width: 600px) {
+  .filter-toggle,
+  .clear-filters-btn { padding: 0.32rem 0.6rem; }
+}

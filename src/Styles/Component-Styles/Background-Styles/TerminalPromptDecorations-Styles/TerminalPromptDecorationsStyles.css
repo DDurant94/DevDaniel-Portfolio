@@ -1,0 +1,154 @@
+/**
+ * Terminal Prompt Decorations Styles
+ * 
+ * @description Terminal/shell command prompts ($, >) positioned as decorative elements
+ * with mouse parallax effect. Reinforces developer aesthetic and coding theme.
+ * 
+ * Prompt Commands:
+ * - top-left: "$ npm run dev" (depth 0.5)
+ * - top-right: "> git commit -m 'update'" (depth 0.3)
+ * - mid-left: "$ npm install" (depth 0.7)
+ * - mid-right: "> npm test" (depth 0.4)
+ * - bottom-left: "$ npm build" (depth 0.6)
+ * - bottom-right: "> git push origin main" (depth 0.5)
+ * 
+ * Parallax System:
+ * - Depth values (0.3-0.7) control movement intensity
+ * - Higher depth = more parallax movement
+ * - Uses --mouse-x and --mouse-y from React state
+ * - Transform: translate(mouseX * 15px * depth, mouseY * 15px * depth)
+ * - Smooth transitions (0.3s ease-out)
+ * 
+ * Visual Design:
+ * - Monospace font (--font-family-mono)
+ * - Low opacity (0.08) for subtle effect
+ * - Dual-color: Symbol in primary, command in text-soft
+ * - Positioned at section boundaries
+ * 
+ * Layout:
+ * - Fixed positioning (covers entire viewport)
+ * - z-index: 0 (behind content)
+ * - pointer-events: none (non-interactive)
+ * - Desktop only (hidden on mobile/tablet)
+ * 
+ * Performance:
+ * - Transform-based parallax (GPU accelerated)
+ * - Disabled on mobile (via React component logic)
+ * - Disabled when prefers-reduced-motion active
+ * - Minimal repaints (transform-only changes)
+ * 
+ * Accessibility:
+ * - Respects prefers-reduced-motion (no parallax)
+ * - Very low opacity (doesn't affect readability)
+ * - Non-interactive decoration
+ * - User-select: none (not copyable)
+ * 
+ * Theme Support:
+ * - Colors use custom properties (--color-primary, --color-text-soft)
+ * - Adapts to light/dark/contrast themes
+ * - color-mix() for primary accent color at 40%
+ * 
+ * Browser Compatibility:
+ * - Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+ * - Uses color-mix() (Chrome 111+, Safari 16.2+, Firefox 113+)
+ * - Fallback: Static prompts without parallax
+ * 
+ * @layer components
+ */
+
+/* ===================================================================
+   TERMINAL PROMPT DECORATIONS - Developer Tool Visual Guides
+   ----------------------------------------------------------------
+   Terminal-style prompts ($ and >) positioned as decorative elements
+   to reinforce coding aesthetic. Desktop only.
+   =================================================================== */
+
+.terminal-prompt-decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.terminal-prompt {
+  position: absolute;
+  font-family: var(--font-family-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--color-text-soft);
+  opacity: 0.08;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  gap: 0.5rem;
+  transform: translate(
+    calc(var(--mouse-x, 0) * 15px * var(--depth, 0.5)),
+    calc(var(--mouse-y, 0) * 15px * var(--depth, 0.5))
+  );
+  transition: transform 0.3s ease-out;
+}
+
+.prompt-symbol {
+  color: color-mix(in srgb, var(--color-primary) 40%, var(--color-text-soft));
+  font-weight: 600;
+}
+
+.prompt-command {
+  color: inherit;
+}
+
+/* Position prompts at section boundaries */
+.prompt-top-left {
+  top: 12%;
+  left: 11%;
+}
+
+.prompt-top-right {
+  top: 18%;
+  right: 5%;
+}
+
+.prompt-mid-left {
+  top: 45%;
+  left: 8%;
+}
+
+.prompt-mid-right {
+  top: 52%;
+  right: 4%;
+}
+
+.prompt-bottom-left {
+  bottom: 25%;
+  left: 6%;
+}
+
+.prompt-bottom-right {
+  bottom: 15%;
+  right: 6%;
+}
+
+/* Dark mode - More visible */
+@media (prefers-color-scheme: dark) {
+  .terminal-prompt {
+    opacity: 0.12;
+  }
+
+  .prompt-symbol {
+    color: color-mix(in srgb, var(--color-primary) 60%, var(--color-text-soft));
+  }
+}
+
+/* Hide on tablet and mobile */
+@media (max-width: 1023px) {
+  .terminal-prompt-decorations {
+    display: none;
+  }
+}
+
+/* Reduced motion - No need to hide, prompts are static */

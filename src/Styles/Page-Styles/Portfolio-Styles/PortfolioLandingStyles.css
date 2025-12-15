@@ -1,0 +1,289 @@
+/**
+ * Portfolio Landing Page Styles
+ * 
+ * @description Layout and interactive styles for portfolio page including filterable projects,
+ * search combobox, tabs, and project cards. Features gradient text and focus states.
+ * 
+ * Sections:
+ * - Intro: Centered heading with gradient text
+ * - Tabs: Project category filters (All, Web Dev, AI/ML, Data)
+ * - Search: Combobox with autocomplete suggestions
+ * - Projects Grid: Bento-style card layout
+ * 
+ * Key Features:
+ * - Gradient text on main heading (--gradient-brand-horizontal)
+ * - Fluid typography with responsive sizing
+ * - Custom combobox styling (design system component)
+ * - Focus-visible states for keyboard navigation
+ * - Search suggestions with active states
+ * - Tab navigation with ARIA support
+ * 
+ * Interactive Elements:
+ * - Tab buttons: Category filters with active state
+ * - Search input: Autocomplete with keyboard navigation
+ * - Suggestions: Hover and active states with color-mix
+ * - Project cards: Styled separately in BentoCard/FilterableProjects
+ * 
+ * Typography:
+ * - H1: calc(1.775rem + 1.5vw) with gradient and text-stroke
+ * - Body: calc(1.0rem + 0.3vw), max-width 55ch
+ * - Color: --color-text-soft for secondary text
+ * 
+ * Layout:
+ * - Main content: Offset by 100vh (hero height)
+ * - Centered intro section with flexbox
+ * - Max-width constraints for readability
+ * 
+ * Search Component:
+ * - Combobox from design system (ds-combobox)
+ * - Suggestions list with focus-visible and active states
+ * - Color-mix for dynamic hover/active backgrounds
+ * - Keyboard navigation support (arrow keys, enter)
+ * 
+ * Accessibility:
+ * - focus-visible outlines for keyboard users
+ * - ARIA-compliant tab navigation
+ * - Proper color contrast on all states
+ * - Semantic list structure for suggestions
+ * 
+ * Browser Compatibility:
+ * - background-clip: text requires -webkit prefix
+ * - color-mix() for dynamic colors (Chrome 111+, Safari 16.2+, Firefox 113+)
+ * - Chrome 119+, Safari 14+, Firefox 49+
+ * 
+ * @layer pages
+ */
+
+#portfolio-header{
+  width: 100%;
+  height: 100vh;
+}
+#portfolio-main-content{
+  padding-inline: var(--space-1);
+  margin-top: 100vh;
+}
+
+/* === Intro Section === */
+#projects-intro-section {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+#projects-intro-container h1 {
+  font-size: calc(1.775rem + 1.5vw);
+    -webkit-text-stroke: var(--color-text-soft);
+  -webkit-text-stroke-width: var(--text-stroke-thin);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-brand-horizontal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: var(--space-4);
+
+}
+
+#projects-intro-container p {
+  font-size: calc(1.0rem + 0.3vw);
+  padding: 0.25rem 0 0.25rem 0;
+  margin: 1rem 0 1.5rem 0;
+  /* font-size: var(--font-size-md); */
+  color: var(--color-text-soft);
+  max-width: 55ch;
+  /* margin: 0 0 1rem 0;
+  padding: 0 1rem 0 1rem; */
+}
+
+.nav-tabs{
+  border: none;
+}
+
+/* Focus-visible styling for keyboard users */
+.search-suggestions li:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 28%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 55%, transparent);
+}
+
+.search-suggestions li.active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+/* === Combobox Styles === */
+.ds-combobox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.ds-combobox input {
+  flex: 1;
+  min-width: var(--container-xs);
+  z-index: 2;
+  position: relative;
+}
+
+.search-input-container {
+  flex: 1;
+  position: relative;
+  min-width: var(--container-xs);
+  z-index: 10;
+}
+
+.combo-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-secondary);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  font-size: 1.1rem;
+  transition: all var(--motion-fade);
+  position: static;
+  z-index: 15;
+  flex-shrink: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  margin: 0;
+  overflow: hidden; /* Prevent text from showing */
+}
+
+.combo-toggle .combo-toggle-text {
+  display: none; /* Hide text by default */
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.combo-toggle:hover {
+  background: var(--color-background-tertiary);
+  border-color: var(--color-border-secondary);
+}
+
+.combo-toggle:active {
+  transform: translateY(0);
+}
+
+.combo-toggle[aria-pressed="true"] {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+.combo-toggle-text {
+  display: none;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* === Suggestions List Override === */
+.search-input-container #search-suggestions {
+  position: absolute !important;
+  left: 0 !important;
+  top: calc(100% + 0.5rem) !important;
+  width: 100% !important;
+  z-index: 100 !important;
+  max-width: none !important;
+}
+
+/* === Desktop Layout === */
+@media (min-width: 601px) {
+  .ds-combobox {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .combo-toggle {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    position: static;
+  }
+
+  .combo-toggle-text {
+    display: none; /* Hide text on desktop for filter toggle */
+  }
+}
+
+/* === Signoff === */
+#projects-signoff {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  padding: 1rem;
+
+  #projects-signoff-btn-container{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    
+    .base-btn{
+      margin: var(--space-4) var(--space-2) 0 var(--space-2);
+    }
+  }
+}
+
+/* === Mobile Tweaks === */
+@media (max-width: 600px) {
+  .tabs-row {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2); /* 0.5rem */
+  }
+
+  .ds-combobox {
+    flex-direction: row; /* Keep search and filter button side by side */
+    width: 100%;
+    gap: 0.5rem; /* Small gap between input and button */
+  }
+
+  .ds-combobox input {
+    flex: 1; /* Input takes remaining space */
+    min-width: unset;
+  }
+
+  .combo-toggle {
+    flex-shrink: 0; /* Button stays fixed size */
+    width: 2.5rem;
+    height: 2.5rem;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .combo-toggle .combo-toggle-text {
+    display: none; /* Hide text on mobile to keep button compact */
+  }
+
+  .combo-toggle i {
+    margin: 0; /* Reset margin */
+  }
+
+  .filter-search {
+    flex: 1;
+    min-width: 100%;
+  }
+
+  .search-suggestions li {
+    padding: var(--space-3) var(--space-4); /* 0.75rem 1rem */
+    font-size: 1rem;
+  }
+
+  /* Ensure combobox isn't forced into a large centered box */
+  .ds-combobox { width: 100%; max-width: 100%; flex: 1 1 auto; }
+}
+

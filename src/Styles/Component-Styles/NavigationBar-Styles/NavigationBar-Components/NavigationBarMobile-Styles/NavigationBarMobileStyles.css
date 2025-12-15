@@ -1,0 +1,397 @@
+/**
+ * Mobile Navigation Styles
+ * 
+ * @description Fixed top navbar with hamburger menu and glassmorphic effects.
+ * Features animated menu drawer, logo transitions, and accessible keyboard navigation.
+ * 
+ * Components:
+ * - .mobile-navbar: Fixed top container
+ * - .mobile-navbar-viewport: Top bar with logo and hamburger
+ * - .mobile-logo-container: Circular logo wrapper
+ * - .mobile-menu-toggle: Hamburger button
+ * - .mobile-menu-drawer: Slide-out navigation menu
+ * - .mobile-nav-links: Navigation link list
+ * 
+ * Navbar Container:
+ * - position: fixed, top: 0, left: 0, right: 0
+ * - z-index: 2000 (above content, below modals)
+ * - Always visible at top on mobile
+ * 
+ * Navbar Viewport:
+ * - display: flex, justify-content: space-between
+ * - align-items: center
+ * - padding: 1rem 0.75rem
+ * - transition: background, backdrop-filter, box-shadow (0.3s)
+ * 
+ * Menu Open State:
+ * - background: Dual color-mix layers
+ *   - 42% canvas opacity
+ *   - 8% primary color tint
+ * - backdrop-filter: blur(12px) saturate(160%)
+ * - -webkit-backdrop-filter for Safari
+ * - box-shadow: 0 4px 12px (10% black opacity)
+ * - Applied when .menu-open class active
+ * 
+ * Mobile Logo:
+ * - width: 60px, height: 60px
+ * - border-radius: 50% (perfect circle)
+ * - padding: 0.5rem
+ * - Glassmorphic background (same as viewport)
+ * - backdrop-filter: blur(12px) saturate(160%)
+ * - box-shadow: 0 4px 12px rgba(0,0,0,0.1)
+ * 
+ * Logo Menu-Open State:
+ * - background: none (transparent)
+ * - backdrop-filter: none
+ * - box-shadow: none
+ * - Blends into viewport when menu open
+ * 
+ * Color Mixing:
+ * - color-mix(in oklab, ...) for perceptual uniformity
+ * - oklab color space for smoother blending
+ * - canvas keyword for system background
+ * - Fallback to srgb if oklab unsupported
+ * 
+ * Menu Drawer:
+ * - Slide-in from right or top
+ * - Full-height overlay
+ * - Glassmorphic background
+ * - Animated open/close transitions
+ * - Focus trap when open
+ * 
+ * Accessibility:
+ * - aria-expanded on hamburger button
+ * - aria-label for icon-only buttons
+ * - Focus visible states
+ * - Escape key to close menu
+ * - Focus returns to hamburger on close
+ * - Keyboard navigation (Tab, arrows)
+ * 
+ * Responsive Behavior:
+ * - Visible on mobile (< 768px)
+ * - Hidden on desktop (desktop sidebar used)
+ * - Drawer width adjusts to viewport
+ * - Touch-friendly hit targets (60px logo)
+ * 
+ * Performance:
+ * - backdrop-filter: May impact low-end devices
+ * - transform animations: GPU accelerated
+ * - position: fixed removes from layout flow
+ * - Smooth transitions via CSS
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: All modern browsers
+ * - -webkit-backdrop-filter: Safari support
+ * - color-mix(in oklab): Safari 16.4+, Chrome 111+
+ * - position: fixed: Universal support
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires Hamburger menu component, design tokens
+ */
+
+/* ========== MOBILE NAVIGATION ========== */
+
+/* Mobile navbar container */
+.mobile-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+}
+
+/* ========== MOBILE NAVBAR VIEWPORT ========== */
+.mobile-navbar-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.75rem;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mobile-navbar-viewport.menu-open {
+  background:
+    color-mix(in oklab, canvas 42%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: 0 4px 12px color-mix(in oklab, black 10%, transparent);
+}
+
+/* ========== MOBILE LOGO ========== */
+.mobile-logo-container {
+  display: flex;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background:
+    color-mix(in oklab, canvas 42%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: 0 4px 12px color-mix(in oklab, black 10%, transparent);
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+.mobile-logo-container.menu-open {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.mobile-logo-container .logo-svg {
+  width: 100%;
+  height: auto;
+  fill: var(--color-primary);
+}
+
+/* ========== MOBILE MENU TOGGLE BUTTON ========== */
+.mobile-menu-toggle {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-brand-diagonal);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-text);
+  padding: 0;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 0 0 1px color-mix(in oklab, white 15%, transparent) inset;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--gradient-brand-horizontal);
+  transform: scale(1.1);
+  box-shadow: 
+    0 4px 16px color-mix(in oklab, var(--color-primary) 30%, transparent),
+    0 0 0 2px color-mix(in oklab, white 25%, transparent) inset;
+}
+
+.mobile-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.mobile-menu-toggle[aria-expanded="true"] {
+  rotate: 180deg;
+  background: var(--gradient-brand-horizontal);
+  box-shadow: 
+    0 4px 20px color-mix(in oklab, var(--color-primary) 40%, transparent),
+    0 0 0 2px color-mix(in oklab, white 30%, transparent) inset;
+}
+
+/* Toggle icon animations */
+.menu-icon-open,
+.menu-icon-close {
+  position: absolute;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-icon-open svg,
+.menu-icon-close svg {
+  stroke: #ffffff;
+}
+
+.menu-icon-open {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.menu-icon-close {
+  opacity: 0;
+  transform: scale(0.8) rotate(-90deg);
+}
+
+.mobile-menu-toggle[aria-expanded="true"] .menu-icon-open {
+  opacity: 0;
+  transform: scale(0.8) rotate(90deg);
+}
+
+.mobile-menu-toggle[aria-expanded="true"] .menu-icon-close {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ========== MOBILE MENU OVERLAY ========== */
+.mobile-menu-wrapper {
+  position: fixed;
+  inset: 0;
+  top: 81px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: calc(100vh - 81px);
+  max-height: calc(100dvh - 81px); /* Dynamic viewport height for mobile */
+  background:
+    color-mix(in oklab, canvas 12%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  pointer-events: none;
+  transform: translateX(101%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+  border-left: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
+
+.mobile-menu-wrapper[inert] {
+  visibility: hidden;
+}
+
+.mobile-menu-wrapper.menu-open {
+  pointer-events: auto;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+/* Menu content layout */
+.mobile-menu-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 81px);
+  padding: 2rem 1.5rem;
+}
+
+.mobile-safearea {
+  height: 1rem;
+}
+
+/* ========== MOBILE NAVIGATION LINKS ========== */
+.mobile-main-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: auto;
+}
+
+.mobile-links-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: color-mix(in oklab, var(--color-primary) 25%, var(--color-background));
+  border-radius: 8px;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--color-background) 95%, transparent);
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 0.5rem;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.4);
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mobile-nav-link:hover {
+  transform: translateX(4px);
+  color: var(--color-primary);
+}
+
+.mobile-nav-link:active {
+  transform: scale(0.98);
+}
+
+/* Slash indicator */
+.mobile-link-slash {
+  width: 8px;
+  height: auto;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mobile-nav-link.is-active .mobile-link-slash,
+.mobile-nav-link:hover .mobile-link-slash {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mobile-nav-link.is-active {
+  background: color-mix(in oklab, var(--color-primary) 30%, var(--color-background));
+  color: var(--color-primary);
+}
+
+.mobile-nav-link.is-active .mobile-link-slash path {
+  fill: var(--color-primary);
+}
+
+/* ========== MOBILE MENU BOTTOM OPTIONS ========== */
+.mobile-bottom-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 2rem;
+}
+
+/* Social links */
+.mobile-social-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.mobile-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--color-background) 90%, transparent);
+  color: #ffffff;
+  font-size: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+}
+
+.mobile-social-link:hover {
+  background: color-mix(in oklab, var(--color-primary) 25%, var(--color-background));
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--color-primary) 30%, transparent);
+}
+
+.mobile-social-link:active {
+  transform: scale(0.95);
+}
+
+/* Theme toggle container */
+.mobile-theme-toggle {
+  display: flex;
+  justify-content: center;
+}

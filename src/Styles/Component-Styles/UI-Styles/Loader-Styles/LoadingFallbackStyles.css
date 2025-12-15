@@ -1,0 +1,301 @@
+/**
+ * Loading Fallback Screen Styles
+ * 
+ * @description Full-screen loading overlay with 3D canvas background during lazy component loading.
+ * Features nav/footer hiding, animated content, and seamless initial page load experience.
+ * 
+ * Components:
+ * - .loading-screen: Fixed full-screen overlay
+ * - .loading-canvas-wrapper: 3D scene background
+ * - .loading-content: Centered content (logo, spinner, message)
+ * - .loading-spinner: Animated loading indicator
+ * - .loading-message: Status text
+ * 
+ * Loading Screen:
+ * - position: fixed, top: 0, left: 0
+ * - width: 100vw, height: 100vh (full viewport)
+ * - display: flex (centers content)
+ * - align-items: center, justify-content: center
+ * - z-index: 10000 (top layer, above all)
+ * - overflow: hidden (clips animations)
+ * - background: var(--color-bg)
+ * 
+ * Nav/Footer Hiding:
+ * - body:has(.loading-screen) nav/footer
+ * - opacity: 0 !important
+ * - pointer-events: none !important
+ * - visibility: hidden !important
+ * - Hides navigation during initial load
+ * - Also hides .navbar and .website-footer
+ * 
+ * Canvas Wrapper:
+ * - position: absolute, inset: 0
+ * - width: 100%, height: 100%
+ * - z-index: 1 (behind loading content)
+ * - Contains 3D scene (gears, particles, etc.)
+ * - Optional animated background
+ * 
+ * Loading Content:
+ * - position: relative, z-index: 2 (above canvas)
+ * - display: flex, flex-direction: column
+ * - align-items: center
+ * - gap: 2rem (spacing between elements)
+ * - animation: fadeInContent 0.5s ease-out
+ * - pointer-events: none (non-interactive)
+ * 
+ * Fade-In Animation:
+ * - @keyframes fadeInContent
+ * - from: opacity 0, transform: translateY(20px)
+ * - to: opacity 1, transform: translateY(0)
+ * - Duration: 0.5s
+ * - Easing: ease-out
+ * - Smooth entrance for loading content
+ * 
+ * Loading Spinner:
+ * - Animated rotation or pulse effect
+ * - Brand colors (primary/accent)
+ * - Size: 48-64px typical
+ * - Accessible via aria-label
+ * 
+ * Loading Message:
+ * - Text status updates ("Loading...", "Almost there")
+ * - aria-live="polite" for announcements
+ * - Font size: 1-1.25rem
+ * - Color: var(--color-text-soft)
+ * 
+ * Usage Scenarios:
+ * - Initial app load (before React hydration)
+ * - Lazy component loading (React.lazy + Suspense)
+ * - Code-splitting chunk loading
+ * - Heavy 3D scene initialization
+ * - Data fetching before render
+ * 
+ * Removal:
+ * - Fades out when content ready
+ * - Removed from DOM after animation
+ * - Navigation becomes visible
+ * - Focus moves to main content
+ * 
+ * Accessibility:
+ * - aria-label="Loading" on screen
+ * - aria-live="polite" for status updates
+ * - role="status" on message
+ * - No infinite loops (timeout recommended)
+ * - Keyboard trap prevention
+ * 
+ * Performance:
+ * - position: fixed removes from layout
+ * - 3D canvas in separate layer
+ * - Fade animation: GPU accelerated
+ * - Minimal DOM during load
+ * - Cleanup after removal
+ * 
+ * Browser Compatibility:
+ * - position: fixed: Universal support
+ * - vw/vh units: All modern browsers
+ * - :has() selector: Safari 15.4+, Chrome 105+
+ * - Flexbox: Universal support
+ * - CSS animations: Universal support
+ * 
+ * @layer components
+ * @requires React Suspense, lazy loading system, 3D scene (optional)
+ */
+
+/* Loading Screen - Full screen overlay */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* Hide nav and footer when loading screen is active */
+body:has(.loading-screen) nav,
+body:has(.loading-screen) footer,
+body:has(.loading-screen) .navbar,
+body:has(.loading-screen) .website-footer {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* 3D Canvas Wrapper - fills entire screen */
+.loading-canvas-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Loading Content Overlay */
+.loading-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  animation: fadeInContent 0.5s ease-out;
+  pointer-events: none;
+}
+
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo Animation */
+.loading-logo {
+  width: 120px;
+  height: 120px;
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+.logo-loader {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent));
+}
+
+.logo-path-animated {
+  fill: var(--color-text);
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    opacity: 1;
+    fill: var(--color-text);
+  }
+  50% {
+    opacity: 0.7;
+    fill: var(--color-primary);
+  }
+}
+
+/* Loading Text */
+.loading-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text h2 {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  background: var(--gradient-brand-horizontal);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+
+/* Loading Dots */
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: dotPulse 1.4s ease-in-out infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotPulse {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: scale(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* Loading Bar */
+.loading-bar {
+  width: var(--container-xs);
+  height: 4px;
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.loading-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-full);
+  animation: progressSlide 1.5s ease-in-out infinite;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .loading-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .loading-text h2 {
+    font-size: 1.25rem;
+  }
+
+  .loading-bar {
+    width: 150px;
+  }
+}

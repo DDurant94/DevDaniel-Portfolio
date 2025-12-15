@@ -1,0 +1,131 @@
+/**
+ * About Me Page Styles
+ * 
+ * @description Layout and styling for About Me page sections including intro, process,
+ * testimonials, and signoff. Implements centered content containers with max-width constraints
+ * and consistent spacing.
+ * 
+ * Features:
+ * - Centered content with max-width constraints
+ * - Responsive section spacing
+ * - Focus states for accessibility
+ * - Backdrop filter effects for signoff section
+ * - Gradient text effects
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: Safari 9+ (with -webkit prefix)
+ */
+
+/* ========================================
+   MAIN CONTENT CONTAINER
+   ======================================== */
+
+#about-main-content{
+  padding-inline: 0;
+  margin-top: 100vh; /* Position below full-height hero */
+}
+
+/* ========================================
+   INTRO SECTION
+   ======================================== */
+
+/** Personal introduction and background */
+#about-intro-section {
+  position: relative;
+  padding: var(--space-4) var(--space-2);
+  margin-inline: auto;
+}
+
+#about-into-section:focus {
+  outline: none;
+}
+
+#about-into-section:focus-visible{
+  outline: var(--focus-ring);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--elev-focus);
+}
+
+#about-process-section {
+  position: relative;
+  margin-top: var(--TOP-MARGIN);
+  padding: var(--space-4) var(--space-2);
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+}
+
+#about-testimonials-section {
+  position: relative;
+  margin-top: var(--TOP-MARGIN);
+  padding: var(--space-4) var(--space-2);
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+}
+
+.section-intro {
+  text-align: center;
+  max-width: var(--container-lg);
+  margin: 0 auto 2rem auto;
+}
+
+.section-intro h2 {
+  font-size: calc(1.775rem + 1vw);
+  margin-bottom: var(--space-2); 
+}
+
+.section-intro p {
+  font-size: 1.1rem;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+
+#about-signoff {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  margin: var(--TOP-MARGIN) auto 0.5rem auto;
+  padding: 1rem 2rem;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  max-width: var(--container-readable);
+}
+
+.signoff-line {
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+}
+
+.signoff-name {
+  font-style: italic;
+  color: var(--color-text-mute);
+}
+
+/* Section Headers */
+.section-header {
+  font-size: calc(1.775rem + 1.5vw);
+}
+
+/* CTA text */
+#about-srvs-cta-text {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+#about-signoff:focus {
+  outline: none;
+}
+
+#about-signoff:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--outline-offset-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--elev-focus);
+}
+
+.fade-in-wrapper {
+  display: block;
+  width: 100%;
+}

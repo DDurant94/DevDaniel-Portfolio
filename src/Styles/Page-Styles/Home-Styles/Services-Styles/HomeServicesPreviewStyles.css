@@ -1,0 +1,199 @@
+/**
+ * Home Services Preview Styles
+ * 
+ * @description Service cards preview section on home page with gradient headers and interactive cards.
+ * Features hover transforms, gradient text, and consistent card layouts.
+ * 
+ * Components:
+ * - .home-services-preview-head-container: Header wrapper
+ * - #home-services-preview-head-heading: Section title
+ * - .home-services-preview-head-tagline: Subtitle text
+ * - .home-service-card: Individual service cards
+ * 
+ * Header Container:
+ * - margin: auto auto 4rem auto (centered with bottom spacing)
+ * - padding: auto
+ * - Centers heading and tagline
+ * 
+ * Heading:
+ * - font-size: calc(1.775rem + 1.3vw) fluid sizing
+ * - font-weight: 700 (bold)
+ * - background: var(--gradient-brand-diagonal)
+ * - background-clip: text (gradient text effect)
+ * - -webkit-background-clip for Safari
+ * - color: transparent (shows gradient)
+ * 
+ * Tagline:
+ * - font-size: calc(0.9rem + 0.4vw) responsive
+ * - color: var(--color-text-soft) for hierarchy
+ * - margin: 1rem 0 spacing
+ * 
+ * Service Card:
+ * - display: flex, flex-direction: column
+ * - justify-content: center, align-items: center
+ * - text-align: center
+ * - background-color: var(--color-bg) !important (opaque)
+ * - backdrop-filter: none (no blur needed)
+ * - border-radius: var(--radius-lg)
+ * - min-height: 20rem, height: auto
+ * - padding: 2rem, margin: 1rem
+ * - box-shadow: var(--box-shadow-container)
+ * 
+ * Card Outline:
+ * - outline: var(--outline-width-default) solid transparent
+ * - outline-offset: var(--outline-offset-default)
+ * - Animated on hover/focus
+ * - isolation: isolate (creates stacking context)
+ * - position: relative (for z-index)
+ * 
+ * Card Typography:
+ * - h3: font-size calc(1rem + 1vw)
+ * - h3: font-weight 600
+ * - h3 margin: 0 0.25rem 1rem
+ * - button: font-size calc(1rem + 1vw)
+ * 
+ * Hover/Focus Effects:
+ * - transform: 0.3s ease
+ * - box-shadow: 0.3s ease
+ * - outline: 0.2s ease
+ * - Likely scale-up or lift on hover
+ * - Outline becomes visible on focus
+ * 
+ * Layout Integration:
+ * - Used in home page services section
+ * - Grid or flexbox container (parent)
+ * - Responsive columns (1-3 cards)
+ * - Consistent height with min-height
+ * 
+ * Accessibility:
+ * - text-align: center (readability)
+ * - outline on focus (keyboard navigation)
+ * - Sufficient contrast for text
+ * - Button CTA for interaction
+ * 
+ * Performance:
+ * - transform animations: GPU accelerated
+ * - backdrop-filter: none (better performance)
+ * - isolation: isolate (prevents repaints)
+ * - Simple transitions
+ * 
+ * Browser Compatibility:
+ * - background-clip: text: All modern browsers
+ * - -webkit-background-clip: Safari support
+ * - calc(): Universal support
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires Design tokens, gradient definitions
+ */
+
+.home-services-preview-head-container{
+  margin: auto auto 4rem auto;
+  padding: auto;
+}
+
+#home-services-preview-head-heading {
+  font-size: calc(1.775rem + 1.3vw);
+  font-weight: 700;
+  background: var(--gradient-brand-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home-services-preview-head-tagline {
+  font-size: calc(0.9rem + 0.4vw);
+  color: var(--color-text-soft);
+  margin: 1rem 0;
+}
+
+
+.home-service-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: var(--color-bg) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-radius: var(--radius-lg);
+  height: auto;
+  min-height: 20rem;
+  padding: 2rem;
+  margin: 1rem;
+  box-shadow: var(--box-shadow-container);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.2s ease;
+  outline: var(--outline-width-default) solid transparent;
+  outline-offset: var(--outline-offset-default);
+  isolation: isolate;
+  position: relative;
+
+  & h3{
+    font-size: calc(1rem + 1vw);
+    font-weight: 600;
+    margin: 0 0.25rem 1rem 0.25rem;
+  }
+
+  & button {
+    font-size: calc(1rem + 1vw);
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 600;
+
+  }
+
+  & button:hover {
+    cursor: pointer;
+    color: var(--color-primary);
+    transition: color 300ms ease-in-out;
+  }
+
+  & .home-service-desc{
+    font-size: calc(0.9rem + 0.3vw);
+    margin: 0.5rem 0.25rem 0.25rem 0.25rem;
+    color: var(--color-text-soft);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-service-card:hover {
+    transform: translateY(var(--transform-lift-sm)) !important;
+    box-shadow: 
+      var(--box-shadow-container),
+      0 8px 24px -8px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+}
+
+.home-service-card:focus-visible {
+  outline-color: var(--color-primary);
+  transform: translateY(var(--transform-lift-sm))!important;
+  box-shadow: 
+    var(--box-shadow-container),
+    0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent),
+    0 8px 24px -8px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.home-additional-services {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.home-additional-services-count {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: color 300ms ease-in-out;
+}
+
+.home-additional-services-count:focus-visible {
+  outline: var(--outline-width-default) solid var(--color-primary);
+  outline-offset: var(--outline-offset-default);
+  border-radius: var(--radius-sm);
+}

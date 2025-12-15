@@ -1,0 +1,186 @@
+/**
+ * Design System Utilities (.util-)
+ * 
+ * @description Single-responsibility CSS utility classes for common layout, spacing,
+ * and styling patterns. Follows atomic CSS principles with token-based values.
+ * 
+ * Utility Categories:
+ * - Layout: Flexbox and Grid helpers (.util-flex, .util-grid, .util-flex-center)
+ * - Spacing: Consistent gaps, margins, padding (.util-gap-*, .util-p-*, .util-mx-auto)
+ * - Stacks: Vertical rhythm utilities (.util-stack-sm/md/lg)
+ * - Shadows: Elevation-based shadow utilities (.util-shadow-sm/md/lg)
+ * - Text: Truncation and accessibility (.util-text-truncate, .util-visually-hidden)
+ * - Components: Pills, badges, thumbnails
+ * - States: Interactive and focus ring utilities
+ * - Radius: Border radius overrides (.util-radius-*)
+ * - Scrollbar: Custom scrollbar styling
+ * 
+ * Design Principles:
+ * - Single-responsibility: Each class does ONE thing well
+ * - Composition-friendly: Combine multiple utilities
+ * - Token-based: All values reference design tokens
+ * - Theme-agnostic: No hardcoded theme colors (use tokens)
+ * - Minimal specificity: Avoid deep nesting
+ * 
+ * Usage Examples:
+ * ```html
+ * <!-- Centered flex layout -->
+ * <div class="util-flex-center util-gap-md">
+ * 
+ * <!-- Pill with custom variant -->
+ * <span class="util-pill" data-variant="subtle">Tag</span>
+ * 
+ * <!-- Stack with vertical rhythm -->
+ * <div class="util-stack-md">
+ *   <p>Item 1</p>
+ *   <p>Item 2</p>
+ * </div>
+ * ```
+ * 
+ * Theme Support:
+ * - Utilities adapt to active theme via CSS custom properties
+ * - Dark/contrast theme specific overrides included
+ * - No theme-switching logic in utilities (handled by tokens)
+ * 
+ * Browser Compatibility:
+ * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+ * - Uses color-mix() for dynamic colors (fallback to static values if needed)
+ * - Flexbox and Grid (IE11 not supported)
+ */
+
+/* Design System Utilities Layer (.util-) 
+   Scope: Single-responsibility helpers only. Composition encouraged.
+   Do NOT theme-switch in utilities; rely on custom properties.
+*/
+
+/* Layout */
+.util-flex { display:flex; }
+.util-inline-flex { display:inline-flex; }
+.util-flex-center { display:flex; align-items:center; justify-content:center; }
+.util-flex-col { display:flex; flex-direction:column; }
+.util-grid { display:grid; }
+.util-grid-center { display:grid; place-items:center; }
+.util-center-abs { position:absolute; inset:50%; transform:translate(-50%, -50%); }
+
+/* Flex gap helpers (use tokens) */
+.util-gap-xs { gap: var(--space-2, .35rem); }
+.util-gap-sm { gap: var(--space-3, .5rem); }
+.util-gap-md { gap: var(--space-4, .75rem); }
+.util-gap-lg { gap: var(--space-5, 1rem); }
+
+/* Stack (vertical rhythm) */
+.util-stack-sm > * + * { margin-top: var(--space-3, .5rem); }
+.util-stack-md > * + * { margin-top: var(--space-4, .75rem); }
+.util-stack-lg > * + * { margin-top: var(--space-5, 1rem); }
+
+/* Spacing margin helpers (limited) */
+.util-mx-auto { margin-left:auto; margin-right:auto; }
+.util-my-sm { margin-top: var(--space-3, .5rem); margin-bottom: var(--space-3, .5rem); }
+.util-my-md { margin-top: var(--space-4, .75rem); margin-bottom: var(--space-4, .75rem); }
+.util-px-sm { padding-left: var(--space-3, .5rem); padding-right: var(--space-3, .5rem); }
+.util-px-md { padding-left: var(--space-4, .75rem); padding-right: var(--space-4, .75rem); }
+
+/* Shadows (aliased to elevation scale) */
+/* These map directly to semantic elevation tokens so future theme adjustments only change tokens. */
+.util-shadow-sm { box-shadow: var(--elev-1); }
+.util-shadow-md { box-shadow: var(--elev-2); }
+.util-shadow-lg { box-shadow: var(--elev-3); }
+
+/* Scrollbar (apply to scrolling container) */
+.util-scrollbar::-webkit-scrollbar { width:12px; }
+.util-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.util-scrollbar::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--color-primary) 25%, transparent); border-radius: 40px; border: 3px solid var(--color-surface, #101316); }
+.util-scrollbar:hover::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--color-primary) 40%, transparent); }
+
+/* Text helpers */
+.util-text-truncate { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.util-visually-hidden { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+/* Pills & Badges (structural base) */
+.util-pill { --_pill-bg: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface)); --_pill-fg: var(--color-primary); display:inline-flex; align-items:center; font-weight:600; font-size:.68rem; letter-spacing:.5px; padding:.35rem .6rem; border-radius:50px; background: var(--_pill-bg); color: var(--_pill-fg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 45%, transparent), 0 2px 4px -1px rgba(0,0,0,.25); }
+.util-pill[data-variant='subtle'] { --_pill-bg: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)); }
+.util-pill[data-variant='contrast'] { --_pill-bg: var(--color-text); --_pill-fg: var(--color-surface); }
+/* Dark theme adjustments for pills */
+[data-theme='dark'] .util-pill { --_pill-bg: color-mix(in srgb, var(--color-primary) 35%, var(--color-surface)); --_pill-fg: var(--color-primary-light); }
+/* Contrast theme adjustments for pills */
+[data-theme='contrast'] .util-pill { background:#000; color: var(--color-text); box-shadow: 0 0 0 2px var(--color-text); }
+
+.util-badge { --_badge-bg: var(--color-primary); --_badge-fg: var(--color-text-inverse); display:inline-flex; align-items:center; gap:.25rem; font-size:.65rem; font-weight:600; letter-spacing:.5px; padding:.3rem .55rem; border-radius: var(--radius-sm,6px); background: var(--_badge-bg); color: var(--_badge-fg); box-shadow: 0 1px 0 0 color-mix(in srgb, var(--color-primary) 50%, transparent), 0 2px 4px -1px rgba(0,0,0,.35); }
+.util-badge[data-tone='alt'] { --_badge-bg: color-mix(in srgb, var(--color-primary) 35%, var(--color-surface)); }
+
+/* Inline list for pills */
+.util-pill-list { list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.45rem .6rem; }
+
+/* Thumbnails */
+.util-thumb { position:relative; overflow:hidden; border-radius: var(--radius-sm,8px); flex-shrink:0; border:2px solid transparent; cursor:pointer; transition: border-color .3s ease, transform .3s ease; }
+.util-thumb img { display:block; width:100%; height:100%; object-fit:cover; }
+.util-thumb.is-active { border-color: var(--color-primary); }
+
+/* State helpers */
+.util-interactive { cursor:pointer; user-select:none; -webkit-user-select:none; }
+.util-focus-ring:focus-visible { outline:var(--outline-width-default) solid var(--color-primary); outline-offset:var(--outline-offset-sm); border-radius: inherit; }
+
+/* Dark / contrast tweaks (light scoping) */
+[data-theme='dark'] .util-pill[data-variant='contrast'] { --_pill-bg: var(--color-surface); --_pill-fg: var(--color-text); }
+[data-theme='contrast'] .util-badge { --_badge-bg:#000; --_badge-fg: var(--color-text); box-shadow: 0 0 0 2px var(--color-text); }
+
+/* Section layout and title utilities */
+.util-section { margin-top: var(--space-6); }
+.util-section:first-of-type { margin-top: var(--space-4); }
+.util-section + .util-section { margin-top: var(--space-7); }
+.util-section-title { font-size: 1.1rem; font-weight:600; color: var(--color-primary-light); text-transform:uppercase; letter-spacing:1px; opacity:.85; margin:0 0 .65rem; display:block;; }
+
+/* Radius utilities (single-purpose) */
+.util-radius-xs { border-radius: var(--radius-xs) !important; }
+.util-radius-sm { border-radius: var(--radius-sm) !important; }
+.util-radius-md { border-radius: var(--radius-md) !important; }
+.util-radius-lg { border-radius: var(--radius-lg) !important; }
+.util-radius-full { border-radius: var(--radius-full) !important; }
+
+/* ------------------------------------------------------------------
+   Spacing Utilities (Opt-in)
+   ------------------------------------------------------------------
+   Use sparingly to avoid utility sprawl. Prefer component variables
+   and layout primitives first. These map strictly to spacing tokens.
+------------------------------------------------------------------- */
+/* Padding */
+.util-p-xs { padding: var(--space-1); }
+.util-p-sm { padding: var(--space-2); }
+.util-p-md { padding: var(--space-4); }
+.util-p-lg { padding: var(--space-6); }
+.util-p-xl { padding: var(--space-8); }
+
+/* Padding axis */
+.util-px-sm { padding-left: var(--space-2); padding-right: var(--space-2); }
+.util-px-md { padding-left: var(--space-4); padding-right: var(--space-4); }
+.util-px-lg { padding-left: var(--space-6); padding-right: var(--space-6); }
+.util-py-sm { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.util-py-md { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.util-py-lg { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+
+/* Margin */
+.util-m-0 { margin:0; }
+.util-m-xs { margin: var(--space-1); }
+.util-m-sm { margin: var(--space-2); }
+.util-m-md { margin: var(--space-4); }
+.util-m-lg { margin: var(--space-6); }
+.util-m-xl { margin: var(--space-8); }
+
+/* Margin block (vertical rhythm helpers) */
+.util-mt-sm { margin-top: var(--space-2); }
+.util-mt-md { margin-top: var(--space-4); }
+.util-mt-lg { margin-top: var(--space-6); }
+.util-mt-xl { margin-top: var(--space-8); }
+.util-mb-sm { margin-bottom: var(--space-2); }
+.util-mb-md { margin-bottom: var(--space-4); }
+.util-mb-lg { margin-bottom: var(--space-6); }
+.util-mb-xl { margin-bottom: var(--space-8); }
+
+/* Gaps */
+.util-gap-sm { gap: var(--space-2); }
+.util-gap-md { gap: var(--space-4); }
+.util-gap-lg { gap: var(--space-6); }
+.util-gap-xl { gap: var(--space-8); }
+
+/* Section vertical padding (semantic wrapper) */
+.util-section-y { padding-top: var(--space-section-y); padding-bottom: var(--space-section-y); }

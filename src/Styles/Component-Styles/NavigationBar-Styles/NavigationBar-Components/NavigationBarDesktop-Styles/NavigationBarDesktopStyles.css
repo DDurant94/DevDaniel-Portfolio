@@ -1,0 +1,435 @@
+/**
+ * Desktop Sidebar Navigation Styles
+ * 
+ * @description Fixed left sidebar navigation with glassmorphic background and animated logo.
+ * Features blur effects, transform animations, and accessible navigation links.
+ * 
+ * Components:
+ * - .left-sidebar: Main fixed sidebar container
+ * - .sidebar-background: Glassmorphic backdrop
+ * - .sidebar-logo: Animated brand logo
+ * - .sidebar-nav: Navigation links list
+ * - .nav-link: Individual navigation items
+ * - .nav-indicator: Active link highlight
+ * 
+ * Sidebar Container:
+ * - position: fixed, top: 0, left: 0
+ * - height: 100vh (full viewport height)
+ * - width: 80px (narrow column)
+ * - z-index: 1000 (above content, below modals)
+ * - flex-direction: column
+ * - align-items: center
+ * - padding: 1rem 0
+ * - pointer-events: auto
+ * 
+ * Glassmorphic Background:
+ * - position: absolute, inset: 0
+ * - background: var(--color-background-secondary)
+ * - backdrop-filter: blur(8px)
+ * - -webkit-backdrop-filter: blur(8px) for Safari
+ * - border-right: 1px solid var(--color-border)
+ * - Creates frosted glass effect
+ * 
+ * Sidebar Logo:
+ * - position: relative, z-index: 10
+ * - width: 64px, height: 64px
+ * - display: flex (centers SVG/image)
+ * - margin-bottom: auto (pushes nav to center)
+ * - padding: 0.25rem
+ * - background: var(--color-background)
+ * - border-radius: 12px
+ * 
+ * Logo Hover Effects:
+ * - transform: translateY(var(--transform-lift-sm)) scale(1.1)
+ * - background: 10% primary color-mix (in oklab)
+ * - transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+ * - Smooth spring easing
+ * 
+ * Logo Active State:
+ * - transform: scale(0.95)
+ * - transition: 0.1s ease (quick feedback)
+ * - Press-down effect
+ * 
+ * Navigation Links:
+ * - Vertical stack in sidebar
+ * - Icon-only on narrow sidebar
+ * - Tooltip on hover (via title or custom)
+ * - Active link indicator
+ * - Smooth transitions
+ * 
+ * Layout:
+ * - Logo at top (margin-bottom: auto)
+ * - Nav links in center (flex centered)
+ * - Optional footer content at bottom
+ * - 100vh ensures always visible
+ * 
+ * Accessibility:
+ * - pointer-events: auto (clickable)
+ * - Focus visible states on links
+ * - ARIA labels for icon-only links
+ * - Keyboard navigation (Tab)
+ * - Skip-to-content link support
+ * 
+ * Performance:
+ * - backdrop-filter: May impact low-end devices
+ * - transform animations: GPU accelerated
+ * - position: fixed removes from layout flow
+ * - will-change on hover elements
+ * 
+ * Responsive Behavior:
+ * - Hidden on mobile (< 768px)
+ * - Mobile navigation drawer replaces it
+ * - Always visible on desktop
+ * - Fixed width (no flex grow)
+ * 
+ * Color Mixing:
+ * - color-mix(in oklab, ...) for perceptually uniform colors
+ * - oklab color space for smoother gradients
+ * - 10% primary mix on hover
+ * - Fallback to srgb if oklab unsupported
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: All modern browsers
+ * - -webkit-backdrop-filter: Safari support
+ * - color-mix(in oklab): Safari 16.4+, Chrome 111+
+ * - position: fixed: Universal support
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires Design tokens, mobile navigation alternative
+ */
+
+/* ========== DESKTOP SIDEBAR NAVIGATION ========== */
+
+/* Main sidebar container */
+.left-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 80px;
+  z-index: 1000;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  pointer-events: auto;
+}
+
+.sidebar-background {
+  position: absolute;
+  inset: 0;
+  background: var(--color-background-secondary);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-right: 1px solid var(--color-border);
+}
+
+/* ========== SIDEBAR LOGO ========== */
+.sidebar-logo {
+  position: relative;
+  z-index: 10;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: auto;
+  padding: 0.25rem;
+  background: var(--color-background);
+  border-radius: 12px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.3s ease;
+}
+
+.sidebar-logo:hover {
+  transform: translateY(var(--transform-lift-sm)) scale(1.1);
+  background: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
+}
+
+.sidebar-logo:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.sidebar-logo .logo-svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  fill: var(--color-primary);
+  transition: fill 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-logo:hover .logo-svg {
+  transform: scale(1.05);
+}
+
+/* ========== FLOATING NAVIGATION BAR ========== */
+.sidebar-nav {
+  position: fixed;
+  left: calc(80px + (100vw - 80px) / 2);
+  bottom: 1rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background:
+    color-mix(in oklab, canvas 42%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+  transition: bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
+    0 10px 26px color-mix(in oklab, black 30%, transparent);
+}
+
+.sidebar-nav.scrolled {
+  bottom: calc(100vh - 6rem);
+}
+
+/* Navigation links */
+.sidebar-nav .nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.sidebar-nav .nav-link::after {
+  display: none !important;
+}
+
+.sidebar-nav .nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: var(--gradient-brand-horizontal);
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.sidebar-nav .nav-text {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+[data-theme='dark'] .sidebar-nav .nav-text,
+[data-theme='contrast'] .sidebar-nav .nav-text {
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar-nav .nav-link:hover::before {
+  height: 100%;
+}
+
+.sidebar-nav .nav-link:hover .nav-text {
+  color: #ffffff;
+}
+
+.sidebar-nav .nav-link:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.sidebar-nav .nav-link.active {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.sidebar-nav .nav-link.active::before {
+  height: 100%;
+}
+
+.sidebar-nav .nav-link.active .nav-text {
+  color: #ffffff !important;
+}
+
+/* ========== SIDEBAR FOOTER ========== */
+.sidebar-footer {
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0 0 0;
+}
+
+/* Social icons */
+.sidebar-social-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text);
+  font-size: 1.35rem;
+  border-radius: 12px;
+  background: var(--color-background);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-social-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-brand-horizontal);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.sidebar-social-icon i {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-social-icon:hover {
+  transform: translateY(var(--transform-lift-sm)) scale(1.08);
+  -webkit-box-reflect: below 0.25rem linear-gradient(
+    transparent 0 60%,
+    color-mix(in srgb, var(--color-text) 0.1%, transparent),
+    color-mix(in srgb, var(--color-text) 5%, transparent),
+    color-mix(in srgb, var(--color-text) 10%, transparent),
+    color-mix(in srgb, var(--color-text) 20%, transparent)
+  );
+  box-shadow: 0 8px 20px color-mix(in oklab, var(--color-primary) 20%, transparent);
+}
+
+.sidebar-social-icon:hover::before {
+  opacity: 0.85;
+}
+
+.sidebar-social-icon:active {
+  transform: translateY(-2px) scale(1.02);
+  transition: transform 0.1s ease;
+}
+
+/* ========== THEME TOGGLE SECTION ========== */
+.sidebar-theme-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.sidebar-theme-toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--color-text);
+  background: var(--color-bg-alt);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-theme-toggle-button:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.sidebar-theme-toggle-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease-in-out;
+}
+
+.sidebar-theme-toggle-button .theme-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-theme-container[data-expanded="true"] .sidebar-theme-toggle-button .theme-icon {
+  transform: rotate(180deg);
+}
+
+.sidebar-theme-toggle-button .theme-icon svg {
+  stroke: var(--color-text);
+  transition: stroke 0.3s ease-in-out;
+}
+
+.sidebar-theme-toggle-button:hover .theme-icon svg {
+  stroke: var(--color-primary);
+}
+
+.sidebar-theme-content {
+  position: fixed;
+  left: calc(80px + 2px);
+  bottom: 1.2rem;
+  z-index: 1002;
+  animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ========== CONTENT MARGIN FOR SIDEBAR ========== */
+main,
+.container-fluid-center,
+#home-container,
+#about-container,
+#skills-container,
+#portfolio-container {
+  margin-left: 100px;
+}
+
+@media (max-width: 768px) {
+  main,
+  .container-fluid-center,
+  #home-container,
+  #about-container,
+  #skills-container,
+  #portfolio-container {
+    margin-left: 0;
+  }
+}

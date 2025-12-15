@@ -1,0 +1,230 @@
+/**
+ * 404 Not Found Page Styles
+ * 
+ * @description Centered error page with large error code, helpful messaging,
+ * and navigation options. Features radial gradient background and card-based layout.
+ * 
+ * Visual Design:
+ * - Massive error code: clamp(6rem, 20vw, 12rem) in primary color
+ * - Radial gradient background: Primary color at 4% opacity
+ * - Centered content card with clear hierarchy
+ * - Action buttons and quick links
+ * 
+ * Sections:
+ * - Error code: "404" in giant primary-colored text
+ * - Heading: "Page Not Found"
+ * - Message: Friendly explanation text
+ * - Actions: Primary "Take Me Home" button
+ * - Suggestions: Quick links to main sections
+ * 
+ * Layout:
+ * - Full viewport height (min-height: 100vh)
+ * - Flexbox centering (align-items, justify-content)
+ * - Max-width: --container-lg for content
+ * - Vertical flex column with --space-6 gap
+ * 
+ * Typography:
+ * - Error code: clamp(6rem, 20vw, 12rem), weight 900
+ * - Heading: clamp(2rem, 5vw, 3rem), weight 700
+ * - Message: Responsive sizing with max-width
+ * 
+ * Background:
+ * - Radial gradient from center
+ * - Primary color at 4% mixed with surface
+ * - 70% falloff radius for subtle vignette
+ * 
+ * Interactive Elements:
+ * - Primary button (styled via BaseButton)
+ * - Link list with hover states
+ * - Focus-visible outlines
+ * 
+ * Accessibility:
+ * - Semantic HTML structure (role="main")
+ * - Clear visual hierarchy
+ * - High contrast error code
+ * - Keyboard-friendly navigation
+ * 
+ * Browser Compatibility:
+ * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+ * - color-mix() for gradient (Chrome 111+, Safari 16.2+, Firefox 113+)
+ * - Clamp for fluid typography (all modern browsers)
+ * 
+ * @layer pages
+ */
+
+/* 404 Not Found Page Styles */
+
+#notfound-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--color-primary) 4%, var(--color-surface)),
+    var(--color-surface) 70%
+  );
+}
+
+#notfound-main-content {
+  width: 100%;
+  max-width: var(--container-lg);
+  margin: 0 auto;
+}
+
+#notfound-section {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+#notfound-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+/* Error Code */
+.notfound-error-code {
+  font-size: clamp(6rem, 20vw, 12rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Heading */
+#notfound-section h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Message */
+.notfound-message {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--color-text-soft);
+  max-width: var(--container-md);
+  line-height: 1.6;
+  margin: 0;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Action Buttons */
+.notfound-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--space-4);
+  
+}
+
+/* Suggestions */
+.notfound-suggestions {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+  z-index: 1;
+}
+
+.notfound-suggestions-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 1;
+  z-index: 1;
+}
+
+.notfound-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.notfound-links li {
+  display: inline-flex;
+}
+
+/* Dark Theme Adjustments */
+[data-theme='dark'] #notfound-container {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--color-primary) 6%, var(--color-surface)),
+    var(--color-surface) 65%
+  );
+}
+
+[data-theme='dark'] .notfound-error-code {
+  text-shadow: 0 4px 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+[data-theme='dark'] #notfound-section h1,
+[data-theme='dark'] .notfound-message,
+[data-theme='dark'] .notfound-suggestions {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Contrast Theme */
+[data-theme='contrast'] .notfound-error-code {
+  background: var(--color-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+[data-theme='contrast'] .notfound-suggestions {
+  border-top-color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #notfound-section {
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .notfound-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--container-sm);
+  }
+
+  .notfound-actions .base-btn {
+    width: 100%;
+  }
+
+  .notfound-links {
+    flex-direction: row;
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .notfound-error-code {
+    font-size: 5rem;
+  }
+
+  #notfound-section h1 {
+    font-size: 1.75rem;
+  }
+
+  .notfound-message {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,279 @@
+/**
+ * Project OffCanvas Panel Styles
+ * 
+ * @description Detailed project view in slide-out panel with media gallery and metadata.
+ * Features image carousel, technology badges, and scrollable content sections.
+ * 
+ * Components:
+ * - #offcanvas-container: Main wrapper
+ * - .offcanvas__header: Title and close button
+ * - .offcanvas__title: Project name display
+ * - .offcanvas-media: Image gallery section
+ * - .offcanvas-media__stage: Image display area
+ * - .offcanvas-media__img: Project screenshot/image
+ * - .custom-badge: Technology/status badges
+ * - .offcanvas-body: Scrollable content (from parent OffCanvasStyles)
+ * 
+ * Header:
+ * - border-bottom: 1px solid var(--color-border-secondary)
+ * - padding: 1rem
+ * - Fixed at top of panel
+ * - Contains title and close button
+ * 
+ * Title:
+ * - font-size: 1.25rem
+ * - font-weight: 600
+ * - display: flex, align-items: center
+ * - gap: var(--space-2) for badge spacing
+ * 
+ * Custom Badge:
+ * - background: var(--color-primary)
+ * - color: var(--btn-primary-text)
+ * - font-size: 0.75rem
+ * - padding: 0.2rem 0.5rem
+ * - border-radius: var(--radius-md)
+ * - font-weight: 500
+ * - Used for status (Featured, New) or category labels
+ * 
+ * Media Gallery:
+ * - margin-bottom: var(--space-6)
+ * - Image carousel for project screenshots
+ * - Thumbnail navigation (not shown)
+ * - Zoom/fullscreen capabilities (via JS)
+ * 
+ * Media Stage:
+ * - position: relative (for carousel controls)
+ * - width: 100%
+ * - overflow: hidden (clips slide transitions)
+ * - border-radius: var(--radius-md)
+ * - box-shadow: var(--shadow-soft)
+ * 
+ * Media Image:
+ * - width: 100%, height: auto
+ * - display: block (removes inline gap)
+ * - object-fit: contain (preserves aspect ratio)
+ * - border-radius: var(--radius-md)
+ * - Lazy loaded (via JS)
+ * 
+ * Content Sections:
+ * - Description: Rich text project details
+ * - Technologies: Badge list of tech stack
+ * - Links: External project/repo links
+ * - Metadata: Date, client, role info
+ * 
+ * Scrolling:
+ * - .offcanvas-body (from parent) handles scroll
+ * - Smooth scrolling enabled
+ * - Scroll shadows for depth (optional)
+ * - Header fixed, content scrolls
+ * 
+ * Accessibility:
+ * - role="dialog" aria-modal="true" (from parent)
+ * - aria-labelledby pointing to title
+ * - Focus trap within panel
+ * - Escape to close
+ * - Descriptive alt text on images
+ * - Keyboard navigable carousel
+ * 
+ * Performance:
+ * - Lazy load images in gallery
+ * - IntersectionObserver for viewport images
+ * - Virtual scrolling for long content (optional)
+ * - Transform animations on carousel
+ * 
+ * Responsive Behavior:
+ * - Full width on mobile (< 768px)
+ * - clamp(300px, 38vw, 420px) on desktop
+ * - Images scale to container width
+ * - Stack layout on narrow screens
+ * 
+ * Browser Compatibility:
+ * - object-fit: All modern browsers
+ * - Flexbox: Universal support
+ * - Custom properties: Widely supported
+ * - border-radius: Universal support
+ * 
+ * @layer components
+ * @requires OffCanvasStyles.css (parent component)
+ */
+
+/* === Offcanvas Container === */
+#offcanvas-container {
+  font-family: inherit;
+}
+
+/* === Header === */
+.offcanvas__header {
+  border-bottom: 1px solid var(--color-border-secondary);
+  padding: 1rem;
+}
+
+.offcanvas__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2); /* 0.5rem */
+}
+
+/* === Badge === */
+.custom-badge {
+  background: var(--color-primary);
+  color: var(--btn-primary-text);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+}
+
+/* === Media Gallery === */
+.offcanvas-media {
+  margin-bottom: var(--space-6); /* 1.5rem */
+}
+
+.offcanvas-media__stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.offcanvas-media__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+/* Navigation arrows */
+.offcanvas-media__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--scrim-md);
+  color: var(--color-text);
+  border: none;
+  font-size: 2rem;
+  padding: var(--space-1) var(--space-2); /* 0.25rem 0.5rem */
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background var(--motion-fade);
+}
+
+.offcanvas-media__nav:hover {
+  background: var(--scrim-lg);
+}
+
+.offcanvas-media__nav--prev {
+  left: 0.5rem;
+}
+
+.offcanvas-media__nav--next {
+  right: 0.5rem;
+}
+
+/* Thumbnails */
+.offcanvas-media__thumbs {
+  display: flex;
+  gap: var(--space-2); /* 0.5rem */
+  margin-top: var(--space-3); /* 0.75rem */
+  overflow-x: auto;
+  padding-bottom: var(--space-1); /* 0.25rem */
+}
+
+.offcanvas-media__thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--motion-fade);
+}
+
+.offcanvas-media__thumb.active {
+  border-color: var(--color-primary);
+}
+
+.offcanvas-media__thumb img {
+  display: block;
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+}
+
+/* === Body Content === */
+.offcanvas__body-text {
+  margin: var(--space-4) 0; /* 1rem */
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+/* === Tech & Concepts Lists === */
+.offcanvas__tech-section,
+.offcanvas__concepts-section {
+  margin-top: var(--space-6); /* 1.5rem */
+}
+
+.offcanvas__tech-list,
+.offcanvas__concepts-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-2) 0 0; /* 0.5rem */
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2); /* 0.5rem */
+}
+
+.offcanvas__tech-item,
+.offcanvas__concept-item {
+  background: var(--bg-accent-translucent);
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  padding: .3rem .6rem; /* kept micro values (optical) */
+  border-radius: var(--radius-md);
+  font-weight: 500;
+}
+
+/* === Links === */
+.offcanvas__link-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-6) 0 0; /* 1.5rem */
+}
+
+.offcanvas__link-item {
+  margin-bottom: var(--space-2); /* 0.5rem */
+}
+
+.offcanvas__link-item a {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--motion-fade);
+}
+
+.offcanvas__link-item a:hover {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}
+
+.disabled-link {
+  color: var(--color-border-secondary);
+  font-style: italic;
+  cursor: not-allowed;
+}
+
+/* === Responsive Tweaks === */
+@media (max-width: 768px) {
+  .offcanvas-media__thumb img {
+    width: 50px;
+    height: 35px;
+  }
+
+  .offcanvas__title {
+    font-size: 1.1rem;
+  }
+}

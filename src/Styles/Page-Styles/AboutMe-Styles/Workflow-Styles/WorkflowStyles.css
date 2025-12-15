@@ -1,0 +1,332 @@
+/**
+ * Workflow Steps Animation Styles
+ * 
+ * @description Staggered reveal animations for workflow steps with alternating left/right layout.
+ * Features custom underline animations, radial gradient background, and responsive slide-in effects.
+ * 
+ * Components:
+ * - #about-workflows-container: Outer wrapper
+ * - #workflow-steps-container: List container with pseudo-element background
+ * - .workflow-step: Individual step items
+ * - .workflow-step-header: Step heading wrapper
+ * - .workflow-step-h3: Heading with animated underline (::after)
+ * - .left/.right: Alignment modifiers
+ * 
+ * Animation System:
+ * - Stagger timing: --wf-stagger (70ms base)
+ * - Underline extra delay: --wf-underline-extra (60ms)
+ * - Step-specific delay: calc(--wf-stagger * --_i)
+ * - Opacity fade: var(--motion-fade, 220ms)
+ * - Transform slide: var(--motion-panel-enter, 360ms)
+ * 
+ * Custom Properties:
+ * - --wf-stagger: Base stagger interval (70ms)
+ * - --wf-underline-extra: Additional underline delay (60ms)
+ * - --wf-underline-move-dur: Underline slide duration (420ms)
+ * - --wf-underline-opacity-dur: Underline fade duration (140ms)
+ * - --wf-underline-opacity-advance: Underline opacity lead time (80ms)
+ * - --_i: Step index for stagger calculation
+ * - --_wf-x: Horizontal offset (0 mobile, ±160px desktop)
+ * - --_step-delay: Computed step delay
+ * - --_underline-delay: Computed underline delay
+ * 
+ * Initial State:
+ * - opacity: 0 (hidden)
+ * - transform: translate(var(--_wf-x), 12px) scale(.975)
+ * - --_wf-x: 0 on mobile
+ * - --_wf-x: -160px (.left on desktop)
+ * - --_wf-x: 160px (.right on desktop)
+ * 
+ * Revealed State (via JS):
+ * - opacity: 1 (visible)
+ * - transform: translate(0, 0) scale(1)
+ * - Animated with computed delays
+ * 
+ * Background Effect:
+ * - #workflow-steps-container::before pseudo-element
+ * - radial-gradient: 8% primary color at center
+ * - 80% width, 100% height
+ * - Centered with left: 50%, transform: translateX(-50%)
+ * - z-index: -1 (behind steps)
+ * 
+ * Underline Animation:
+ * - .workflow-step-h3::after pseudo-element
+ * - 2px height, 100% width
+ * - background: var(--gradient-brand-horizontal)
+ * - Initial: opacity 0, scaleX(0), transform-origin left
+ * - Revealed: opacity 1, scaleX(1)
+ * - Separate timing for opacity vs. transform
+ * 
+ * Layout:
+ * - .left steps: margin-right auto, align-self flex-start
+ * - .right steps: margin-left auto, align-self flex-end
+ * - Full width on mobile, offset on desktop
+ * - box-sizing: border-box
+ * - padding: 0.5rem, margin: 2rem 0
+ * 
+ * Typography:
+ * - .workflow-header h2: calc(1.775rem + 1vw)
+ * - .workflow-step-h3: calc(1.175rem + 0.9vw), font-weight 600
+ * - .workflow-transition: 1.2rem, font-weight 500
+ * - #workflow-desc: var(--font-size-lg)
+ * - p: line-height var(--line-height-loose), 1.1rem
+ * 
+ * Responsive Behavior:
+ * - Mobile (< 768px): No horizontal slide (--_wf-x: 0)
+ * - Desktop (≥ 768px): ±160px horizontal offset
+ * - Steps alternate left/right for visual rhythm
+ * 
+ * Accessibility:
+ * - list-style: none (semantic <ol> with custom styling)
+ * - Step index available via --_i for stagger calculation
+ * - Reduced motion not yet implemented (consider @media prefers-reduced-motion)
+ * 
+ * Performance:
+ * - transform and opacity animations (GPU accelerated)
+ * - will-change hints recommended for steps
+ * - Pseudo-element for background (avoids extra DOM)
+ * - Stagger delays prevent simultaneous animations
+ * 
+ * Browser Compatibility:
+ * - CSS custom properties: All modern browsers
+ * - color-mix(): Recent browsers (Safari 16.4+, Chrome 111+)
+ * - Gradient background-clip: Widely supported
+ * - scale() in transform: Universal support
+ * 
+ * @layer components
+ * @requires Motion tokens, color tokens, gradient definitions
+ */
+
+#about-workflows-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+#workflow-steps-container {
+  /* Ensure flex props take effect and pseudo-element positions correctly */
+  
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* Stagger tokens for steps & underline */
+  --wf-stagger: var(--motion-stagger-sm, 70ms);
+  --wf-underline-extra: var(--motion-stagger-xxs, 60ms);
+  /* Underline tuning: opacity pops sooner, movement slower */
+  --wf-underline-move-dur: var(--motion-duration-md, 420ms);
+  --wf-underline-opacity-dur: var(--motion-duration-sm, 140ms);
+  --wf-underline-opacity-advance: var(--motion-stagger-xxs, 80ms);
+}
+
+#workflow-steps-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 100%;
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%);
+  z-index: -1;
+}
+
+.workflow-header h2 {
+  font-size: calc(1.775rem + 1vw);
+}
+
+#workflow-desc{
+  font-size: var(--font-size-lg);
+  margin-top: 0.5rem;
+}
+
+.workflow-step {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0.5rem;
+  margin: 2rem 0;
+  opacity: 0;
+
+  /* Start with vertical + horizontal offset; horizontal set via side class */
+  --_wf-x: 0; /* default (mobile) no horizontal slide */
+  /* Stagger index -> applied to step delay and underline delay */
+  --_i: var(--_i, 0);
+  --_step-delay: calc(var(--wf-stagger, 70ms) );
+  --_underline-delay: calc(var(--wf-stagger, 70ms) + var(--wf-underline-extra, 60ms));
+  transform: translate(var(--_wf-x), 12px) scale(.975);
+  /* Fallbacks ensure animation still works if tokens are missing */
+  transition:
+    opacity var(--motion-fade, 220ms var(--ease-standard, cubic-bezier(.2,0,0,1))) var(--_step-delay),
+    transform var(--motion-panel-enter, 360ms var(--ease-emphasis, cubic-bezier(.2,0,0,1))) var(--_step-delay);
+
+    p{
+      line-height: var(--line-height-loose);
+      font-size: 1.1rem;
+    }
+}
+
+.workflow-step.left { margin-right: auto; margin-left: 0.25rem; align-self: flex-start; }
+.workflow-step.right { margin-left: auto; margin-right: 0.25rem; align-self: flex-end; }
+
+@media (min-width: 768px) {
+  .workflow-step.left { --_wf-x: -160px; }
+  .workflow-step.right { --_wf-x: 160px; }
+  /* Slight overshoot style could be added later if desired */
+}
+
+/* Header & underline animation */
+.workflow-step-header { position: relative; display: inline-block; }
+.workflow-step-h3 { font-size: calc(1.175rem + 0.9vw); margin-bottom: 0.5rem; position: relative; font-weight: 600; }
+.workflow-transition { font-size: 1.2rem; font-weight: 500; }
+
+/* We now create the decorative underline via ::after so markup does not need a .underline element */
+.workflow-step-h3::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px; width: 100%;
+  /* Gradient with sensible fallback */
+  background: var(--gradient-brand-horizontal, linear-gradient(90deg, var(--color-primary, #6cf) 0%, var(--color-accent, #f6c) 100%));
+  /* Start state: collapsed & shifted depending on side */
+  transform: translateX(var(--_underline-shift, 0)) scaleX(0);
+  transform-origin: var(--_underline-origin, left) center;
+  /* Robust transition with fallbacks + per-step delay */
+  transition:
+    transform var(--wf-underline-move-dur, 420ms) var(--ease-standard, cubic-bezier(.2,0,0,1)) var(--_underline-delay),
+    opacity var(--wf-underline-opacity-dur, 140ms) var(--ease-standard, cubic-bezier(.2,0,0,1)) max(0s, calc(var(--_underline-delay) - var(--wf-underline-opacity-advance, 80ms)));
+  opacity: 0;
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  will-change: transform, opacity, background-position;
+  pointer-events: none;
+}
+
+/* Legacy markup support: existing <div class="underline"/> inside .workflow-step-header */
+.workflow-step-header > .underline {
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px; width: 100%;
+  background: var(--gradient-brand-horizontal);
+  transform: translateX(var(--_underline-shift, 0)) scaleX(0);
+  transform-origin: var(--_underline-origin, left) center;
+  transition:
+    transform var(--wf-underline-move-dur, 420ms) var(--ease-standard, cubic-bezier(.2,0,0,1)) var(--_underline-delay),
+    opacity var(--wf-underline-opacity-dur, 140ms) var(--ease-standard, cubic-bezier(.2,0,0,1)) max(0s, calc(var(--_underline-delay) - var(--wf-underline-opacity-advance, 80ms)));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Side-dependent custom properties (desktop width also shares logic) */
+.workflow-step.left .workflow-step-h3::after {
+  --_underline-origin: left;
+  --_underline-shift: -16%; /* slide in from left */
+}
+.workflow-step.right .workflow-step-h3::after {
+  --_underline-origin: right;
+  --_underline-shift: 16%; /* slide in from right */
+}
+
+/* Animated entrance state (JS can toggle .is-visible when in view) */
+.workflow-step.is-visible { opacity: 1; transform: translate(0,0) scale(1); }
+.workflow-step.is-visible .workflow-step-h3::after,
+.workflow-step.is-visible .workflow-step-header > .underline {
+  transform: translateX(0) scaleX(1);
+  opacity: 1;
+}
+
+/* Safety: if the visible class is applied directly to the h3 (future variation) */
+.workflow-step-h3.is-visible::after { transform: translateX(0) scaleX(1); opacity: 1; }
+
+/* Active emphasis: thicker underline + glow + shimmer */
+@keyframes workflow-underline-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.workflow-step.is-active .workflow-step-h3::after {
+  height: 3px;
+  filter: drop-shadow(0 0 4px color-mix(in srgb,var(--color-primary) 70%, transparent));
+  /* Ensure underline is visible when active, even if .is-visible isn't present */
+  transform: translateX(0) scaleX(1);
+  opacity: 1;
+  animation: workflow-underline-shimmer 2.2s var(--ease-standard, cubic-bezier(.2,0,0,1)) infinite;
+}
+
+/* Fallback: allow shimmer on hover/focus to verify it works without JS toggling .is-active */
+.workflow-step:hover .workflow-step-h3::after,
+.workflow-step:focus-within .workflow-step-h3::after {
+  height: 1.5px;
+  animation: workflow-underline-shimmer 2.2s var(--ease-standard, cubic-bezier(.2,0,0,1)) infinite;
+}
+
+/* Mirror active-state visibility for legacy underline element */
+.workflow-step.is-active .workflow-step-header > .underline {
+  transform: translateX(0) scaleX(1);
+  opacity: 1;
+  animation: workflow-underline-shimmer 2.2s var(--ease-standard, cubic-bezier(.2,0,0,1)) infinite;
+}
+
+/* Mobile optimization: reduce slide distance so animation is subtler */
+@media (max-width: 640px) {
+  .workflow-step.left .workflow-step-h3::after { --_underline-shift: -8%; }
+  .workflow-step.right .workflow-step-h3::after { --_underline-shift: 8%; }
+}
+
+/* Sequential delay utility: pair by rows (1&2, 3&4, 5&6, 7&8, ...) */
+#workflow-steps-container > .workflow-step:nth-child(1),
+#workflow-steps-container > .workflow-step:nth-child(2) { --_i: 0; }
+#workflow-steps-container > .workflow-step:nth-child(3),
+#workflow-steps-container > .workflow-step:nth-child(4) { --_i: 1; }
+#workflow-steps-container > .workflow-step:nth-child(5),
+#workflow-steps-container > .workflow-step:nth-child(6) { --_i: 2; }
+#workflow-steps-container > .workflow-step:nth-child(7),
+#workflow-steps-container > .workflow-step:nth-child(8) { --_i: 3; }
+
+/* If steps are list items, ensure indexing only counts <li> siblings */
+#workflow-steps-container > li.workflow-step:nth-of-type(1),
+#workflow-steps-container > li.workflow-step:nth-of-type(2) { --_i: 0; }
+#workflow-steps-container > li.workflow-step:nth-of-type(3),
+#workflow-steps-container > li.workflow-step:nth-of-type(4) { --_i: 1; }
+#workflow-steps-container > li.workflow-step:nth-of-type(5),
+#workflow-steps-container > li.workflow-step:nth-of-type(6) { --_i: 2; }
+#workflow-steps-container > li.workflow-step:nth-of-type(7),
+#workflow-steps-container > li.workflow-step:nth-of-type(8) { --_i: 3; }
+
+/* Underline delay now derived from --wf-stagger and --wf-underline-extra */
+
+/* Keyframe accent pulse for active step (optional) */
+@keyframes workflow-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.0); } 50% { box-shadow: 0 0 0 4px color-mix(in srgb,var(--color-primary) 55%, transparent); } }
+.workflow-step.is-active { animation: workflow-pulse var(--motion-duration-lg) var(--ease-emphasis) 1; }
+
+/* Reduced-motion override intentionally removed per user preference */
+
+/* Accessibility: focus styles (keyboard only) */
+.workflow-step:focus {
+  outline: none;
+}
+
+.workflow-step:focus-visible {
+  outline: var(--shadow-focus-ring);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+@media (min-width: 768px) {
+  .workflow-step.left,
+  .workflow-step.right {
+    max-width: 48%;
+  }
+}
+
+

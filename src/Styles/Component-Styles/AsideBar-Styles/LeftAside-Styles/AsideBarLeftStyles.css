@@ -1,0 +1,587 @@
+/**
+ * Left Sidebar Navigation Styles
+ * 
+ * @description Fixed left navigation sidebar with glassmorphic background and responsive layout adjustments.
+ * Features blur effects, main content margin compensation, and mobile breakpoint handling.
+ * 
+ * Components:
+ * - .left-sidebar: Fixed sidebar container
+ * - .sidebar-background: Glassmorphic backdrop
+ * - .sidebar-logo: Top logo section
+ * - .sidebar-nav: Navigation links
+ * - Main content margin adjustments
+ * 
+ * Sidebar Container:
+ * - position: fixed, top: 0
+ * - height: 100vh (full viewport)
+ * - width: 80px (narrow column)
+ * - z-index: 1000 (above content)
+ * - display: flex, flex-direction: column
+ * - align-items: center
+ * - padding: 1rem 0
+ * - pointer-events: auto
+ * 
+ * Glassmorphic Background:
+ * - position: absolute, inset: 0
+ * - background: var(--color-background-secondary)
+ * - backdrop-filter: blur(8px)
+ * - -webkit-backdrop-filter: blur(8px) for Safari
+ * - border-right: 1px solid var(--color-border)
+ * - Frosted glass effect
+ * 
+ * Main Content Compensation:
+ * - main, .container-fluid-center: margin-left 100px
+ * - #home-container, #about-container: margin-left 100px
+ * - #skills-container, #portfolio-container: margin-left 100px
+ * - #contact-page-container: margin-left 100px
+ * - Prevents content overlap with fixed sidebar
+ * 
+ * Mobile Breakpoint (< 768px):
+ * - All content containers: margin-left 0
+ * - Sidebar hidden (mobile drawer replaces it)
+ * - Full-width content on small screens
+ * 
+ * Logo Section:
+ * - position: relative (likely for stacking)
+ * - At top of sidebar
+ * - Brand logo or icon
+ * - Interactive link to home
+ * 
+ * Layout Strategy:
+ * - Fixed sidebar on desktop
+ * - Content shifted right by 100px (80px width + 20px buffer)
+ * - Mobile: No sidebar, no margin shift
+ * - Responsive breakpoint at 768px
+ * 
+ * Accessibility:
+ * - pointer-events: auto (interactive)
+ * - Focus visible states on nav links
+ * - ARIA labels for icon-only navigation
+ * - Skip-to-content link support
+ * - Keyboard navigation
+ * 
+ * Performance:
+ * - backdrop-filter: May impact low-end devices
+ * - position: fixed removes from layout flow
+ * - Single media query for breakpoint
+ * - Efficient margin adjustments
+ * 
+ * Browser Compatibility:
+ * - backdrop-filter: All modern browsers
+ * - -webkit-backdrop-filter: Safari support
+ * - position: fixed: Universal support
+ * - Media queries: Universal support
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires Mobile navigation alternative, design tokens
+ */
+
+/* Left Sidebar - Modern glassmorphism design */
+.left-sidebar {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 80px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  pointer-events: auto;
+}
+
+/* Add left margin to main content containers */
+main,
+.container-fluid-center,
+#home-container,
+#about-container,
+#skills-container,
+#portfolio-container,
+#contact-page-container {
+  margin-left: 100px;
+}
+
+@media (max-width: 768px) {
+  main,
+  .container-fluid-center,
+  #home-container,
+  #about-container,
+  #skills-container,
+  #portfolio-container,
+  #contact-page-container {
+    margin-left: 0;
+  }
+}
+
+/* Glass background effect */
+.sidebar-background {
+  position: absolute;
+  inset: 0;
+  background: var(--color-background-secondary);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-right: 1px solid var(--color-border);
+}
+
+/* Logo at top */
+.sidebar-logo {
+  position: relative;
+  z-index: 10;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: auto;
+  padding: 0.25rem;
+  background: var(--color-background);
+  border-radius: 12px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.3s ease;
+}
+
+.sidebar-logo:hover {
+  transform: translateY(-4px) scale(1.1);
+  background: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
+}
+
+/* Active/click animation with bounce */
+.sidebar-logo:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.sidebar-logo .logo-svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  fill: var(--color-primary);
+  transition: fill 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-logo:hover .logo-svg {
+  transform: scale(1.05);
+}
+
+/* Centered Navigation - Starts at bottom, moves to top center on scroll */
+.sidebar-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 1001;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background:
+    color-mix(in oklab, canvas 42%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
+    0 10px 26px color-mix(in oklab, black 30%, transparent);
+}
+
+/* Scrolled state - smoothly slides to top */
+.sidebar-nav.scrolled {
+  bottom: calc(100vh - 6rem);
+  /* Stays centered horizontally */
+}
+
+/* Navigation Links - High contrast and readable */
+.sidebar-nav .nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Water-fill background effect on hover */
+.sidebar-nav .nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: var(--gradient-brand-horizontal);
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  z-index: 0;
+}
+
+/* Binary code effect for active link */
+.sidebar-nav .nav-link::after {
+  content: attr(aria-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sidebar-nav .nav-text {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover state - water fills from bottom */
+.sidebar-nav .nav-link:hover::before {
+  height: 100%;
+}
+
+.sidebar-nav .nav-link:hover .nav-text {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Click/active animation - quick scale down */
+.sidebar-nav .nav-link:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Active state - full gradient background */
+.sidebar-nav .nav-link.active {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.sidebar-nav .nav-link.active::before {
+  height: 100%;
+}
+
+.sidebar-nav .nav-link.active .nav-text {
+  color: #ffffff !important;
+}
+
+/* Footer section */
+.sidebar-footer {
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0 0 0;
+}
+
+/* Social Links in Sidebar */
+.sidebar-social-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.sidebar-social-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text);
+  font-size: 1.35rem;
+  border-radius: 12px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s ease,
+              background 0.3s ease,
+              box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Subtle gradient glow on hover using your brand colors */
+.sidebar-social-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-brand-horizontal);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.sidebar-social-icon i {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-social-icon:hover {
+  transform: translateY(-4px) scale(1.08);
+  color: #ffffff;
+  background: color-mix(in oklab, var(--color-primary) 15%, var(--color-background));
+  box-shadow: 0 8px 20px color-mix(in oklab, var(--color-primary) 20%, transparent);
+}
+
+.sidebar-social-icon:hover::before {
+  opacity: 0.85;
+}
+
+.sidebar-social-icon:hover i {
+  transform: scale(1.12);
+}
+
+/* Active/click state */
+.sidebar-social-icon:active {
+  transform: translateY(-2px) scale(1.02);
+  transition: transform 0.1s ease;
+}
+
+/* Focus states for accessibility */
+.sidebar-social-icon:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* Theme Toggle Container - Collapsible with glassy brand style */
+.sidebar-theme-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
+
+.sidebar-theme-handle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
+  background: var(--tt-grad-handle);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, currentColor 10%, transparent) inset,
+    0 12px 28px color-mix(in oklab, black 22%, transparent),
+    0 1px 0 color-mix(in oklab, white 10%, transparent) inset;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-sm, 180ms) cubic-bezier(.4,.6,.3,1),
+              box-shadow 0.3s ease,
+              opacity 0.18s ease;
+}
+
+.theme-handle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-handle-icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-theme-handle:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent) inset,
+    0 0 10px color-mix(in srgb, var(--color-primary) 16%, transparent),
+    0 14px 32px color-mix(in oklab, black 40%, transparent);
+}
+
+.sidebar-theme-container[data-expanded="true"] .theme-handle-icon {
+  transform: rotate(90deg);
+}
+
+.sidebar-theme-container[data-expanded="false"] .theme-handle-icon {
+  transform: rotate(0deg);
+}
+
+.sidebar-theme-handle:active {
+  transform: translateY(0) scale(1);
+  transition: transform 0.1s ease;
+}
+
+.sidebar-theme-handle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-primary),
+    0 0 0 4px color-mix(in oklab, var(--color-primary) 20%, transparent),
+    0 12px 28px color-mix(in oklab, black 22%, transparent);
+}
+
+/* Theme Toggle Content - Slides out to the right with glassy style */
+.sidebar-theme-content {
+  position: absolute;
+  left: calc(100% + 1rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1002;
+  animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translate(-12px, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+.sidebar-theme-content .theme-segmented {
+  width: auto;
+  min-width: 180px;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+  border-radius: 14px;
+  background:
+    color-mix(in oklab, canvas 42%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  padding: 0.5rem;
+  box-shadow: 
+    0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
+    0 10px 26px color-mix(in oklab, black 30%, transparent);
+}
+
+/* Dark mode adjustments */
+html[data-theme="dark"] .sidebar-theme-handle {
+  border-color: color-mix(in oklab, var(--color-primary) 45%, transparent);
+  background: var(--tt-grad-handle);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, currentColor 12%, transparent) inset,
+    0 12px 28px color-mix(in oklab, black 30%, transparent),
+    0 1px 0 color-mix(in oklab, white 12%, transparent) inset;
+}
+
+html[data-theme="dark"] .sidebar-theme-handle:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-primary) 35%, transparent) inset,
+    0 0 12px color-mix(in srgb, var(--color-primary) 22%, transparent),
+    0 16px 36px color-mix(in oklab, black 55%, transparent);
+}
+
+html[data-theme="dark"] .sidebar-theme-content .theme-segmented {
+  background:
+    color-mix(in oklab, #0b0d12 80%, transparent),
+    color-mix(in oklab, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, white 10%, transparent) inset,
+    0 14px 32px color-mix(in oklab, black 50%, transparent);
+}
+
+/* Contrast mode adjustments */
+[data-theme='contrast'] .sidebar-theme-handle {
+  border-color: #ffffff;
+  background: var(--tt-grad-handle);
+}
+
+[data-theme='contrast'] .sidebar-theme-content .theme-segmented {
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, canvas 72%, transparent) 0%,
+      color-mix(in oklab, canvas 44%, transparent) 100%
+    );
+  border-color: #ffffff;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, white 22%, transparent) inset,
+    0 14px 34px color-mix(in oklab, black 40%, transparent);
+}
+
+/* Responsive - Hide sidebar and navbar on mobile */
+@media (max-width: 768px) {
+  .left-sidebar,
+  .sidebar-nav {
+    display: none;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .left-sidebar {
+    width: 64px;
+  }
+  
+  .sidebar-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .nav-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nav-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Accessibility - Focus states */
+.sidebar-nav .nav-link:focus-visible {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+.sidebar-logo:focus-visible {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Smooth transitions */
+.left-sidebar * {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}

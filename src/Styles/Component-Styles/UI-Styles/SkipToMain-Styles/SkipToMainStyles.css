@@ -1,0 +1,64 @@
+/**
+ * Skip to Main Content Styles
+ * 
+ * @description Accessibility component allowing keyboard users to skip navigation
+ * and jump directly to main content. Hidden by default, appears on focus.
+ * 
+ * Behavior:
+ * - Hidden off-screen (top: -50px) by default
+ * - Slides into view (top: 0) when focused via keyboard
+ * - Positioned at top-left corner
+ * - Highest z-index (9999) to appear above all content
+ * 
+ * Visual Design:
+ * - Background: Accent color (--color-accent)
+ * - Text: Surface color for high contrast
+ * - Padding: --space-2 vertical, --space-4 horizontal
+ * - Border-radius: Bottom-right corner only (0 0 radius 0)
+ * - Font-weight: 600 for emphasis
+ * 
+ * Interaction:
+ * - Smooth transition: 0.2s ease-in-out on top position
+ * - Focus outline: Primary color with offset
+ * - Tab-accessible only (not visible to mouse users)
+ * 
+ * Accessibility:
+ * - WCAG 2.4.1 Level A requirement (Bypass Blocks)
+ * - First focusable element in tab order
+ * - Clear, descriptive text ("Skip to main content")
+ * - High contrast colors for visibility
+ * - Focus-visible indicator
+ * 
+ * Usage:
+ * - Place at top of page, before navigation
+ * - Link href should target main content area ID
+ * - Automatically hidden until keyboard focus
+ * 
+ * Browser Compatibility:
+ * - All modern browsers
+ * - Uses standard position and transition properties
+ * - No advanced CSS features required
+ * 
+ * @layer components
+ */
+
+/* Skip to main content link for keyboard navigation */
+.skip-to-main {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 var(--radius-md) 0;
+  z-index: 9999;
+  transition: top 0.2s ease-in-out;
+}
+
+.skip-to-main:focus {
+  top: 0;
+  outline: var(--outline-width-default) solid var(--color-primary);
+  outline-offset: var(--outline-offset-sm);
+}

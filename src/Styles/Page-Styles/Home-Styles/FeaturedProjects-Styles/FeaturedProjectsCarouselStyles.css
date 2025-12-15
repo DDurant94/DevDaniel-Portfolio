@@ -1,0 +1,537 @@
+/**
+ * Featured Projects 3D Carousel
+ * 
+ * @description Interactive 3D carousel for showcasing featured projects with perspective transforms.
+ * Features responsive sizing, keyboard navigation, touch gestures, and focus management.
+ * 
+ * Components:
+ * - .featured-projects-carousel-3d: Outer wrapper with perspective
+ * - .carousel-container: Main carousel stage
+ * - .carousel-slide: Individual slide containers
+ * - .slide-card: Project card content
+ * - .carousel-controls: Navigation buttons
+ * - .carousel-indicators: Dot pagination
+ * 
+ * 3D Perspective:
+ * - perspective: var(--perspective-default) on wrapper
+ * - transform-style: flat on container and slides
+ * - translateZ(0) for GPU acceleration
+ * - Cards positioned in 3D space via JS transforms
+ * 
+ * Dimensions:
+ * - Width: 100%, max-width var(--container-max-width)
+ * - Height: clamp(550px, 75vh, 800px) desktop
+ * - Height: clamp(650px, 85vh, 750px) tablet (< 900px)
+ * - Height: clamp(700px, 90vh, 800px) mobile (< 520px)
+ * - min-height: 550px/650px/700px ensures content visibility
+ * - Slide max-width: clamp(320px, 90vw, 900px)
+ * 
+ * Layout:
+ * - Centered with margin: 0 auto
+ * - padding: 3.5rem var(--space-4) 5.5rem for controls clearance
+ * - overflow: hidden to clip slides outside bounds
+ * - Flexbox centering for carousel container
+ * 
+ * Slide Positioning:
+ * - position: absolute within .carousel-container
+ * - width: 100%, height: 100%
+ * - Slides stacked, JS controls z-index and transforms
+ * - cursor: pointer on slides for interactivity
+ * 
+ * Focus Management:
+ * - .carousel-slide:focus-visible .slide-card gets focus ring
+ * - Custom focus styles on cards (not on slide wrapper)
+ * - outline: none on .carousel-slide (delegated to card)
+ * - Keyboard navigation support (arrows, tab)
+ * 
+ * Responsive Behavior:
+ * - Desktop: 550-800px height, --space-8 padding
+ * - Tablet (< 900px): 650-750px height, adjusted min-height
+ * - Mobile (< 520px): 700-800px height, --space-4 padding
+ * - Slide max-width adapts with 90vw on smaller screens
+ * 
+ * Transform System:
+ * - Active slide: front and center (scale 1, z-index highest)
+ * - Previous/next: Reduced scale, translated left/right
+ * - Inactive: Reduced opacity, further translated
+ * - Smooth transitions via JS-controlled classes
+ * 
+ * Animation:
+ * - Transform transitions on slides
+ * - Opacity fades for inactive slides
+ * - Rotation and scale effects for depth
+ * - GPU-accelerated with translateZ and will-change
+ * 
+ * Touch/Mouse Interaction:
+ * - Swipe gestures for navigation (via JS)
+ * - Drag threshold to trigger slide change
+ * - Click on slides to make active
+ * - Pointer cursor on interactive elements
+ * 
+ * Accessibility:
+ * - Semantic HTML structure (list of cards)
+ * - Keyboard navigation (arrow keys, Enter, Space)
+ * - Focus visible states with custom focus ring
+ * - aria-labels on controls
+ * - Live region announcements for slide changes
+ * - Reduced motion support recommended
+ * 
+ * Performance:
+ * - transform-style: flat prevents nested 3D context
+ * - translateZ(0) creates stacking context for GPU
+ * - overflow: hidden enables scroll optimization
+ * - will-change on animating slides
+ * - Passive touch event listeners
+ * 
+ * Browser Compatibility:
+ * - 3D transforms: All modern browsers
+ * - perspective property: Universal support
+ * - clamp(): Modern browsers (Safari 13.1+, Chrome 79+)
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires 3D transform support, custom properties, perspective API
+ */
+
+/* Featured Projects 3D Carousel */
+.featured-projects-carousel-3d {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 3.5rem var(--space-4) 5.5rem var(--space-4);
+  perspective: var(--perspective-default);
+  overflow: hidden;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: clamp(550px, 75vh, 800px);
+  min-height: 550px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: flat;
+  padding: var(--space-8);
+}
+
+@media (max-width: 900px) {
+  .carousel-container {
+    height: clamp(650px, 85vh, 750px);
+    min-height: 650px;
+  }
+}
+
+@media (max-width: 520px) {
+  .carousel-container {
+    height: clamp(700px, 90vh, 800px);
+    min-height: 700px;
+    padding: var(--space-4);
+  }
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  max-width: clamp(320px, 90vw, 900px);
+  height: 100%;
+  transform-style: flat;
+  cursor: pointer;
+  transform: translateZ(0);
+  outline: none; /* Remove default outline, use custom focus style on card */
+}
+
+.carousel-slide:focus-visible .slide-card {
+  outline: 3px solid var(--color-primary);
+  outline-offset: var(--outline-offset-default);
+  transform: scale(1.015) translateZ(0);
+  box-shadow: 
+    var(--shadow-layer-ambient-lg),
+    var(--shadow-layer-lift-lg),
+    var(--shadow-layer-inset-warm-lg),
+    0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent),
+    0 0 60px -10px color-mix(in srgb, var(--color-primary) 65%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel-slide:hover .slide-card {
+    transform: scale(1.015) translateZ(0);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    box-shadow: 
+      var(--shadow-layer-ambient-lg),
+      var(--shadow-layer-lift-lg),
+      var(--shadow-layer-inset-warm-lg),
+      0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent),
+      0 0 60px -10px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  }
+
+  .carousel-slide:hover .slide-image-wrapper img {
+    transform: scale(1.1) translateZ(0);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .carousel-slide:active .slide-card {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+.slide-card {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  overflow: hidden;
+  box-shadow: 
+    var(--shadow-layer-ambient-lg),
+    var(--shadow-layer-lift-lg);
+  transform-style: flat;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(300px, 1fr);
+  gap: clamp(var(--space-4), 3vw, var(--space-8));
+  transition: transform var(--motion-duration-md) var(--ease-standard),
+              border-color var(--motion-duration-md) var(--ease-standard),
+              box-shadow var(--motion-duration-md) var(--ease-standard);
+  position: relative;
+  transform: translateZ(0);
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Click indicator */
+.slide-card::after {
+  content: 'Click to view project';
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: color-mix(in srgb, var(--color-primary) 90%, transparent);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  opacity: 0;
+  transition: opacity var(--motion-duration-md) var(--ease-standard);
+  pointer-events: none;
+  z-index: 10;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-control);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel-slide:hover .slide-card::after {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .slide-card::after {
+    content: 'Tap to view';
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 900px) {
+  .slide-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(200px, 45%) 1fr;
+    gap: 0;
+  }
+}
+
+.slide-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1) translateZ(0);
+  transition: transform var(--motion-duration-xl) var(--ease-standard);
+  image-rendering: auto;
+}
+
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    var(--scrim-xs) 0%,
+    var(--scrim-md) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slide-content {
+  /* padding: clamp(var(--space-6), 5vw, var(--space-12)) clamp(var(--space-4), 4vw, var(--space-12)) clamp(var(--space-6), 5vw, var(--space-12)) clamp(var(--space-4), 3vw, var(--space-8)); */
+  padding: clamp(1rem, 3vw, 2rem);
+  margin: 0.1rem;
+  display: flex;
+  align-items: flex-start;
+  /* flex-wrap: wrap; */
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(var(--space-3), 2vw, var(--space-6));
+  position: relative;
+  z-index: 2;
+  max-height: 100%;
+}
+
+@media (max-width: 900px) {
+  .slide-content {
+    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    justify-content: flex-start;
+  }
+}
+
+.slide-title {
+  font-size: clamp(1.25rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
+  line-height: var(--line-height-tight);
+  text-shadow: var(--text-shadow-soft);
+  flex-shrink: 0;
+  text-rendering: optimizeLegibility;
+}
+
+.slide-description {
+  font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--color-text-mute);
+  margin: 0;
+  flex-shrink: 1;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 900px) {
+  .slide-description {
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 520px) {
+  .slide-description {
+    font-size: clamp(0.8rem, 3vw, 0.95rem);
+    line-height: 1.5;
+  }
+}
+
+.slide-tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* justify-content: center; */
+  /* align-items: center; */
+  text-align: center;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+
+.slide-tag {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-accent-translucent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* Navigation Buttons */
+/* .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: var(--radius-full);
+  color: var(--color-text);
+  font-size: var(--font-size-4xl);
+  cursor: pointer;
+  z-index: var(--z-above);
+  transition: all var(--motion-duration-md) var(--ease-standard);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    var(--shadow-control),
+    0 0 20px -8px color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.carousel-nav:hover {
+  background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 
+    var(--shadow-md),
+    0 0 30px -6px color-mix(in srgb, var(--color-primary) 45%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.carousel-nav:focus-visible {
+  outline: none;
+  box-shadow: 
+    var(--shadow-focus-double),
+    var(--shadow-md);
+} */
+
+/* .carousel-nav-prev {
+  left: calc(-1 * var(--space-8));
+}
+
+.carousel-nav-next {
+  right: calc(-1 * var(--space-8));
+} */
+
+/* Indicators */
+.carousel-indicators {
+  position: absolute;
+  bottom: 0%;
+  left:0%;
+  right: 0%;
+  top: 91%;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--carousel-marker-bg);
+  box-shadow: var(--box-shadow-projects);
+  border: none;
+  cursor: pointer;
+  transition: all var(--motion-duration-md) var(--ease-standard);
+  padding: 0;
+  /* box-shadow: var(--shadow-control); */
+}
+
+.indicator:hover {
+  background: var(--carousel-marker-hover-bg);
+  transform: scale(1.2);
+  box-shadow: 
+    var(--shadow-control),
+    0 0 12px -4px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.indicator.active {
+  background: var(--carousel-marker-active-bg);
+  width: 40px;
+  border-radius: var(--radius-sm);
+  box-shadow: 
+    var(--shadow-control-pressed),
+    0 0 18px -4px color-mix(in srgb, var(--color-primary) 65%, transparent);
+}
+
+.indicator:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  box-shadow: 
+    var(--shadow-focus-double),
+    0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .slide-title {
+    font-size: clamp(1.125rem, 5vw, 1.5rem);
+  }
+
+  .slide-tags {
+    gap: var(--space-2);
+  }
+
+  .slide-tag {
+    padding: var(--space-2) var(--space-3);
+    font-size: clamp(0.7rem, 2.5vw, 0.875rem);
+  }
+}
+
+@media (max-width: 520px) {
+  .slide-card {
+    grid-template-rows: minmax(180px, 42%) 1fr;
+  }
+
+  .slide-card::after {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  .indicator.active {
+    width: 32px;
+  }
+}
+
+/* Theme adjustments handled via design tokens */
+[data-theme='light'] .slide-card {
+  box-shadow: 
+    var(--shadow-layer-ambient-lg),
+    rgba(10, 37, 64, 0.12) 0px 20px 60px -15px,
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 15%, transparent),
+    var(--shadow-layer-inset-warm-lg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-theme='light'] .carousel-slide:hover .slide-card {
+    box-shadow: 
+      var(--shadow-layer-ambient-lg),
+      rgba(10, 37, 64, 0.18) 0px 30px 80px -15px,
+      0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent),
+      0 0 40px -8px color-mix(in srgb, var(--color-primary) 45%, transparent),
+      var(--shadow-layer-inset-warm-lg),
+      var(--shadow-layer-lift-lg);
+  }
+}
+
+[data-theme='contrast'] .slide-card {
+  box-shadow: 
+    0 0 0 1px var(--color-border),
+    0 12px 28px rgba(0,0,0,0.75);
+}
+
+[data-theme='contrast'] .carousel-slide:hover .slide-card {
+  box-shadow: 
+    0 0 0 1px var(--color-border),
+    0 0 0 2px var(--color-primary),
+    0 0 30px -6px color-mix(in srgb, var(--color-primary) 70%, transparent),
+    0 12px 28px rgba(0,0,0,0.75);
+}

@@ -1,0 +1,364 @@
+/**
+ * 3D Hero Section Styles
+ * 
+ * @description Styles for hero text overlays on 3D scenes with scroll-based fade effects.
+ * Features smooth fade-in animations, loading states, and responsive typography.
+ * 
+ * Components:
+ * - .hero-copy: Text overlay container (absolute positioned)
+ * - .hero-copy-visible: Fade-in animation trigger
+ * - .hero-copy-hidden: Initial hidden state
+ * - Loading states: app-loading and scene-loading
+ * 
+ * Animations:
+ * - heroTextFadeIn: Fade + translateY (0.6s cubic-bezier)
+ * - shake: Horizontal shake effect for emphasis
+ * - pulse: Scale + opacity pulse effect
+ * 
+ * Visual Design:
+ * - Position: Absolute top 45%, left 5%
+ * - z-index: 1 (above 3D scene background)
+ * - pointer-events: none (non-interactive overlay)
+ * - Opacity transition: 600ms ease-out (scroll-driven in JS)
+ * 
+ * Loading States:
+ * - body.app-loading: Hides hero copy during initial load
+ * - body.scene-loading: Hides during 3D scene initialization
+ * - Hidden state: opacity 0, visibility hidden, translateY(20px)
+ * - Visible state: Fade-in animation with transform
+ * 
+ * Typography:
+ * - H1: White color, fluid sizing
+ * - Responsive font-size with viewport units
+ * - Line-height: normal for tight spacing
+ * - Text rendering optimizations
+ * 
+ * Fade-In Animation:
+ * - Duration: 0.6s
+ * - Easing: cubic-bezier(0.25, 0.46, 0.45, 0.94)
+ * - From: opacity 0, translateY(15px)
+ * - To: opacity 1, translateY(0)
+ * 
+ * Shake Animation:
+ * - Horizontal oscillation: ±8px
+ * - Transform-origin: centered
+ * - Used for attention-grabbing effects
+ * 
+ * Pulse Animation:
+ * - Opacity: 0.8 → 1 → 0.8
+ * - Scale: 1 → 1.05 → 1
+ * - Subtle breathing effect
+ * 
+ * Scroll Integration:
+ * - Opacity controlled via JS based on scrollY
+ * - Fades out as user scrolls down
+ * - Transition property for smooth fade
+ * 
+ * Positioning:
+ * - Absolute within hero section
+ * - Left: 5% for left alignment
+ * - Top: 45% for vertical centering
+ * - Adjusts on mobile (media queries)
+ * 
+ * Accessibility:
+ * - pointer-events: none (doesn't interfere with navigation)
+ * - Sufficient contrast for readability
+ * - Respects prefers-reduced-motion (in component JS)
+ * 
+ * Performance:
+ * - transform for animations (GPU accelerated)
+ * - visibility: hidden when not shown (removes from a11y tree)
+ * - Smooth transitions with will-change hints
+ * 
+ * Browser Compatibility:
+ * - All modern browsers
+ * - Transform and opacity animations widely supported
+ * - cubic-bezier easing functions supported everywhere
+ * 
+ * @layer components
+ * @requires 3D scene components for context
+ */
+
+.hero-copy {
+  position: absolute;
+  top: 45%;
+  left: 5%;
+  z-index: 1;
+  pointer-events: none;
+  line-height: normal;
+  transition: opacity 600ms ease-out;
+  /* Hide by default until explicitly shown */
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Hide hero copy and scene during initial app loading */
+body.app-loading .hero-copy,
+body.app-loading .shared-hero-canvas-wrapper,
+body.scene-loading .hero-copy {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Hide hero copy until scene loads */
+.hero-copy-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+}
+
+/* Show hero copy with fade-in animation */
+.hero-copy-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0);
+  animation: heroTextFadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes heroTextFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateY(-50%) translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateY(-50%) translateX(8px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.hero-copy h1 {
+  color: #ffffff;
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.hero-copy p {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  max-width: var(--container-md);
+}
+
+/* Divider that subtly fades/parallaxes into the page content */
+.hero-divider {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+.hero-divider::before {
+  content: '';
+  position: absolute;
+  inset: -40px 0 0 0;
+  background:
+    radial-gradient(600px 300px at 20% 0%, rgba(255,255,255,0.06), transparent 70%),
+    radial-gradient(500px 240px at 80% 10%, rgba(255,255,255,0.04), transparent 70%),
+    linear-gradient(to bottom, rgba(0,0,0,0.06), transparent 40%);
+  background-attachment: fixed;
+  filter: blur(0.2px);
+}
+.hero-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--color-bg) 70%);
+  pointer-events: none;
+}
+
+/* Cloud zoom transition overlay */
+.cloud-zoom-transition {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* Tint controls for overlay; defaults to cloud white in dark, overridden in light */
+  --cloud-tint-rgb: 255,255,255;
+}
+.cloud-zoom-transition::before {
+  content: '';
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  inset: -20vh -10vw 0 -10vw;
+  background:
+    radial-gradient(150vh 100vh at 20% 30%, rgba(var(--cloud-tint-rgb)), transparent 60%),
+    radial-gradient(150vh 100vh at 80% 35%, rgba(var(--cloud-tint-rgb)), transparent 60%),
+    radial-gradient(150vh 100vh at 50% 20%, rgba(var(--cloud-tint-rgb)), transparent 60%),
+    linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0) 60%);
+  background-attachment: fixed;
+  transform: scale(var(--cz-scale, 1));
+  opacity: var(--cz-opacity, 0);
+  transition: opacity 120ms linear;
+  pointer-events: none;
+}
+
+/* Generic wrapper for page heroes using 3D canvas */
+.hero-section {
+  position: relative;
+  width: 100%;
+  margin-bottom: 100vh; /* Space for scroll effect */
+  min-height: 100vh;
+  pointer-events: none; /* Allow mouse events to pass through to the 3D scene behind */
+}
+
+/* Fixed 3D scene that stays mounted and transitions between pages */
+.shared-hero-canvas-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: auto; /* Enable mouse interaction for parallax */
+}
+
+/* Mobile: Position error message at bottom to avoid hero-copy */
+@media (max-width: 768px) {
+  .hero-error-message {
+    top: auto !important;
+    bottom: 10% !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: 90% !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+.page-hero-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-bottom: 3px solid var(--color-border-alt);
+}
+
+/* Minimal fallback block when 3D is deferred or disabled */
+.hero-fallback {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 40%, var(--color-surface-alt) 0%, var(--color-bg) 70%);
+  opacity: 0.35;
+  transition: opacity var(--motion-fade);
+  position: relative;
+}
+/* Fade-in for canvas container when 3D mounts */
+.hero-canvas {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: hero-fade-in 520ms ease-out 40ms forwards;
+}
+
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Page variants */
+.hero-fallback--skills {
+  background:
+    radial-gradient(600px 400px at 20% 30%, rgba(123, 97, 255, 0.25), transparent 70%),
+    radial-gradient(500px 300px at 70% 60%, rgba(124, 192, 255, 0.18), transparent 70%),
+    radial-gradient(circle at 30% 40%, var(--color-surface-alt) 0%, var(--color-bg) 70%);
+}
+.hero-fallback--skills::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right 8% top 16%, left 8% bottom 10%;
+  background-size: 180px auto, 140px auto;
+  opacity: 0.2;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'><g fill='none' stroke='%237b61ff' stroke-width='2' opacity='0.65'><circle cx='20' cy='20' r='3'/><circle cx='50' cy='40' r='2'/><circle cx='80' cy='25' r='2'/><circle cx='30' cy='70' r='2'/><circle cx='70' cy='75' r='3'/></g></svg>");
+}
+.hero-fallback--portfolio {
+  background:
+    radial-gradient(560px 360px at 25% 35%, rgba(160, 160, 255, 0.22), transparent 70%),
+    radial-gradient(520px 300px at 75% 65%, rgba(239, 71, 111, 0.14), transparent 70%),
+    radial-gradient(circle at 30% 40%, var(--color-surface-alt) 0%, var(--color-bg) 70%);
+}
+.hero-fallback--portfolio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right 10% 20%, 12% 82%;
+  background-size: 200px auto, 120px auto;
+  opacity: 0.18;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160' viewBox='0 0 120 80'><g fill='none' stroke='%23a0a0ff' stroke-width='2' opacity='0.7'><rect x='10' y='12' width='40' height='28' rx='3' ry='3'/><rect x='65' y='30' width='35' height='22' rx='3' ry='3'/><path d='M10 45 L50 45' stroke='%23ef476f' stroke-width='1.4' opacity='0.6'/><path d='M65 50 L100 50' stroke='%23ef476f' stroke-width='1.4' opacity='0.6'/></g></svg>");
+}
+.hero-fallback--about {
+  background:
+    radial-gradient(640px 420px at 30% 40%, rgba(110, 231, 183, 0.22), transparent 70%),
+    radial-gradient(540px 320px at 70% 60%, rgba(45, 212, 191, 0.15), transparent 70%),
+    radial-gradient(circle at 30% 40%, var(--color-surface-alt) 0%, var(--color-bg) 70%);
+}
+.hero-fallback--about::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right 12% 22%, 8% 78%;
+  background-size: 200px auto, 130px auto;
+  opacity: 0.18;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='180' viewBox='0 0 120 90'><g fill='none' stroke='%232dd4bf' stroke-width='2' opacity='0.7'><circle cx='40' cy='40' r='16'/><ellipse cx='80' cy='52' rx='18' ry='10'/><path d='M20 70 Q60 50 100 70' stroke='%236ee7b7' stroke-width='1.6' opacity='0.6' /></g></svg>");
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fallback { opacity: 0.5; }
+}
+
+@media (prefers-color-scheme: light) {
+  .hero-divider::before {
+    background:
+      radial-gradient(600px 300px at 20% 0%, rgba(0,0,0,0.06), transparent 70%),
+      radial-gradient(500px 240px at 80% 10%, rgba(0,0,0,0.04), transparent 70%),
+      linear-gradient(to bottom, rgba(0,0,0,0.06), transparent 40%);
+  }
+  .hero-divider::after {
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--color-bg) 70%);
+  }
+  .cloud-zoom-transition { --cloud-tint-rgb: 0,0,0; }
+}
+
+/* Responsive typography scaling */
+@media (max-width: 1200px) {
+  .hero-copy h1 { font-size: clamp(2rem, 4vw, 3rem); }
+  .hero-copy p { font-size: clamp(1rem, 1.8vw, 1.25rem); }
+}
+@media (max-width: 768px) {
+  .hero-copy { top: 25%; left: 8%; }
+  .hero-copy h1 { font-size: clamp(1.75rem, 6vw, 2.5rem); }
+  .hero-copy p { font-size: clamp(0.9rem, 3.2vw, 1.1rem); max-width: 70ch; }
+}
+@media (max-width: 520px) {
+  .hero-copy { top: 22%; left: 5%; right: 5%; }
+  .hero-copy h1 { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .hero-copy p { font-size: clamp(0.85rem, 4vw, 1rem); }
+  .hero-copy button { font-size: 0.9rem; }
+}

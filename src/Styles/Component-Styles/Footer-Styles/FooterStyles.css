@@ -1,0 +1,255 @@
+/**
+ * Footer Component Styles
+ * 
+ * @description Modern footer with social links, copyright, and glass reflection effects.
+ * Features responsive layout, icon animations, and theme-aware styling.
+ * 
+ * Sections:
+ * - Social Links: Icon grid with hover animations and reflection
+ * - Copyright: Legal text with links
+ * - Attribution: Optional credits section
+ * 
+ * Layout:
+ * - Desktop: Width calc(100% - 100px), margin-left 90px
+ * - Mobile (≤768px): Full width, no margin
+ * - Max-width: 1200px centered
+ * - Flexbox column layout with 2.5rem gap
+ * 
+ * Social Links:
+ * - Flex wrap grid with var(--space-8) gap
+ * - Icons: Fluid size (1.1rem + 0.6vw)
+ * - Color: Warning color (--color-warning)
+ * - Hover: Scale 1.12 transform
+ * - Glass reflection: -webkit-box-reflect below -8px
+ * 
+ * Visual Effects:
+ * - Top border: 1px with primary color at 15% opacity (color-mix)
+ * - Icon reflection: Linear gradient fade effect
+ * - Smooth transitions: Uses --motion-scale and --motion-fade tokens
+ * - Cubic-bezier easing: (0.4, 0, 0.2, 1)
+ * 
+ * Spacing:
+ * - Top margin: 4rem
+ * - Padding: 3rem 2rem 2rem
+ * - Content gap: 2.5rem
+ * - Icon gap: var(--space-8)
+ * 
+ * Accessibility:
+ * - Focus-visible states match hover
+ * - Semantic HTML structure
+ * - Proper link contrast
+ * - Icon alt text in component
+ * 
+ * Browser Compatibility:
+ * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+ * - -webkit-box-reflect: Chrome/Safari only (progressive enhancement)
+ * - color-mix(): Chrome 111+, Safari 16.2+, Firefox 113+ (fallback available)
+ * - Flexbox wrap (IE11 not supported)
+ * 
+ * Theme Support:
+ * - Uses semantic color tokens (--color-primary, --color-warning)
+ * - Adapts to light/dark/contrast themes
+ * - Border opacity adjusts with theme
+ * 
+ * @layer components
+ */
+
+/* ========== MODERN FOOTER STYLES ========== */
+
+.footer-container {
+  width: calc(100% - 100px);
+  margin-left: 90px;
+  margin-top: 4rem;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+#footer {
+  position: relative;
+  padding: 3rem 2rem 2rem;
+  border-top: 1px solid color-mix(in oklab, var(--color-primary) 15%, transparent);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ========== SOCIAL LINKS ========== */
+#footer-socials-container {
+  display: flex;
+  justify-content: center;
+}
+
+#footer-social-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  -webkit-box-reflect: below -8px linear-gradient(transparent, rgba(0,0,0,0.07), rgba(255,255,255,0.42));
+}
+
+.social-icon {
+  margin: 0;
+  padding: 0;
+  font-size: calc(1.1rem + 0.6vw);
+  transition: transform var(--motion-scale), color var(--motion-fade);
+}
+
+.social-icon i {
+  color: var(--color-warning);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.social-icon a:hover i,
+.social-icon a:focus-visible i {
+  transform: scale(1.12);
+  color: var(--color-accent);
+}
+
+.social-icon a:focus-visible {
+  outline: var(--outline-width-default) solid var(--color-primary);
+  outline-offset: var(--outline-offset-default);
+  border-radius: var(--radius-sm);
+}
+
+/* ========== RESUME DOWNLOAD ========== */
+.footer-resume {
+  display: flex;
+  justify-content: center;
+}
+
+.footer-resume-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-text);
+  text-decoration: none;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 25%, transparent);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.footer-resume-button i {
+  font-size: 1rem;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-resume-button:hover,
+.footer-resume-button:focus-visible {
+  background: color-mix(in oklab, var(--color-primary) 20%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--color-primary) 20%, transparent);
+}
+
+.footer-resume-button:hover i {
+  transform: translateY(2px);
+}
+
+.footer-resume-button:focus-visible {
+  outline: var(--outline-width-default) solid var(--color-primary);
+  outline-offset: var(--outline-offset-sm);
+}
+
+/* ========== FOOTER INFO ========== */
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in oklab, var(--color-border) 50%, transparent);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-email {
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.footer-email::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-email:hover,
+.footer-email:focus-visible {
+  color: var(--color-accent);
+  background: color-mix(in oklab, var(--color-primary) 8%, transparent);
+}
+
+.footer-email:hover::after,
+.footer-email:focus-visible::after {
+  width: 100%;
+  left: 0;
+  background: var(--color-accent);
+}
+
+.footer-email:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.footer-copyright {
+  text-align: center;
+}
+
+.footer-copyright p {
+  color: var(--color-text-soft);
+  font-size: 0.875rem;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  #footer {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .footer-content {
+    gap: 2rem;
+  }
+
+  .footer-info {
+    gap: 0.75rem;
+  }
+
+  .footer-email {
+    font-size: 0.9rem;
+  }
+}

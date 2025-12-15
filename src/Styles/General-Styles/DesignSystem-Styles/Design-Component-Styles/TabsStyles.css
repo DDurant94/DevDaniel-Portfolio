@@ -1,0 +1,142 @@
+/**
+ * Design System Tabs Component
+ * 
+ * @description Accessible tab navigation with color-mix backgrounds and pressable button styling.
+ * Features active state indicators, keyboard navigation, and theme-aware colors.
+ * 
+ * Components:
+ * - .ds-tabs: Tab list container
+ * - [role="tab"]: Individual tab buttons
+ * - .active / [aria-selected="true"]: Active tab state
+ * 
+ * Custom Properties:
+ * - --_tab-bg-base: 15% primary on surface (default state)
+ * - --_tab-bg-hover: 30% primary on surface (hover state)
+ * - --_tab-bg-active: var(--color-primary) (active state)
+ * - --_tab-color: var(--color-text) (default text)
+ * 
+ * Layout:
+ * - display: flex with flex-wrap
+ * - justify-content: space-between
+ * - align-items: baseline
+ * - gap: var(--space-1) between tabs
+ * - Tab margin: 0 0.2rem 1rem for spacing
+ * 
+ * Tab Styling:
+ * - border-radius: var(--radius-full) for pill shape
+ * - border: 1px solid (45% primary mix)
+ * - backdrop-filter: blur(6px) for glass effect
+ * - font-size: var(--font-size-sm)
+ * - font-weight: var(--font-weight-medium)
+ * - display: inline-flex for centering
+ * 
+ * States:
+ * - Default: --_tab-bg-base background
+ * - Hover: --_tab-bg-hover background with glow
+ * - Active: gradient-pressable-active background
+ * - Active border: 65% primary mix (stronger)
+ * - Active text: var(--color-text-inverse)
+ * - :active: translateY(0) scale(.985) for press effect
+ * 
+ * Box Shadows:
+ * - Hover/focus: var(--pressable-glow-stack-outline)
+ * - Active: var(--shadow-tab-active) + glow
+ * - Focus-visible: var(--shadow-focus-double) + glow
+ * 
+ * Transitions:
+ * - background: var(--motion-fade)
+ * - box-shadow: var(--motion-fade)
+ * - color: var(--motion-fade)
+ * - transform: var(--motion-scale)
+ * - outline-color: var(--motion-fade)
+ * 
+ * Dark Theme:
+ * - --_tab-bg-base: 22% primary mix (stronger)
+ * - --_tab-bg-hover: 40% primary mix (stronger)
+ * - Applied via [data-theme='dark'] selector
+ * 
+ * Accessibility:
+ * - role="tab" for ARIA tab pattern
+ * - aria-selected="true" for active state
+ * - :focus-visible for keyboard navigation
+ * - outline: none, replaced with custom focus ring
+ * - Double shadow on focus for visibility
+ * 
+ * Keyboard Navigation:
+ * - Arrow keys for tab navigation (via JS)
+ * - Enter/Space to activate tab
+ * - Home/End for first/last tab
+ * - Focus visible states with enhanced shadow
+ * 
+ * Performance:
+ * - transform animations (GPU accelerated)
+ * - backdrop-filter may impact performance on many tabs
+ * - color-mix computed at render time
+ * 
+ * Browser Compatibility:
+ * - color-mix(): Safari 16.4+, Chrome 111+, Firefox 113+
+ * - backdrop-filter: All modern browsers
+ * - CSS custom properties: Universal support
+ * - Fallback recommended for older browsers
+ * 
+ * @layer components
+ * @requires BaseButton styles, motion tokens, color tokens
+ */
+
+/* Design System Tabs (renamed & capitalized) */
+@import './../../../Component-Styles/UI-Styles/Button-Styles/BaseButtonStyles.css'; /* ensure button tokens available if needed */
+
+.ds-tabs { 
+    
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+.ds-tabs [role="tab"] {
+  --_tab-bg-base: color-mix(in srgb, var(--color-primary) 15%, var(--color-surface));
+  --_tab-bg-hover: color-mix(in srgb, var(--color-primary) 30%, var(--color-surface));
+  --_tab-bg-active: var(--color-primary);
+  --_tab-color: var(--color-text);
+  position: relative;
+  margin: 0 0.2rem 1rem 0.2rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: var(--radius-full);
+  background: var(--_tab-bg-base); color: var(--_tab-color); backdrop-filter: blur(6px);
+  /* Motion: background/color/shadow -> fade; transform -> scale */
+  transition: background var(--motion-fade),
+              box-shadow var(--motion-fade),
+              color var(--motion-fade),
+              transform var(--motion-scale),
+              outline-color var(--motion-fade);
+}
+.ds-tabs [role="tab"]:hover,
+.ds-tabs [role="tab"]:focus-visible {
+  background: var(--_tab-bg-hover);
+  outline: none;
+  /* Glow on hover/focus */
+  box-shadow: var(--pressable-glow-stack-outline);
+}
+.ds-tabs [role="tab"].active,
+.ds-tabs [role="tab"][aria-selected="true"] {
+  background: var(--gradient-pressable-active);
+  color: var(--color-text-inverse);
+  border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+  /* Active state keeps a stronger glow */
+  box-shadow: var(--shadow-tab-active), var(--pressable-glow-stack-outline);
+}
+.ds-tabs [role="tab"]:active { transform: translateY(0) scale(.985); }
+.ds-tabs [role="tab"]:focus-visible { box-shadow: var(--shadow-focus-double), var(--pressable-glow-stack-outline); }
+
+[data-theme='dark'] .ds-tabs [role="tab"] { --_tab-bg-base: color-mix(in srgb, var(--color-primary) 22%, var(--color-surface)); --_tab-bg-hover: color-mix(in srgb, var(--color-primary) 40%, var(--color-surface)); }
+[data-theme='dark'] .ds-tabs [role="tab"].active,
+[data-theme='dark'] .ds-tabs [role="tab"][aria-selected="true"] {
+  box-shadow: var(--shadow-tab-active), var(--pressable-glow-stack-outline);
+}
+
+[data-theme='contrast'] .ds-tabs [role="tab"] { background:#000; border:2px solid var(--color-text); color: var(--color-text); }
+[data-theme='contrast'] .ds-tabs [role="tab"]:hover { background: var(--color-primary); color: var(--color-text-inverse); }
+[data-theme='contrast'] .ds-tabs [role="tab"].active, [data-theme='contrast'] .ds-tabs [role="tab"][aria-selected="true"] { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: var(--shadow-tab-active); }

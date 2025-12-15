@@ -1,0 +1,138 @@
+/**
+ * Home Intro Section Styles
+ * 
+ * @description Introductory hero section on home page with centered layout and gradient text.
+ * Features responsive typography, focus states, and call-to-action buttons.
+ * 
+ * Components:
+ * - #home-intro-container: Main flex container
+ * - #home-intro-header-container: Header wrapper
+ * - .home-section-header: Gradient text heading
+ * - .home-intro-body-text: Intro paragraph
+ * - .home-intro-btn-container: CTA button wrapper
+ * 
+ * Container Layout:
+ * - max-width: var(--container-max-width)
+ * - margin: 0 auto (centered)
+ * - padding: var(--space-8) var(--space-4)
+ * - line-height: var(--line-height-loose) for readability
+ * - text-align: center
+ * - display: flex, flex-direction: column
+ * - justify-content: center, align-items: center
+ * - gap: 1rem between elements
+ * 
+ * Focus States:
+ * - #home-intro-container:focus outline: none
+ * - :focus-visible outline: var(--shadow-focus-ring)
+ * - :focus-visible box-shadow: var(--shadow-focus-ring)
+ * - border-radius: var(--radius-sm) on focus
+ * 
+ * Header Container:
+ * - text-align: center
+ * - margin-bottom: 1.5rem
+ * - Wraps gradient heading
+ * 
+ * Section Header:
+ * - font-size: calc(1.775rem + 1.5vw) fluid sizing
+ * - font-weight: var(--font-weight-bold)
+ * - background: var(--gradient-brand-horizontal)
+ * - background-clip: text (gradient text effect)
+ * - -webkit-background-clip for Safari
+ * - color: transparent (shows gradient)
+ * 
+ * Body Text:
+ * - font-size: calc(1.0rem + 0.3vw) responsive
+ * - padding: 0.25rem 0 (vertical spacing)
+ * - margin: 1rem 0 1.5rem (spacing around)
+ * - color: var(--color-text-soft) for hierarchy
+ * - max-width: 80ch (optimal reading length)
+ * 
+ * Button Container:
+ * - display: flex (for button layout)
+ * - Likely justify-content: center
+ * - Contains CTA buttons (e.g., "Learn More", "Contact")
+ * - Responsive wrapping on mobile
+ * 
+ * Typography Hierarchy:
+ * - Header: Large, bold, gradient (primary focus)
+ * - Body: Medium, soft color (supporting text)
+ * - Buttons: Clear CTAs (action items)
+ * 
+ * Accessibility:
+ * - text-align: center (balanced layout)
+ * - max-width: 80ch (readable line length)
+ * - :focus-visible for keyboard navigation
+ * - outline: none with custom focus ring
+ * - Sufficient color contrast
+ * 
+ * Performance:
+ * - Simple flexbox layout
+ * - GPU-accelerated gradient clipping
+ * - Minimal reflows with max-width
+ * - Smooth focus transitions
+ * 
+ * Browser Compatibility:
+ * - background-clip: text: All modern browsers
+ * - -webkit-background-clip: Safari support
+ * - calc(): Universal support
+ * - Flexbox: Universal support
+ * - Custom properties: Widely supported
+ * 
+ * @layer components
+ * @requires Design tokens (spacing, colors, gradients)
+ */
+
+#home-intro-container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+  line-height: var(--line-height-loose);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+#home-intro-container:focus {
+  outline: none;
+}
+
+#home-intro-container:focus-visible{
+  outline: var(--shadow-focus-ring);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+#home-intro-header-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.home-section-header {
+  font-size: calc(1.775rem + 1.5vw);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-brand-horizontal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+.home-intro-body-text{
+  font-size: calc(1.0rem + 0.3vw);
+  padding: 0.25rem 0 0.25rem 0;
+  margin: 1rem 0 1.5rem 0;
+  color: var(--color-text-soft);
+  max-width: 80ch;
+}
+
+.home-intro-btn-container{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

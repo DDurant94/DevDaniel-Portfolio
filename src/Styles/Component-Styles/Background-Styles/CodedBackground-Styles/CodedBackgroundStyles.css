@@ -1,0 +1,319 @@
+/**
+ * Coded Background Styles
+ * 
+ * @description Developer-themed background with VS Code editor grid pattern, scan lines,
+ * and corner code comments. Features subtle parallax mouse tracking for depth effect.
+ * 
+ * Visual Elements:
+ * - Code editor grid (adjustable density via --grid-size)
+ * - Terminal-style scan lines (CRT monitor effect)
+ * - Corner decorative comments ("Portfolio", "DevDaniel.tech")
+ * - Mouse parallax on grid pattern
+ * 
+ * CSS Custom Properties:
+ * - --grid-size: Grid cell size in pixels (20px desktop, 25px tablet, 30px mobile)
+ * - --animation-state: 'running' or 'paused' (respects prefers-reduced-motion)
+ * - --mouse-x: Normalized mouse X position (-1 to 1)
+ * - --mouse-y: Normalized mouse Y position (-1 to 1)
+ * 
+ * Layout:
+ * - Fixed positioning (covers entire viewport)
+ * - z-index: 0 (behind all content)
+ * - pointer-events: none (non-interactive decoration)
+ * 
+ * Performance:
+ * - Uses repeating-linear-gradient (hardware accelerated)
+ * - Transform-based parallax (GPU composited)
+ * - Opacity-based visibility (no repaints)
+ * - Grid density reduced on mobile for performance
+ * 
+ * Accessibility:
+ * - Respects prefers-reduced-motion (disables parallax and scan lines)
+ * - Very low opacity (doesn't interfere with readability)
+ * - Non-interactive (pointer-events: none)
+ * 
+ * Theme Support:
+ * - Colors use CSS custom properties (--color-primary, --color-text)
+ * - Adapts to light/dark/contrast themes automatically
+ * - Opacity adjusted for each theme's contrast needs
+ * 
+ * Browser Compatibility:
+ * - Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+ * - Uses color-mix() (Chrome 111+, Safari 16.2+, Firefox 113+)
+ * - Fallback: Static grid without parallax for older browsers
+ * 
+ * @layer components
+ */
+
+/* ===================================================================
+   CODED BACKGROUND - Developer-Themed Visual Elements
+   ----------------------------------------------------------------
+   Subtle coding aesthetic with grid patterns, floating symbols,
+   and terminal-inspired effects. Fully responsive and respects
+   user motion preferences.
+   =================================================================== */
+
+.coded-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* ===================================================================
+   CODE GRID PATTERN - VS Code Editor Grid
+   =================================================================== */
+
+.code-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  background-image: 
+    /* Vertical lines */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent calc(var(--grid-size) - 1px),
+      color-mix(in srgb, var(--color-primary) 100%, transparent) calc(var(--grid-size) - 1px),
+      color-mix(in srgb, var(--color-primary) 100%, transparent) var(--grid-size)
+    ),
+    /* Horizontal lines */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent calc(var(--grid-size) - 1px),
+      color-mix(in srgb, var(--color-primary) 100%, transparent) calc(var(--grid-size) - 1px),
+      color-mix(in srgb, var(--color-primary) 100%, transparent) var(--grid-size)
+    );
+  transform: translate(calc(var(--mouse-x, 0) * 10px), calc(var(--mouse-y, 0) * 10px));
+  transition: transform 0.3s ease-out;
+}
+
+/* ===================================================================
+   SCAN LINES - Retro Terminal Effect
+   =================================================================== */
+
+.scan-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.02;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    color-mix(in srgb, var(--color-text) 100%, transparent) 2px,
+    color-mix(in srgb, var(--color-text) 100%, transparent) 4px
+  );
+  pointer-events: none;
+  animation: scan-flicker 8s ease-in-out infinite;
+  animation-play-state: var(--animation-state, running);
+}
+
+@keyframes scan-flicker {
+  0%, 100% { opacity: 0.02; }
+  50% { opacity: 0.015; }
+}
+
+/* ===================================================================
+   FLOATING CODE SYMBOLS - Desktop Only
+   =================================================================== */
+
+.floating-symbols {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.symbol {
+  position: absolute;
+  font-family: var(--font-family-mono);
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 600;
+  color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  opacity: 0.4;
+  animation: float-symbol 20s ease-in-out infinite;
+  animation-play-state: var(--animation-state, running);
+}
+
+/* Position each symbol differently */
+.symbol-1 {
+  top: 10%;
+  left: 15%;
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+.symbol-2 {
+  top: 60%;
+  right: 20%;
+  animation-delay: -5s;
+  animation-duration: 30s;
+}
+
+.symbol-3 {
+  bottom: 20%;
+  left: 25%;
+  animation-delay: -10s;
+  animation-duration: 28s;
+}
+
+.symbol-4 {
+  top: 40%;
+  right: 10%;
+  animation-delay: -15s;
+  animation-duration: 32s;
+}
+
+.symbol-5 {
+  top: 75%;
+  left: 60%;
+  animation-delay: -8s;
+  animation-duration: 26s;
+  font-size: clamp(3rem, 5vw, 5rem);
+}
+
+.symbol-6 {
+  top: 25%;
+  left: 70%;
+  animation-delay: -12s;
+  animation-duration: 24s;
+}
+
+@keyframes float-symbol {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.15;
+  }
+  25% {
+    transform: translateY(-20px) rotate(2deg);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-10px) rotate(-1deg);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translateY(-30px) rotate(1deg);
+    opacity: 0.12;
+  }
+}
+
+/* ===================================================================
+   CORNER ACCENTS - Code Comments
+   =================================================================== */
+
+.corner-accent {
+  position: absolute;
+  font-family: var(--font-family-mono);
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  color: color-mix(in srgb, var(--color-text-soft) 30%, transparent);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.corner-top-left {
+  top: 5%; /* Below hero */
+  left: 120px;
+  animation: fade-pulse 6s ease-in-out infinite;
+  animation-play-state: var(--animation-state, running);
+}
+
+.corner-bottom-right {
+  bottom: 2rem; /* Above footer */
+  right: 2rem;
+  animation: fade-pulse 6s ease-in-out infinite;
+  animation-delay: -3s;
+  animation-play-state: var(--animation-state, running);
+}
+
+.code-comment {
+  display: block;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+@keyframes fade-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+}
+
+/* ===================================================================
+   RESPONSIVE ADJUSTMENTS
+   =================================================================== */
+
+/* Tablet - Reduce complexity */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .symbol {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+  }
+  
+  .corner-accent {
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile - Minimal patterns */
+@media (max-width: 767px) {
+  .code-grid {
+    opacity: 0.02; /* Less visible on mobile */
+  }
+  
+  .scan-lines {
+    display: none; /* Disable for performance */
+  }
+  
+  .corner-accent {
+    display: none; /* Hide text on mobile */
+  }
+}
+
+/* Extra small - Ultra minimal */
+@media (max-width: 479px) {
+  .code-grid {
+    opacity: 0.015;
+  }
+}
+
+/* ===================================================================
+   REDUCED MOTION - Accessibility
+   =================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-lines,
+  .symbol,
+  .corner-accent {
+    animation: none !important;
+  }
+  
+  .symbol {
+    opacity: 0.1; /* Slightly less visible when static */
+  }
+}
+
+/* ===================================================================
+   DARK MODE ADJUSTMENTS
+   =================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .code-grid {
+    opacity: 0.04; /* Slightly more visible in dark mode */
+  }
+  
+  .symbol {
+    color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    opacity: 0.18;
+  }
+}

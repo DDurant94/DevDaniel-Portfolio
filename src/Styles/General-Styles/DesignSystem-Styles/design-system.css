@@ -1,0 +1,53 @@
+/**
+ * Design System Aggregator
+ * 
+ * @description Main entry point for design system component and utility styles.
+ * Imports all design system CSS modules for centralized loading.
+ * 
+ * Imports:
+ * - TabsStyles.css: Accessible tab navigation component
+ * - ComboBoxStyles.css: Searchable dropdown input component
+ * - OffCanvasStyles.css: Slide-out panel component
+ * - EffectsStyles.css: Animation and viewport effect utilities
+ * - UtilitiesStyles.css: General utility classes
+ * 
+ * Usage:
+ * Import this file once in main application to load entire design system.
+ * Individual files can also be imported separately if needed.
+ * 
+ * Components Included:
+ * - Tabs: .ds-tabs, [role="tab"], .active
+ * - ComboBox: .ds-combobox, input, .combo-toggle, .combo-listbox
+ * - OffCanvas: .ds-offcanvas-wrapper, .ds-offcanvas, .ds-offcanvas-backdrop
+ * 
+ * Utilities Included:
+ * - Effects: .fx-fade, .fx-scale, .fx-stagger-sm, [data-fx-stagger]
+ * - Utilities: Layout, spacing, typography, color utilities
+ * 
+ * Layer System:
+ * @layer reset, base, tokens, utilities, components, overrides
+ * - Components loaded in components layer
+ * - Utilities loaded in utilities layer
+ * - Ensures proper cascade and specificity
+ * 
+ * Performance:
+ * - Single import point reduces HTTP requests (with bundler)
+ * - Tree-shaking enabled via ES modules
+ * - Individual imports available for optimization
+ * - CSS modules prevent naming conflicts
+ * 
+ * Browser Compatibility:
+ * - @import: All modern browsers
+ * - Individual components have their own compatibility notes
+ * - Fallbacks defined in component files
+ * 
+ * @layer components, utilities
+ * @requires All imported CSS files
+ */
+
+/* Aggregated Design System stylesheet */
+@import './Design-Component-Styles/TabsStyles.css';
+@import './Design-Component-Styles/ComboBoxStyles.css';
+@import './Design-Component-Styles/OffCanvasStyles.css';
+@import './Design-Utility-Styles/EffectsStyles.css';
+@import './Design-Utility-Styles/UtilitiesStyles.css';

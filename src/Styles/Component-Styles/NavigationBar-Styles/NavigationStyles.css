@@ -1,0 +1,67 @@
+/**
+ * Navigation Styles - Main Entry Point
+ * 
+ * @description Unified navigation system importing desktop and mobile variants.
+ * Provides responsive utility classes for showing/hiding navigation components.
+ * 
+ * Architecture:
+ * - Desktop navigation: Horizontal menu bar (>768px)
+ * - Mobile navigation: Hamburger menu + drawer (≤768px)
+ * - Theme toggle: Shared across both variants
+ * - Imports component-specific stylesheets
+ * 
+ * Responsive Utilities:
+ * - .desktop-only: Visible on screens >768px (display: flex)
+ * - .mobile-only: Visible on screens ≤768px (display: block)
+ * - Media query at 768px breakpoint
+ * 
+ * Imported Stylesheets:
+ * - NavigationBarDesktopStyles.css: Horizontal nav, dropdowns, links
+ * - NavigationBarMobileStyles.css: Drawer, hamburger, mobile menu
+ * - ThemeToggle styles included in component-specific files
+ * 
+ * Usage:
+ * ```html
+ * <nav class="desktop-only">
+ *   <!-- Desktop navigation content -->
+ * </nav>
+ * <nav class="mobile-only">
+ *   <!-- Mobile navigation content -->
+ * </nav>
+ * ```
+ * 
+ * Breakpoint:
+ * - 768px: Standard tablet/mobile breakpoint
+ * - Matches --breakpoint-md token
+ * - Consistent with MediaQueryContext breakpoints
+ * 
+ * @layer components
+ * @requires NavigationBarDesktopStyles.css
+ * @requires NavigationBarMobileStyles.css
+ */
+
+/* ========== UNIFIED NAVIGATION STYLES ========== */
+/* Main entry point for all navigation styles */
+
+/* Import component-specific styles */
+@import './NavigationBar-Components/NavigationBarDesktop-Styles/NavigationBarDesktopStyles.css';
+@import './NavigationBar-Components/NavigationBarMobile-Styles/NavigationBarMobileStyles.css';
+
+/* ========== RESPONSIVE UTILITIES ========== */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+}

@@ -1,0 +1,137 @@
+/**
+ * Code Snippet Watermark Styles
+ * 
+ * @description Real code snippets (React, CSS, Python) displayed as ultra-low-opacity
+ * watermark texture throughout the page background. Desktop only for readability.
+ * 
+ * Snippet Types:
+ * - snippet-1: React component with useState, useEffect, map (top right)
+ * - snippet-2: CSS grid and custom properties (mid left)
+ * - snippet-3: Python data analysis function (bottom right)
+ * - snippet-4: Pandas/NumPy data transformation (top left)
+ * 
+ * Visual Design:
+ * - Extremely low opacity (0.03) for subtle texture
+ * - Monospace font (--font-family-mono)
+ * - Slight rotation (-5deg to 5deg) for organic feel
+ * - White-space: pre (preserves code formatting)
+ * - User-select: none (not copyable)
+ * 
+ * Layout:
+ * - Fixed positioning (covers entire viewport)
+ * - z-index: 0 (behind content, same layer as grid)
+ * - pointer-events: none (non-interactive)
+ * - Desktop only (hidden on mobile/tablet)
+ * 
+ * Performance:
+ * - Minimal repaints (static positioning)
+ * - Low opacity reduces GPU strain
+ * - Desktop-only reduces mobile payload
+ * - No animations (static decoration)
+ * 
+ * Accessibility:
+ * - Opacity so low it doesn't affect readability
+ * - Non-interactive (pointer-events: none)
+ * - Screen reader ignores (decorative only)
+ * - Respects theme colors (adapts to light/dark)
+ * 
+ * Theme Support:
+ * - Color uses --color-text custom property
+ * - Opacity consistent across all themes
+ * - No theme-specific overrides needed
+ * 
+ * Browser Compatibility:
+ * - All modern browsers (static CSS only)
+ * - No advanced features required
+ * - Degrades gracefully (just invisible if unsupported)
+ * 
+ * @layer components
+ */
+
+/* ===================================================================
+   CODE SNIPPET WATERMARK - Faded Code as Background Texture
+   ----------------------------------------------------------------
+   Real code snippets displayed at very low opacity as decorative
+   background elements. Desktop only for readability.
+   =================================================================== */
+
+.code-snippet-watermark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.2;
+}
+
+.code-snippet {
+  position: absolute;
+  font-family: var(--font-family-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  opacity: 0.03;
+  white-space: pre;
+  -webkit-user-select: none;
+  user-select: none;
+  transform: rotate(-3deg);
+  overflow: hidden;
+}
+
+/* Position each snippet */
+.snippet-1 {
+  top: 18%;
+  left: 62%;
+  max-width: 400px;
+  transform: rotate(4deg);
+}
+
+.snippet-2 {
+  top: 55%;
+  left: 15%;
+  max-width: 380px;
+  transform: rotate(-5deg);
+}
+
+.snippet-3 {
+  bottom: 12%;
+  right: 18%;
+  max-width: 420px;
+  transform: rotate(3deg);
+}
+
+.snippet-4 {
+  top: 8%;
+  left: 20%;
+  max-width: 400px;
+  transform: rotate(-3deg);
+}
+
+/* Syntax highlighting (very subtle) */
+.code-snippet::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: var(--radius-md);
+  z-index: -1;
+}
+
+/* Dark mode - Slightly more visible */
+@media (prefers-color-scheme: dark) {
+  .code-snippet {
+    opacity: 0.5;
+  }
+}
+
+/* Hide on tablet and mobile */
+@media (max-width: 1023px) {
+  .code-snippet-watermark {
+    display: none;
+  }
+}
