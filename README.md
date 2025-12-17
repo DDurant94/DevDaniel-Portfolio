@@ -84,7 +84,6 @@ MIT License - feel free to use this code for your own portfolio!
 ## 🔗 Links
 
 - **Live Site:** [Null]
-- **GitHub:** [https://github/DDurant94]
 - **LinkedIn:** [www.linkedin.com/in/daniel-durant-30a0252b9]
 
 ---
