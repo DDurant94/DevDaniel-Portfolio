@@ -161,6 +161,23 @@
   }
 }
 
+/* Reduced-motion: disable slide animations */
+@media (prefers-reduced-motion: reduce) {
+  .contact-aside.entering,
+  .contact-aside.exiting {
+    animation: none;
+  }
+  
+  .contact-aside.entering {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  
+  .contact-aside.exiting {
+    opacity: 0;
+  }
+}
+
 /* Header - Similar to ProjectOffCanvas */
 .contact-aside__header {
   display: flex;

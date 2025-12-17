@@ -24,8 +24,8 @@
  */
 
 import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { useContactAside } from '../../Context/Aside-Context/ContactAsideContext';
+import FadeInWhenVisible from '../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import './../../Styles/Page-Styles/Home-Styles/HomeStyles.css';
 import './../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
 
@@ -82,41 +82,39 @@ const Home = () => {
 
       <main id="home-main-container" role="main" tabIndex="-1">
 
-        <motion.section
-          id='home-intro-section'>
+        <FadeInWhenVisible
+          as="section"
+          id='home-intro-section'
+          y={30}
+          duration={0.6}>
           <Intro />
-        </motion.section>
+        </FadeInWhenVisible>
 
-        <motion.section
+        <FadeInWhenVisible
+          as="section"
           id='home-featured-projects-section'
           aria-labelledby='home-featured-projects'
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          viewport={{ once: false }}>
+          y={50}
+          duration={0.8}>
           <FeaturedProjects onSelectProject={handleProjectSelect} />
-        </motion.section>
+        </FadeInWhenVisible>
 
-        <motion.section
+        <FadeInWhenVisible
+          as="section"
           id="home-services-preview-section"
           aria-labelledby="home-services-preview"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          viewport={{ once: false }}
-          >
+          y={30}
+          duration={0.6}>
           <ServicesPreview />
-        </motion.section>
+        </FadeInWhenVisible>
 
-        <motion.section
+        <FadeInWhenVisible
+          as="section"
           id="home-contact-cta-section"
           className="home-contact-cta-section"
           aria-labelledby="home-contact-cta-heading"
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: '-25% 0px' }}
-          transition={{ duration: 0.7 }}
-        >
+          y={28}
+          duration={0.7}>
           <div className="cta-bg" aria-hidden="true" />
           <div className="cta-inner">
             <h2 id="home-contact-cta-heading">Ready to build something?</h2>
@@ -146,7 +144,7 @@ const Home = () => {
               
             </div>
           </div>
-        </motion.section>
+        </FadeInWhenVisible>
 
       </main>
     </div>

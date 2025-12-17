@@ -27,7 +27,7 @@
 
 import BaseButton from '../../Components/UI/BaseButton/BaseButton.jsx';
 import SkipToMain from '../../Components/UI/SkipToMain/SkipToMain.jsx';
-import { motion } from 'framer-motion';
+import FadeInWhenVisible from '../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import SkillsTechStack from './Skills-Components/SkillsTechStack/SkillsTechStack';
 import LogoLoop from '../../Components/UI/LogoLoop/LogoLoop.jsx';
 import { IconList } from '../../DataSets/ProgrammingIcons/Icons';
@@ -49,16 +49,14 @@ const Skills = () => {
         </div>
       </header>
 
-      <main id="skills-main-content" mar>
+      <main id="skills-main-content">
         
         {/* Intro Section */}
-        <motion.section
+        <FadeInWhenVisible
+          as="section"
           id="skills-intro-section"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          viewport={{ once: true }}
-        >
+          y={20}
+          duration={0.6}>
           <div id="skills-intro-container">
             {/* <h1>&#60;Technical Expertise /&#62;</h1> */}
             <h1>&#60;Technical Expertise /&#62;</h1>
@@ -67,16 +65,14 @@ const Skills = () => {
               focused on building scalable, innovative solutions. Here's what I bring to the table.
             </p>
           </div>
-        </motion.section>
+        </FadeInWhenVisible>
 
         {/* Tech Stack Grid */}
-        <motion.section
+        <FadeInWhenVisible
+          as="section"
           id="skills-tech-section"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          viewport={{ once: true }}
-        >
+          y={20}
+          duration={0.6}>
         <div id='logo-loop-container'>
           <div id='logo-loop-inner'>
             <LogoLoop logos={Object.values(IconList)}
@@ -93,21 +89,18 @@ const Skills = () => {
           </div>
         </div>
           <SkillsTechStack />
-        </motion.section>
+        </FadeInWhenVisible>
 
         {/* Signoff */}
-        <motion.div
+        <FadeInWhenVisible
           id="skills-signoff"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          viewport={{ once: true }}
-        >
+          y={20}
+          duration={0.6}>
           <p>
             These aren't just tools, they're the building blocks of immersive, scalable experiences.
             Let's put them to work.
           </p>
-        </motion.div>
+        </FadeInWhenVisible>
 
         {/* CTA */}
         <div id="skills-cta-btn-container" className='mt-1'>

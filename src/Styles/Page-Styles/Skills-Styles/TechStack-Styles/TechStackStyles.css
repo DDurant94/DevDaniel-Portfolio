@@ -110,8 +110,9 @@
   text-align: center;
   cursor: pointer;
   overflow: hidden;
-  transform: translateY(0);
-  transition: transform var(--motion-scale);
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
 }
 
 .skills-tech-list { box-shadow: var(--shadow-tech-card); }
@@ -140,7 +141,7 @@
   left: 50%;
   width: 100%;
   transform: translate(-50%, -50%);
-  transition: top var(--motion-panel-enter), transform var(--motion-panel-enter);
+  transition: top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 2;
 }
 
@@ -158,6 +159,11 @@
     var(--reflect-stop-faint),
     var(--reflect-stop-strong)
   );
+}
+
+/* Disable expensive reflections during scroll */
+[data-scrolling="true"] .skills-tech-list-header h3 {
+  -webkit-box-reflect: none !important;
 }
 
 /* Title shifts up when open */
@@ -184,8 +190,9 @@
   align-items: center;
   font-size: clamp(1rem, 1.2vw, 1.25rem);
   opacity: 0;
-  transform: translateY(100%);
-  transition: opacity var(--motion-fade), transform var(--motion-panel-enter);
+  transform: translateY(100%) translateZ(0);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backface-visibility: hidden;
 }
 
 /* Overlay visible when open */
@@ -212,6 +219,12 @@
   );
 }
 
+/* Disable expensive reflections during scroll */
+[data-scrolling="true"] .skills-tech-ul li,
+[data-scrolling="true"] .skills-tech-list-header h3 {
+  -webkit-box-reflect: none !important;
+}
+
 @media (max-width: 250px) {
   .skills-tech-list{
     height: 18rem;
@@ -227,4 +240,27 @@
     margin: 0.5rem;
   }
   
+}
+
+/* Reduced motion: instant reveal, no transforms */
+@media (prefers-reduced-motion: reduce) {
+  .skills-tech-list,
+  .skills-tech-list-header,
+  .skills-tech-list__overlay {
+    transition: none !important;
+  }
+  
+  .skills-tech-list:hover,
+  .skills-tech-list:focus,
+  .skills-tech-list.active {
+    transform: none !important;
+  }
+  
+  .skills-tech-list:hover .skills-tech-list__overlay,
+  .skills-tech-list:focus .skills-tech-list__overlay,
+  .skills-tech-list.active .skills-tech-list__overlay {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

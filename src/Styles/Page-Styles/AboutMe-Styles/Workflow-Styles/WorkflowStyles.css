@@ -288,6 +288,15 @@
 #workflow-steps-container > .workflow-step:nth-child(2) { --_i: 0; }
 #workflow-steps-container > .workflow-step:nth-child(3),
 #workflow-steps-container > .workflow-step:nth-child(4) { --_i: 1; }
+
+/* ===========================
+   SCROLL PERFORMANCE OPTIMIZATION
+   Pause infinite animations during scroll to prevent paint thrashing
+   =========================== */
+[data-scrolling="true"] .workflow-step-h3::after,
+[data-scrolling="true"] .workflow-step-header > .underline {
+  animation-play-state: paused !important;
+}
 #workflow-steps-container > .workflow-step:nth-child(5),
 #workflow-steps-container > .workflow-step:nth-child(6) { --_i: 2; }
 #workflow-steps-container > .workflow-step:nth-child(7),
@@ -309,7 +318,16 @@
 @keyframes workflow-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.0); } 50% { box-shadow: 0 0 0 4px color-mix(in srgb,var(--color-primary) 55%, transparent); } }
 .workflow-step.is-active { animation: workflow-pulse var(--motion-duration-lg) var(--ease-emphasis) 1; }
 
-/* Reduced-motion override intentionally removed per user preference */
+/* Reduced-motion: disable animations */
+@media (prefers-reduced-motion: reduce) {
+  .workflow-step.is-active {
+    animation: none;
+  }
+  
+  .workflow-step::before {
+    animation: none;
+  }
+}
 
 /* Accessibility: focus styles (keyboard only) */
 .workflow-step:focus {

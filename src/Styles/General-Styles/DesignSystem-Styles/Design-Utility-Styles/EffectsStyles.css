@@ -148,3 +148,29 @@
 /* Keyframes palette */
 @keyframes fx-pulse-soft { 0%,100% { opacity: .85;} 50% { opacity: 1; } }
 .fx-pulse { animation: fx-pulse-soft 3s ease-in-out infinite; }
+
+/* Reduced-motion: instant reveal, no animations */
+@media (prefers-reduced-motion: reduce) {
+  .fx-fade,
+  .fx-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .fx-pulse {
+    animation: none;
+    opacity: 1;
+  }
+  
+  /* Disable stagger delays */
+  .fx-stagger-sm > *,
+  [data-fx-stagger] > * {
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Scroll performance: pause pulse during scroll */
+[data-scrolling="true"] .fx-pulse {
+  animation-play-state: paused !important;
+}

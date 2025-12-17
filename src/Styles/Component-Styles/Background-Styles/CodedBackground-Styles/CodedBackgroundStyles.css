@@ -304,6 +304,17 @@
 }
 
 /* ===================================================================
+   SCROLL PERFORMANCE OPTIMIZATION
+   Pause infinite animations during scroll to prevent paint thrashing
+   =================================================================== */
+
+[data-scrolling="true"] .scan-lines,
+[data-scrolling="true"] .symbol,
+[data-scrolling="true"] .corner-accent {
+  animation-play-state: paused !important;
+}
+
+/* ===================================================================
    DARK MODE ADJUSTMENTS
    =================================================================== */
 

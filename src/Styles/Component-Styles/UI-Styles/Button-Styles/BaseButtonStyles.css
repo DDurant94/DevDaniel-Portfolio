@@ -96,6 +96,11 @@
   -webkit-box-reflect: below 3px linear-gradient(transparent 0 30%, var(--reflect-stop-faint), var(--reflect-stop-strong));
 }
 
+/* Disable expensive reflections during scroll */
+[data-scrolling="true"] .base-btn {
+  -webkit-box-reflect: none !important;
+}
+
 .base-btn:focus { outline: none; }
 .base-btn:focus-visible { outline: var(--focus-ring); box-shadow: var(--shadow-focus-ring); }
 .base-btn.is-pressed, .base-btn:active { box-shadow: var(--pressable-pressed-stack); }

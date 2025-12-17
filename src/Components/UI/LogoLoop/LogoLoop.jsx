@@ -88,7 +88,6 @@ const useResizeObserver = (callback, elements, dependencies) => {
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };
 
@@ -124,8 +123,7 @@ const useImageLoader = (seqRef, onLoad, dependencies) => {
         img.removeEventListener('load', handleImageLoad);
         img.removeEventListener('error', handleImageLoad);
       });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, dependencies);
 };
 
@@ -144,10 +142,25 @@ const useAnimationLoop = (
   const lastTimestampRef = useRef(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(0);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
+    // Scroll pause detector - stops RAF during scroll for performance
+    const handleScroll = () => {
+      isScrollingRef.current = true;
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 150); // Resume 150ms after scroll stops
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     if (seqWidth > 0) {
       offsetRef.current = ((offsetRef.current % seqWidth) + seqWidth) % seqWidth;
@@ -162,7 +175,7 @@ const useAnimationLoop = (
       const deltaTime = Math.max(0, timestamp - lastTimestampRef.current) / 1000;
       lastTimestampRef.current = timestamp;
 
-  const shouldPause = (pauseOnHover && isHovered) || (pauseWhenOffscreen && !isInView);
+  const shouldPause = (pauseOnHover && isHovered) || (pauseWhenOffscreen && !isInView) || isScrollingRef.current;
   const target = shouldPause ? 0 : targetVelocity;
 
       const easingFactor = 1 - Math.exp(-deltaTime / ANIMATION_CONFIG.SMOOTH_TAU);
@@ -203,6 +216,10 @@ const useAnimationLoop = (
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
@@ -249,23 +266,26 @@ export const LogoLoop = memo(
     }, [speed, direction]);
 
     const updateDimensions = useCallback(() => {
-      const nextContainerWidth = containerRef.current?.clientWidth ?? 0;
-      const sequenceWidth = seqRef.current?.getBoundingClientRect?.()?.width ?? 0;
+      // Batch layout reads in RAF to prevent forced reflow
+      requestAnimationFrame(() => {
+        const nextContainerWidth = containerRef.current?.clientWidth ?? 0;
+        const sequenceWidth = seqRef.current?.getBoundingClientRect?.()?.width ?? 0;
 
-      if (sequenceWidth > 0) {
-        setSeqWidth(Math.ceil(sequenceWidth));
-        setContainerWidth(nextContainerWidth);
-        // If duplication is disabled, force 1 copy; otherwise compute minimal copies
-        if (disableDuplication) {
-          setCopyCount(1);
-        } else {
-          // If the base sequence already exceeds the container, two copies are enough for a seamless loop.
-          const baseCopies = sequenceWidth >= nextContainerWidth
-            ? 2
-            : Math.ceil(nextContainerWidth / sequenceWidth) + ANIMATION_CONFIG.COPY_HEADROOM;
-          setCopyCount(Math.min(Math.max(ANIMATION_CONFIG.MIN_COPIES, baseCopies), maxCopies));
+        if (sequenceWidth > 0) {
+          setSeqWidth(Math.ceil(sequenceWidth));
+          setContainerWidth(nextContainerWidth);
+          // If duplication is disabled, force 1 copy; otherwise compute minimal copies
+          if (disableDuplication) {
+            setCopyCount(1);
+          } else {
+            // If the base sequence already exceeds the container, two copies are enough for a seamless loop.
+            const baseCopies = sequenceWidth >= nextContainerWidth
+              ? 2
+              : Math.ceil(nextContainerWidth / sequenceWidth) + ANIMATION_CONFIG.COPY_HEADROOM;
+            setCopyCount(Math.min(Math.max(ANIMATION_CONFIG.MIN_COPIES, baseCopies), maxCopies));
+          }
         }
-      }
+      });
     }, [maxCopies, disableDuplication]);
 
     useResizeObserver(updateDimensions, [containerRef, seqRef], [logos, gap, logoHeight, maxCopies, disableDuplication]);

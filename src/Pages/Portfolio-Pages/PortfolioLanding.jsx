@@ -36,7 +36,7 @@
 // src/Pages/PortfolioLandingPage.jsx
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import FadeInWhenVisible from '../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import { useContactAside } from '../../Context/Aside-Context/ContactAsideContext';
 import { useProjectOffCanvas } from '../../Context/OffCanvas-Context/ProjectOffCanvasContext';
 import { usePortfolioFilter } from '../../Context/Portfolio-Context/PortfolioFilterContext';
@@ -49,14 +49,6 @@ import { allProjects } from '../../DataSets/Portfolio/Projects';
 import './../../Styles/Page-Styles/Portfolio-Styles/PortfolioLandingStyles.css';
 import PortfolioHero from './Portfolio-Components/Hero/PortfolioHero.jsx';
 import CloudZoomTransition from '../../Components/Effects/Scroll-Effect/CloudZoomTransition.jsx';
-
-/** Framer Motion animation preset for fade-in-up effect */
-const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: 'easeInOut'},
-  viewport: { once: true },
-};
 
 export default function PortfolioLandingPage() {
   const { openContactAside } = useContactAside();
@@ -502,14 +494,15 @@ export default function PortfolioLandingPage() {
 
         {/* === Project Sections === */}
         {activeTab === 'All' && (
-          <motion.section
+          <FadeInWhenVisible
+            as="section"
             id="panel-all"
             role="tabpanel"
             aria-labelledby="tab-all"
             tabIndex={0}
             className="mx-1"
-            {...fadeInUp}
-          >
+            y={20}
+            duration={0.5}>
             <p className="section-intro">
               A showcase of all of my projects. Take a look around and let me know what you think. I would greatly appreciate any feedback on my projects.
             </p>
@@ -519,18 +512,19 @@ export default function PortfolioLandingPage() {
               externalFilters={activeFilters}
               hideSearch
             />
-          </motion.section>
+          </FadeInWhenVisible>
         )}
 
         {activeTab === 'Professional' && (
-          <motion.section
+          <FadeInWhenVisible
+            as="section"
             id="panel-professional"
             role="tabpanel"
             aria-labelledby="tab-professional"
             tabIndex={0}
             className="mx-1"
-            {...fadeInUp}
-          >
+            y={20}
+            duration={0.5}>
             <p className="section-intro">
               A showcase of my client and workplace projects — built to spec, on
               deadline, and with polish.
@@ -541,18 +535,19 @@ export default function PortfolioLandingPage() {
               externalFilters={activeFilters}
               hideSearch
             />
-          </motion.section>
+          </FadeInWhenVisible>
         )}
 
         {activeTab === 'Personal' && (
-          <motion.section
+          <FadeInWhenVisible
+            as="section"
             id="panel-personal"
             role="tabpanel"
             aria-labelledby="tab-personal"
             tabIndex={0}
             className="mx-1"
-            {...fadeInUp}
-          >
+            y={20}
+            duration={0.5}>
             <p className="section-intro">
               Experiments, side projects, and ideas I just had to try — where I
               play with new tech and concepts.
@@ -563,7 +558,7 @@ export default function PortfolioLandingPage() {
                 externalFilters={activeFilters}
                 hideSearch
               />
-          </motion.section>
+          </FadeInWhenVisible>
         )}
       </main>
 

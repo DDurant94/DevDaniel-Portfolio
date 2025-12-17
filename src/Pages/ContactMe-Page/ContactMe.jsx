@@ -30,7 +30,6 @@ import ContactMeForm from "./ContactMe-Components/ContactMeForm";
 import { useEffect } from "react";
 import SkipToMain from '../../Components/UI/SkipToMain/SkipToMain';
 import { motion } from "framer-motion";
-import "./../../Styles/Page-Styles/ContactMe-Styles/ContactMeStyles.css";
 
 const ContactMe = () => {
 

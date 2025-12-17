@@ -674,3 +674,33 @@
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
 }
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+/**
+ * Accessibility: Respect user preference for reduced motion
+ * - Disables all animations and transitions
+ * - Maintains functionality while removing motion
+ * - Honors prefers-reduced-motion: reduce system setting
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Zero all motion durations */
+    --motion-duration-xs: 0ms;
+    --motion-duration-sm: 0ms;
+    --motion-duration-md: 0ms;
+    --motion-duration-lg: 0ms;
+    --motion-duration-xl: 0ms;
+    --motion-duration-ambient: 0ms;
+  }
+  
+  /* Disable all animations and transitions globally */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

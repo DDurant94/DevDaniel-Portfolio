@@ -65,6 +65,8 @@
   z-index: 0;
   overflow: hidden;
   opacity: 0.2;
+  content-visibility: auto; /* Browser can skip rendering if not visible */
+  contain: layout style paint; /* Optimize rendering performance */
 }
 
 .code-snippet {
@@ -78,6 +80,8 @@
   -webkit-user-select: none;
   user-select: none;
   transform: rotate(-3deg);
+  content-visibility: auto; /* Low priority rendering */
+  will-change: auto; /* Don't hint GPU compositing */
   overflow: hidden;
 }
 

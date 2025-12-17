@@ -74,6 +74,12 @@ const MediaQueryContext = createContext({
   // Actual viewport dimensions
   width: 0,
   height: 0,
+  
+  // Performance-related defaults
+  shouldSmoothScroll: true,
+  shouldAnimate: true,
+  shouldRender3D: true,
+  performanceLevel: 'full',
 });
 
 export const useMediaQuery = () => useContext(MediaQueryContext);
@@ -96,6 +102,11 @@ export const MediaQueryProvider = ({ children }) => {
     prefersDarkMode: false,
     width: 0,
     height: 0,
+    // Performance-related defaults
+    shouldSmoothScroll: true,
+    shouldAnimate: true,
+    shouldRender3D: true,
+    performanceLevel: 'full',
   });
 
   useEffect(() => {
@@ -142,6 +153,33 @@ export const MediaQueryProvider = ({ children }) => {
 
       // Detect touch capability (not a media query, but useful)
       newQueries.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      // Performance level detection (layered degradation)
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const cores = navigator.hardwareConcurrency || 4; // Default to 4 if unknown
+      
+      let performanceLevel = 'full';
+      
+      // Priority order: explicit user preferences first, then network/device
+      if (connection?.saveData) {
+        performanceLevel = 'minimal'; // User explicitly saving data
+      } else if (newQueries.prefersReducedMotion) {
+        performanceLevel = 'reduced'; // Accessibility preference
+      } else if (connection?.effectiveType === '2g' || connection?.effectiveType === 'slow-2g') {
+        performanceLevel = 'low'; // Very slow network
+      } else if (connection?.effectiveType === '3g' && cores <= 2) {
+        performanceLevel = 'low'; // Slow network + low-end device
+      }
+      
+      newQueries.performanceLevel = performanceLevel;
+      
+      // Convenience flags for components
+      newQueries.shouldAnimate = performanceLevel === 'full';
+      newQueries.shouldRender3D = ['full', 'reduced'].includes(performanceLevel);
+      // Enable smooth scroll for full and reduced performance (unless explicit reduced motion)
+      newQueries.shouldSmoothScroll = !newQueries.prefersReducedMotion;
+      newQueries.shouldAutoRotate = performanceLevel === 'full';
+      newQueries.use3DQuality = performanceLevel === 'low' ? 'low' : 'high';
 
       setQueries(newQueries);
     };

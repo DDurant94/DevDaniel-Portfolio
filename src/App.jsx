@@ -72,6 +72,7 @@
 // Imports
 import React, { useEffect, Suspense, useRef } from 'react';
 import { Routes, Route, useLocation } from "react-router-dom";
+import { setupScrollPauseAnimations } from './Utils/scrollPauseAnimations.js';
 
 import ScrollToTop from './Components/Navigation/ScrollToTop/ScrollToTop.jsx';
 import LoadingFallback from './Components/UI/LoadingFallback/LoadingFallback.jsx';
@@ -148,6 +149,9 @@ function App() {
   const [shouldRender, setShouldRender] = React.useState(true);
 
   useEffect(() => {
+    // Setup scroll animation pauser (Option 3)
+    const cleanup = setupScrollPauseAnimations();
+    
     // Force clean body state on app mount
     document.body.classList.remove('page-transitioning');
     document.body.style.position = '';
@@ -164,6 +168,7 @@ function App() {
     
     return () => {
       if (mouse) mouse();
+      if (cleanup) cleanup();
     }
   },[]);
 
@@ -227,13 +232,24 @@ function App() {
  * @returns {React.ReactElement} Full application with providers and routes
  */
 function AppContent({ onLoaded }) {
+  const [backgroundsReady, setBackgroundsReady] = React.useState(false);
+  
   React.useEffect(() => {
     // Wait a tick to ensure everything is mounted, then hide loader
     const timer = setTimeout(() => {
       onLoaded();
     }, 100);
     
-    return () => clearTimeout(timer);
+    // Load backgrounds immediately but fade them in after content loads
+    // This prevents them from being counted as LCP
+    const backgroundTimer = setTimeout(() => {
+      setBackgroundsReady(true);
+    }, 500); // Faster load, smoother transition
+    
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(backgroundTimer);
+    };
   }, [onLoaded]);
   
   const location = useLocation();
@@ -263,10 +279,20 @@ function AppContent({ onLoaded }) {
               <PortfolioFilterProvider>
                 <ContactAsideProvider openContactAside={handleOpenContactAside}>
                   <ProjectOffCanvasProvider openProject={handleOpenProject} closeProject={handleCloseProject}>
-              {/* Coding-themed background patterns */}
-              <CodedBackground />
-              <TerminalPromptDecorations />
-              <CodeSnippetWatermark />
+              {/* Coding-themed background patterns - deferred to prevent LCP blocking */}
+              {backgroundsReady && (
+                <div style={{
+                  animation: 'fadeIn 800ms ease-in-out',
+                  pointerEvents: 'none',
+                  position: 'fixed',
+                  inset: 0,
+                  zIndex: -1
+                }}>
+                  <CodedBackground />
+                  <TerminalPromptDecorations />
+                  <CodeSnippetWatermark />
+                </div>
+              )}
               
               {/* <SpotlightEffect />  */}
               <NavigationInterceptor />

@@ -86,6 +86,7 @@
 
 import { useLayoutEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
+import { useMediaQuery } from '../../../Context/MediaQueryContext';
 import './../../../Styles/Component-Styles/UI-Styles/ScrollStack-Styles/ScrollStackStyles.css';
 
 /**
@@ -159,6 +160,7 @@ const ScrollStack = ({
   scaleEasing = 'easeInOut', // string key or function(progress)=>progress
   onStackComplete
 }) => {
+  const { prefersReducedMotion } = useMediaQuery();
   const scrollerRef = useRef(null);
   const stackCompletedRef = useRef(false);
   const animationFrameRef = useRef(null);
@@ -245,6 +247,12 @@ const ScrollStack = ({
 
   const updateCardTransforms = useCallback(() => {
   if (!cardsRef.current.length || !wrappersRef.current.length || isUpdatingRef.current) return;
+
+    // Skip all transform animations if user prefers reduced motion
+    if (prefersReducedMotion) {
+      isUpdatingRef.current = false;
+      return;
+    }
 
     isUpdatingRef.current = true;
 
@@ -368,6 +376,7 @@ const ScrollStack = ({
 
     isUpdatingRef.current = false;
   }, [
+    prefersReducedMotion,
     itemScale,
     itemStackDistance,
     baseScale,

@@ -1,28 +1,41 @@
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { useMediaQuery } from '../../../Context/MediaQueryContext';
 
 export default function SmoothScrollProvider({ children, options }) {
   const rafRef = useRef();
   const lenisRef = useRef();
+  const { shouldSmoothScroll, performanceLevel } = useMediaQuery();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    // Skip Lenis entirely for reduced motion, low performance, or minimal mode
+    if (!shouldSmoothScroll) return;
 
     // Reuse existing global Lenis if present
     let lenis = window.__lenis;
     let created = false;
     if (!lenis) {
       lenis = new Lenis({
-        duration: 1.1,
+        duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.25,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 2.0,
         normalizeWheel: true,
+        infinite: false,
+        autoResize: true,
         ...options,
       });
       window.__lenis = lenis;
       created = true;
+      
+      // Ensure Lenis is started
+      lenis.start();
+    } else {
     }
 
     const raf = (time) => {
@@ -62,7 +75,7 @@ export default function SmoothScrollProvider({ children, options }) {
         }
       }
     };
-  }, [options]);
+  }, [options, shouldSmoothScroll, performanceLevel]);
 
   return children;
 }

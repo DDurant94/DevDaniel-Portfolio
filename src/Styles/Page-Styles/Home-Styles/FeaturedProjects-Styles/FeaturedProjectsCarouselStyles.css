@@ -140,6 +140,8 @@
   cursor: pointer;
   transform: translateZ(0);
   outline: none; /* Remove default outline, use custom focus style on card */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .carousel-slide:focus-visible .slide-card {

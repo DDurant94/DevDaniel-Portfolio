@@ -11,7 +11,12 @@ import useGearInteraction from '../../../3D-Hooks/Header-Hooks/useGearInteractio
 import { VARIANTS } from './../../../../DataSets/Hero/HeroScene';
 import { useEffect, useState, useRef } from 'react';
 
-export default function GearCloudScene({ variant = 'home', containerRef: externalContainerRef, showGear = true }) {
+export default function GearCloudScene({ 
+  variant = 'home', 
+  containerRef: externalContainerRef, 
+  showGear = true,
+  performanceLevel = 'full' 
+}) {
   const v = VARIANTS[variant] ?? VARIANTS.home;
   
   // State
@@ -133,8 +138,12 @@ export default function GearCloudScene({ variant = 'home', containerRef: externa
               targetScale={isMobile ? v.gearMobile.scale : v.gear.scale}
               targetRotationRef={targetRotationRef}
               isMobile={isMobile}
+              enableAnimations={performanceLevel === 'full'}
             />
-            <CodingSymbolCloud enableAnimations containerRef={containerRef} />
+            <CodingSymbolCloud 
+              enableAnimations={performanceLevel === 'full'} 
+              containerRef={containerRef} 
+            />
           </ParallaxGroup>
         )}
 

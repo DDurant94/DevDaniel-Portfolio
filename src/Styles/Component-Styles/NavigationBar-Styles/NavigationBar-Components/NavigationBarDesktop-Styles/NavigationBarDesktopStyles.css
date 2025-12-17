@@ -334,6 +334,11 @@
   box-shadow: 0 8px 20px color-mix(in oklab, var(--color-primary) 20%, transparent);
 }
 
+/* Disable expensive reflections during scroll */
+[data-scrolling="true"] .sidebar-social-icon:hover {
+  -webkit-box-reflect: none !important;
+}
+
 .sidebar-social-icon:hover::before {
   opacity: 0.85;
 }

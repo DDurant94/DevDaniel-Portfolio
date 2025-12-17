@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useMediaQuery } from '../MediaQueryContext';
 
 /**
  * PageTransitionContext - Orchestrates smooth page transitions with 3D scene
@@ -95,6 +96,7 @@ const cleanBodyState = () => {
 export const PageTransitionProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { performanceLevel, shouldAnimate } = useMediaQuery();
   
   const [transitionState, setTransitionState] = useState('idle'); // 'idle', 'covering', 'covered', 'revealing'
   const [currentVariant, setCurrentVariant] = useState('home');
@@ -109,9 +111,31 @@ export const PageTransitionProvider = ({ children }) => {
   const savedScrollRef = useRef(0);
   const cleanupRunRef = useRef(false);
 
+  // Adaptive transition durations based on performance level
+  const transitionDurations = useMemo(() => {
+    switch (performanceLevel) {
+      case 'minimal':
+        return { covering: 0, navigate: 0, covered: 0, revealing: 0 }; // Instant
+      case 'reduced':
+        return { covering: 0, navigate: 0, covered: 0, revealing: 0 }; // Instant (no motion)
+      case 'low':
+        return { covering: 300, navigate: 400, covered: 100, revealing: 500 }; // Fast fade
+      case 'full':
+      default:
+        return { covering: 1000, navigate: 1400, covered: 200, revealing: 1200 }; // Full animation
+    }
+  }, [performanceLevel]);
+
   // Start transition function
   const startTransition = useCallback((targetPath, options) => {
     if (isTransitioningRef.current || targetPath === location.pathname) return;
+
+    // For minimal/reduced modes, navigate instantly
+    if (performanceLevel === 'minimal' || performanceLevel === 'reduced') {
+      navigate(targetPath, options || {});
+      window.scrollTo(0, 0);
+      return;
+    }
 
     // Store the target path and options
     pendingPathRef.current = targetPath;
@@ -144,16 +168,16 @@ export const PageTransitionProvider = ({ children }) => {
       }
     }, 15000);
 
-    // After clouds mostly cover (1000ms), navigate to new page
+    // After clouds mostly cover, navigate to new page
     setTimeout(() => {
       if (pendingPathRef.current) {
         navigate(pendingPathRef.current, pendingOptionsRef.current || {});
         pendingPathRef.current = null;
         pendingOptionsRef.current = null;
       }
-    }, 1000);
+    }, transitionDurations.covering);
 
-    // After slide-in animation completes (1.4s), mark covering as complete and start revealing
+    // After slide-in animation completes, mark covering as complete and start revealing
     setTimeout(() => {
       coveringCompleteRef.current = true;
       setTransitionState('covered');
@@ -161,9 +185,9 @@ export const PageTransitionProvider = ({ children }) => {
       // Brief pause to let new page render at top, then reveal
       setTimeout(() => {
         setTransitionState('revealing');
-      }, 200);
-    }, 1400);
-  }, [location.pathname, navigate]);
+      }, transitionDurations.covered);
+    }, transitionDurations.navigate);
+  }, [location.pathname, navigate, performanceLevel, transitionDurations]);
 
   // Listen for navigation requests from intercepted clicks
   useEffect(() => {

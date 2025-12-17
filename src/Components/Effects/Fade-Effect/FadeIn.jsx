@@ -53,7 +53,7 @@
  * ```
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useEffectVisibility } from '../../../Hooks/Effect-Hooks/useEffectVisibility.jsx';
 import './../../../Styles/General-Styles/DesignSystem-Styles/Design-Utility-Styles/EffectsStyles.css';
 
@@ -90,15 +90,18 @@ const FadeInWhenVisible = ({
   }
   // Apply transitionDelay only before the element becomes visible so interactive
   // hover states don't inherit a lingering delay after the initial reveal.
-  const computedDelay = typeof staggerIndex === 'number'
-    ? `calc(${staggerIndex} * var(--motion-stagger-sm))`
-    : (delay ? `${delay}s` : undefined);
+  const computedDelay = useMemo(() => {
+    return typeof staggerIndex === 'number'
+      ? `calc(${staggerIndex} * var(--motion-stagger-sm))`
+      : (delay ? `${delay}s` : undefined);
+  }, [staggerIndex, delay]);
 
-  const style = {
+  const style = useMemo(() => ({
     '--fx-y': typeof y === 'number' ? `${y}px` : y,
     '--fx-dur': `${duration}s`,
     ...( !visible && computedDelay ? { transitionDelay: computedDelay } : {} ),
-  };
+  }), [y, duration, visible, computedDelay]);
+  
   const shouldShow = once ? (hasShownRef.current || visible) : visible;
   const visibilityClass = shouldShow ? onVisibleClass : '';
   return (

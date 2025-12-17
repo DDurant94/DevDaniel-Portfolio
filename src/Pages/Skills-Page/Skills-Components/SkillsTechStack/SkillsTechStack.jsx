@@ -31,7 +31,7 @@
 
 // src/Pages/Skills-Components/SkillsTechStack/SkillsTechStack.jsx
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import FadeInWhenVisible from '../../../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import { Col, Row } from 'react-bootstrap';
 import { techCategories } from './../../../../DataSets/Skills/TechCategories';
 import './../../../../Styles/Page-Styles/Skills-Styles/TechStack-Styles/TechStackStyles.css';
@@ -61,15 +61,16 @@ const SkillsTechStack = () => {
               xl={4}
               className="skills-tech-list-col text-center"
             >
-              <motion.div
-                className={`skills-tech-list ${isActive ? 'active' : ''}`}
-                tabIndex="0"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-                viewport={{ once: true }}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-              >
+              <FadeInWhenVisible
+                y={40}
+                duration={0.8}
+                staggerIndex={index}
+                staggerDelay={0.15}>
+                <div
+                  className={`skills-tech-list ${isActive ? 'active' : ''}`}
+                  tabIndex="0"
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                >
                 <div className='skills-tech-list-header'>
                   <h3>{category.title}</h3>
                 </div>
@@ -80,7 +81,8 @@ const SkillsTechStack = () => {
                     ))}
                   </ul>
                 </div>
-              </motion.div>
+                </div>
+              </FadeInWhenVisible>
             </Col>
           );
         })}

@@ -36,6 +36,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useMediaQuery } from '../../../../Context/MediaQueryContext';
 import GearCloudScene from './GearCloudScene.jsx';
 import '../../../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
 
@@ -57,11 +58,15 @@ const validRoutes = ['/', '/about', '/projects', '/skills'];
 export default function SharedHeroScene({ showGear = true }) {
   const location = useLocation();
   const containerRef = useRef(null);
+  const { shouldRender3D, performanceLevel } = useMediaQuery();
   const [currentVariant, setCurrentVariant] = useState(routeToVariant[location.pathname] || 'home');
   const [hasError, setHasError] = useState(false);
   const [isErrorVisible, setIsErrorVisible] = useState(true);
   const [shouldShake, setShouldShake] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
+
+  // Skip 3D rendering for minimal/low performance
+  const shouldRenderScene = shouldRender3D && performanceLevel !== 'minimal';
 
   // Update variant when route changes
   useEffect(() => {
@@ -289,13 +294,26 @@ export default function SharedHeroScene({ showGear = true }) {
         </div>
       )}
       
-      {/* 3D Scene */}
-      {!hasError && (
+      {/* 3D Scene - conditionally render based on performance */}
+      {!hasError && shouldRenderScene && (
         <GearCloudScene 
           variant={currentVariant} 
           containerRef={containerRef}
           sceneReady={sceneReady}
           showGear={showGear}
+          performanceLevel={performanceLevel}
+        />
+      )}
+
+      {/* Fallback gradient for minimal performance mode */}
+      {!hasError && !shouldRenderScene && (
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #FFE5B4 100%)',
+            pointerEvents: 'none'
+          }}
         />
       )}
     </div>

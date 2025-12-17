@@ -68,15 +68,12 @@
   display: flex;
   align-content: center;
   justify-content: center;
-
   text-align: center;
   padding: var(--space-8) var(--space-4);
 }
 
 #projects-intro-container h1 {
   font-size: calc(1.775rem + 1.5vw);
-    -webkit-text-stroke: var(--color-text-soft);
-  -webkit-text-stroke-width: var(--text-stroke-thin);
   font-weight: var(--font-weight-bold);
   background: var(--gradient-brand-horizontal);
   -webkit-background-clip: text;
@@ -90,11 +87,8 @@
   font-size: calc(1.0rem + 0.3vw);
   padding: 0.25rem 0 0.25rem 0;
   margin: 1rem 0 1.5rem 0;
-  /* font-size: var(--font-size-md); */
   color: var(--color-text-soft);
   max-width: 55ch;
-  /* margin: 0 0 1rem 0;
-  padding: 0 1rem 0 1rem; */
 }
 
 .nav-tabs{
