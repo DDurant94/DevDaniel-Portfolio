@@ -84,7 +84,7 @@
  * ```
  */
 
-import { useLayoutEffect, useRef, useCallback } from 'react';
+import { useLayoutEffect, useRef, useCallback, useEffect } from 'react';
 import Lenis from 'lenis';
 import { useMediaQuery } from '../../../Context/MediaQueryContext';
 import './../../../Styles/Component-Styles/UI-Styles/ScrollStack-Styles/ScrollStackStyles.css';
@@ -160,7 +160,12 @@ const ScrollStack = ({
   scaleEasing = 'easeInOut', // string key or function(progress)=>progress
   onStackComplete
 }) => {
-  const { prefersReducedMotion } = useMediaQuery();
+  const { prefersReducedMotion, isMobile, isTablet, isTouchDevice } = useMediaQuery();
+  
+  // Disable animations only for mobile/tablet OR reduced motion
+  // Don't disable for isTouchDevice alone - many desktops have touchscreens
+  const shouldDisableAnimations = prefersReducedMotion || isMobile || isTablet;
+  
   const scrollerRef = useRef(null);
   const stackCompletedRef = useRef(false);
   const animationFrameRef = useRef(null);
@@ -249,7 +254,8 @@ const ScrollStack = ({
   if (!cardsRef.current.length || !wrappersRef.current.length || isUpdatingRef.current) return;
 
     // Skip all transform animations if user prefers reduced motion
-    if (prefersReducedMotion) {
+    // Mobile uses CSS sticky positioning instead (no JS transforms)
+    if (shouldDisableAnimations) {
       isUpdatingRef.current = false;
       return;
     }
@@ -376,7 +382,7 @@ const ScrollStack = ({
 
     isUpdatingRef.current = false;
   }, [
-    prefersReducedMotion,
+    shouldDisableAnimations,
     itemScale,
     itemStackDistance,
     baseScale,

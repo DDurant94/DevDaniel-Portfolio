@@ -1,4 +1,5 @@
 import Logo from './../../Assets/Photos/Logo.png';
+import AiImageGraderWorkflow from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGraderWorkflow.svg';
 
 /**
  * Projects - Portfolio project data with full metadata
@@ -63,9 +64,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: false,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: AiImageGraderWorkflow,
     media: [
-      { src: Logo, alt: 'AI Image Grader Logo' }
+      { src: AiImageGraderWorkflow, alt: 'AI Image Grader Logo' }
       // Add screenshots/GIFs here
     ],
     body: {

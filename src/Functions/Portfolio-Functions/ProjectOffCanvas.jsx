@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import FadeInOut from './../../Components/Effects/Fade-Effect/FadeInOut.jsx';
 import { useNavigation } from '../../Context/Navigation-Context/NavigationContext';
+import { useMediaQuery } from '../../Context/MediaQueryContext';
 import './../../Styles/General-Styles/DesignSystem-Styles/Design-Component-Styles/OffCanvasStyles.css';
 
 /**
@@ -60,6 +61,7 @@ import './../../Styles/General-Styles/DesignSystem-Styles/Design-Component-Style
  */
 export default function ProjectOffCanvas({ show, onHide, content }) {
   const { closeMobileMenu } = useNavigation();
+  const { isMobile } = useMediaQuery();
 
   // Close mobile menu when offcanvas opens
   useEffect(() => {
@@ -293,7 +295,64 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
             </div>
           )}
 
-          <FadeInOut as="div" y={32} scaleFrom={0.96} duration={0.55} once={false}>
+          {/* On mobile: no scroll reveal, show immediately */}
+          {isMobile ? (
+            <div>
+              {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
+              {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
+              {offCanvasDescription && (
+                <p className="offcanvas__body-text" style={{ whiteSpace: 'pre-wrap' }}>
+                  {offCanvasDescription}
+                </p>
+              )}
+
+              {techs && techs.length > 0 && (
+                <div className="util-section" data-ref="offcanvas-techs">
+                  <h5 className="util-section-title">Technologies Used</h5>
+                  <ul className="util-pill-list">
+                    {(Array.isArray(techs) ? techs : Object.values(techs).flat()).map((tech) => (
+                      <li key={tech} className="util-pill">
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {concepts && concepts.length > 0 && (
+                <div className="util-section" data-ref="offcanvas-concepts">
+                  <h5 className="util-section-title">Concepts & Domains</h5>
+                  <ul className="util-pill-list">
+                    {concepts.map((concept) => (
+                      <li key={concept} className="util-pill">
+                        {concept}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {links.length > 0 && (
+                <ul className="ds-offcanvas__links">
+                  {links.map((link) => (
+                    <li key={link.url || link.label}>
+                      {link.isDisabled ? (
+                        <span className="disabled" aria-disabled="true">
+                          {link.label}
+                        </span>
+                      ) : (
+                        <a href={link.url} target="_blank" rel="noopener noreferrer">
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : (
+            /* Desktop: keep scroll reveal animations */
+            <FadeInOut as="div" y={32} scaleFrom={0.96} duration={0.55} once={false}>
             {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
             {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
             {offCanvasDescription && (
@@ -364,6 +423,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
               </ul>
             )}
           </FadeInOut>
+          )}
         </div>
       </section>
     </div>

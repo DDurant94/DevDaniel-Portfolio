@@ -33,7 +33,7 @@ import { useEffect, useRef, useState } from 'react';
  *   </div>
  * );
  */
-export function useEffectVisibility({ threshold = 0.15, root = null, rootMargin = '0px 0px -100px 0px' } = {}) {
+export function useEffectVisibility({ threshold = 0.1, root = null, rootMargin = '0px' } = {}) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 

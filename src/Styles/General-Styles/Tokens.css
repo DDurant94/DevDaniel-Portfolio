@@ -223,8 +223,8 @@
   --bp-mobile-max: 767px;  /* Use with max-width for mobile-only styles */
 
   /* Typography */
-  --font-family-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-  --font-family-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', 'Courier New', monospace;
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-family-mono: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', 'Courier New', monospace;
   --line-height-base: 1.55;
   --line-height-tight: 1.2;
   --font-weight-regular: 400;

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <!-- Background -->
+  <rect width="1200" height="300" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="#1a1a1a" text-anchor="middle">
+    Quick AI Grader • Dual Pipeline Architecture
+  </text>
+  
+  <!-- Upload Center -->
+  <g id="upload">
+    <rect x="50" y="80" width="180" height="160" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <path d="M 140 170 L 140 135 M 125 150 L 140 135 L 155 150" fill="none" stroke="#4285f4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="125" y="175" width="30" height="35" rx="3" fill="none" stroke="#4285f4" stroke-width="2"/>
+    <text x="140" y="210" font-family="system-ui" font-size="16" font-weight="600" fill="#1a1a1a" text-anchor="middle">Upload</text>
+    <text x="140" y="230" font-family="system-ui" font-size="12" fill="#666" text-anchor="middle">All Formats</text>
+  </g>
+  
+  <!-- Split Arrow -->
+  <line x1="240" y1="160" x2="280" y2="160" stroke="#cbd5e0" stroke-width="3"/>
+  <line x1="280" y1="160" x2="330" y2="110" stroke="#cbd5e0" stroke-width="3"/>
+  <line x1="280" y1="160" x2="330" y2="210" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="330,110 322,115 327,120" fill="#cbd5e0"/>
+  <polygon points="330,210 327,200 322,205" fill="#cbd5e0"/>
+  
+  <!-- Pipeline 1: Image -->
+  <g id="pipeline1">
+    <rect x="340" y="60" width="160" height="80" rx="10" fill="#fff5f5" stroke="#ea4335" stroke-width="2"/>
+    <path d="M 390 90 L 390 110 L 450 110 L 450 95 L 440 85 L 390 85 Z M 440 85 L 440 95 L 450 95" fill="none" stroke="#ea4335" stroke-width="2.5"/>
+    <text x="420" y="125" font-family="system-ui" font-size="14" font-weight="600" fill="#ea4335" text-anchor="middle">Image Pipeline</text>
+    <text x="420" y="138" font-family="system-ui" font-size="10" fill="#c53030" text-anchor="middle">JPG, PNG, JPEG</text>
+  </g>
+  
+  <!-- Pipeline 2: Text -->
+  <g id="pipeline2">
+    <rect x="340" y="160" width="160" height="80" rx="10" fill="#f0f9ff" stroke="#4285f4" stroke-width="2"/>
+    <rect x="390" y="185" width="40" height="50" rx="3" fill="none" stroke="#4285f4" stroke-width="2.5"/>
+    <line x1="398" y1="195" x2="422" y2="195" stroke="#4285f4" stroke-width="2"/>
+    <line x1="398" y1="203" x2="422" y2="203" stroke="#4285f4" stroke-width="2"/>
+    <line x1="398" y1="211" x2="418" y2="211" stroke="#4285f4" stroke-width="2"/>
+    <text x="420" y="232" font-family="system-ui" font-size="14" font-weight="600" fill="#4285f4" text-anchor="middle">Text Pipeline</text>
+    <text x="420" y="245" font-family="system-ui" font-size="10" fill="#2c5aa0" text-anchor="middle">PDF, DOCX, TXT</text>
+  </g>
+  
+  <!-- Merge Arrow -->
+  <line x1="510" y1="100" x2="560" y2="140" stroke="#cbd5e0" stroke-width="3"/>
+  <line x1="510" y1="200" x2="560" y2="160" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="560,150 552,153 555,160" fill="#cbd5e0"/>
+  
+  <!-- AI Processing -->
+  <g id="ai">
+    <rect x="570" y="100" width="160" height="120" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <circle cx="650" cy="150" r="30" fill="none" stroke="#34a853" stroke-width="3"/>
+    <path d="M 628 140 Q 635 130 645 138" fill="none" stroke="#34a853" stroke-width="2.5"/>
+    <path d="M 628 160 Q 635 170 645 162" fill="none" stroke="#34a853" stroke-width="2.5"/>
+    <circle cx="638" cy="150" r="3" fill="#34a853"/>
+    <circle cx="662" cy="150" r="3" fill="#34a853"/>
+    <path d="M 615 135 L 618 138 L 615 141 L 612 138 Z" fill="#34a853"/>
+    <path d="M 685 135 L 688 138 L 685 141 L 682 138 Z" fill="#34a853"/>
+    <text x="650" y="193" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Unified AI</text>
+    <text x="650" y="208" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">Smart Processing</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="740" y1="160" x2="790" y2="160" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="790,160 780,155 780,165" fill="#cbd5e0"/>
+  
+  <!-- Grading -->
+  <g id="grade">
+    <rect x="800" y="100" width="160" height="120" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <circle cx="880" cy="160" r="35" fill="#fbbc04" opacity="0.15"/>
+    <text x="880" y="175" font-family="system-ui" font-size="36" font-weight="700" fill="#fbbc04" text-anchor="middle">⚡</text>
+    <text x="880" y="200" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Instant Grade</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="970" y1="160" x2="1020" y2="160" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="1020,160 1010,155 1010,165" fill="#cbd5e0"/>
+  
+  <!-- Results -->
+  <g id="results">
+    <rect x="1030" y="100" width="160" height="120" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <circle cx="1110" cy="155" r="28" fill="#34a853" opacity="0.12"/>
+    <path d="M 1095 155 L 1105 165 L 1125 145" fill="none" stroke="#34a853" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1110" y="195" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Real-Time</text>
+    <text x="1110" y="210" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">High Speed</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="600" y="280" font-family="system-ui" font-size="11" fill="#999" text-anchor="middle">
+    Dual Engine Architecture • Optimized Throughput • Instant Feedback
+  </text>
+</svg>

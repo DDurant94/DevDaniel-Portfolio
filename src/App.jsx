@@ -244,7 +244,7 @@ function AppContent({ onLoaded }) {
     // This prevents them from being counted as LCP
     const backgroundTimer = setTimeout(() => {
       setBackgroundsReady(true);
-    }, 500); // Faster load, smoother transition
+    }, 100); // Load quickly to prevent flash
     
     return () => {
       clearTimeout(timer);
@@ -282,7 +282,6 @@ function AppContent({ onLoaded }) {
               {/* Coding-themed background patterns - deferred to prevent LCP blocking */}
               {backgroundsReady && (
                 <div style={{
-                  animation: 'fadeIn 800ms ease-in-out',
                   pointerEvents: 'none',
                   position: 'fixed',
                   inset: 0,

@@ -276,4 +276,12 @@
   .offcanvas__title {
     font-size: 1.1rem;
   }
+  
+  .offcanvas__header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .offcanvas-media {
+    margin-bottom: var(--space-4);
+  }
 }

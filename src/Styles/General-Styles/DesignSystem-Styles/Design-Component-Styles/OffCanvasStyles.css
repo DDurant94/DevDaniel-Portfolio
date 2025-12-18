@@ -553,16 +553,22 @@
     font-size: clamp(1rem, 4.5vw, 1.25rem);
   }
 
+  .ds-offcanvas__header {
+    padding: 0.5rem 1rem;
+    min-height: 2.5rem;
+  }
+
   .ds-offcanvas__body {
-    padding: var(--space-4) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+    padding: var(--space-2) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   }
 
   .ds-offcanvas-media {
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-3);
   }
 
   .ds-offcanvas-media__stage {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
+    max-height: 35vh;
     border-radius: var(--radius-md, 14px);
   }
 
@@ -579,11 +585,16 @@
 
 @media (max-width: 520px) {
   .ds-offcanvas__body {
-    padding: var(--space-4) var(--space-3) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+    padding: var(--space-2) var(--space-3) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ds-offcanvas-media {
+    margin-bottom: var(--space-3);
   }
 
   .ds-offcanvas-media__stage {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
+    max-height: 30vh;
   }
 
   .ds-offcanvas-media__thumb {

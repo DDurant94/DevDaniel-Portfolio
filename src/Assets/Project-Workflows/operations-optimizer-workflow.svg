@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320">
+  <!-- Background -->
+  <rect width="1200" height="320" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="#1a1a1a" text-anchor="middle">
+    Operations Optimizer • Three APIs, One Pipeline
+  </text>
+  
+  <!-- API 1 -->
+  <g id="api1">
+    <rect x="50" y="70" width="160" height="70" rx="10" fill="#fff5f5" stroke="#ea4335" stroke-width="2"/>
+    <rect x="90" y="92" width="80" height="25" rx="4" fill="none" stroke="#ea4335" stroke-width="2"/>
+    <text x="130" y="110" font-family="system-ui" font-size="12" font-weight="600" fill="#ea4335" text-anchor="middle">API</text>
+    <text x="130" y="130" font-family="system-ui" font-size="11" fill="#c53030" text-anchor="middle">Logistics A</text>
+  </g>
+  
+  <!-- API 2 -->
+  <g id="api2">
+    <rect x="50" y="155" width="160" height="70" rx="10" fill="#f0f9ff" stroke="#4285f4" stroke-width="2"/>
+    <rect x="90" y="177" width="80" height="25" rx="4" fill="none" stroke="#4285f4" stroke-width="2"/>
+    <text x="130" y="195" font-family="system-ui" font-size="12" font-weight="600" fill="#4285f4" text-anchor="middle">API</text>
+    <text x="130" y="215" font-family="system-ui" font-size="11" fill="#2c5aa0" text-anchor="middle">Fulfillment B</text>
+  </g>
+  
+  <!-- API 3 -->
+  <g id="api3">
+    <rect x="50" y="240" width="160" height="70" rx="10" fill="#f0fdf4" stroke="#34a853" stroke-width="2"/>
+    <rect x="90" y="262" width="80" height="25" rx="4" fill="none" stroke="#34a853" stroke-width="2"/>
+    <text x="130" y="280" font-family="system-ui" font-size="12" font-weight="600" fill="#34a853" text-anchor="middle">API</text>
+    <text x="130" y="295" font-family="system-ui" font-size="11" fill="#15803d" text-anchor="middle">Shipping C</text>
+  </g>
+  
+  <!-- Merge Arrows -->
+  <line x1="220" y1="105" x2="280" y2="150" stroke="#cbd5e0" stroke-width="3"/>
+  <line x1="220" y1="190" x2="280" y2="170" stroke="#cbd5e0" stroke-width="3"/>
+  <line x1="220" y1="275" x2="280" y2="190" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="280,170 272,172 275,180" fill="#cbd5e0"/>
+  
+  <!-- Data Integration -->
+  <g id="integration">
+    <rect x="290" y="130" width="180" height="100" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <!-- Merge Icon -->
+    <circle cx="380" cy="165" r="12" fill="#fbbc04" opacity="0.2"/>
+    <circle cx="380" cy="180" r="12" fill="#fbbc04" opacity="0.4"/>
+    <circle cx="380" cy="195" r="12" fill="#fbbc04" opacity="0.6"/>
+    <path d="M 365 165 L 375 165 M 365 180 L 375 180 M 365 195 L 375 195" stroke="#fbbc04" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 385 165 L 395 165 M 385 180 L 395 180 M 385 195 L 395 195" stroke="#fbbc04" stroke-width="2" stroke-linecap="round"/>
+    
+    <text x="380" y="158" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">R Script</text>
+    <text x="380" y="215" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">Data Integration</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="480" y1="180" x2="530" y2="180" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="530,180 520,175 520,185" fill="#cbd5e0"/>
+  
+  <!-- Reconciliation -->
+  <g id="reconcile">
+    <rect x="540" y="130" width="180" height="100" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <!-- Check/Fix Icon -->
+    <circle cx="630" cy="170" r="22" fill="none" stroke="#ea4335" stroke-width="2.5"/>
+    <path d="M 618 170 L 625 177 L 642 160" fill="none" stroke="#34a853" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="630" y="205" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Auto-Reconcile</text>
+    <text x="630" y="220" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">Fix Missing Data</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="730" y1="180" x2="780" y2="180" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="780,180 770,175 770,185" fill="#cbd5e0"/>
+  
+  <!-- Database -->
+  <g id="database">
+    <rect x="790" y="130" width="180" height="100" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <!-- Database Icon -->
+    <ellipse cx="880" cy="165" rx="25" ry="10" fill="none" stroke="#4285f4" stroke-width="2.5"/>
+    <line x1="855" y1="165" x2="855" y2="185" stroke="#4285f4" stroke-width="2.5"/>
+    <line x1="905" y1="165" x2="905" y2="185" stroke="#4285f4" stroke-width="2.5"/>
+    <ellipse cx="880" cy="185" rx="25" ry="10" fill="none" stroke="#4285f4" stroke-width="2.5"/>
+    
+    <text x="880" y="210" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Unified DB</text>
+    <text x="880" y="223" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">PostgreSQL</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="980" y1="180" x2="1030" y2="180" stroke="#cbd5e0" stroke-width="3"/>
+  <polygon points="1030,180 1020,175 1020,185" fill="#cbd5e0"/>
+  
+  <!-- Results -->
+  <g id="results">
+    <rect x="1040" y="130" width="150" height="100" rx="12" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+    <!-- Track Icon -->
+    <circle cx="1115" cy="170" r="18" fill="none" stroke="#34a853" stroke-width="2.5"/>
+    <path d="M 1115 155 L 1115 170 L 1125 175" fill="none" stroke="#34a853" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="1125" cy="175" r="3" fill="#34a853"/>
+    
+    <text x="1115" y="200" font-family="system-ui" font-size="14" font-weight="600" fill="#1a1a1a" text-anchor="middle">Complete</text>
+    <text x="1115" y="213" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">Tracking</text>
+    <text x="1115" y="225" font-family="system-ui" font-size="11" fill="#666" text-anchor="middle">Real-Time</text>
+  </g>
+  
+  <!-- Label -->
+  <text x="130" y="60" font-family="system-ui" font-size="13" font-weight="600" fill="#666" text-anchor="middle">Fragmented Data</text>
+  <text x="1115" y="120" font-family="system-ui" font-size="13" font-weight="600" fill="#34a853" text-anchor="middle">Unified Insight</text>
+  
+  <!-- Footer -->
+  <text x="600" y="305" font-family="system-ui" font-size="11" fill="#999" text-anchor="middle">
+    API Orchestration • Data Normalization • E-Commerce Infrastructure
+  </text>
+</svg>
