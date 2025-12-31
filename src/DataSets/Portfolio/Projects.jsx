@@ -1,5 +1,18 @@
 import Logo from './../../Assets/Photos/Logo.png';
-import AiImageGraderWorkflow from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGraderWorkflow.svg';
+
+import AiImageGrader from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader.gif';
+import AiImageGrader2 from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader2.gif';
+import CustomAiGrader from './../../Assets/Photos/Project-Photos/Custom-AI-Grader/CustomAiGrader.gif';
+import CustomAiGraderSVG from './../../Assets/Photos/Project-Photos/Custom-AI-Grader/CustomAiGraderSVG.svg';
+import QuickAiGrader from './../../Assets/Photos/Project-Photos/Quick-AI-Grader/QuickAiGrader.gif';
+import QuickAiGraderSVG from './../../Assets/Photos/Project-Photos/Quick-AI-Grader/QuickAiGraderSVG.svg';
+import EmailResponder from './../../Assets/Photos/Project-Photos/Email-Automation-Responder/EmailResponder.gif';
+import EmailResponderSVG from './../../Assets/Photos/Project-Photos/Email-Automation-Responder/EmailResponderSVG.svg';
+import PerformanceOptimization from './../../Assets/Photos/Project-Photos/Performance-Optimization/PerformanceOptimization.gif';
+import PerformanceOptimizationSVG from './../../Assets/Photos/Project-Photos/Performance-Optimization/PerformanceOptimizationSVG.svg';
+import OperationsOptimizerSVG from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizerSVG.svg';
+import OperationsOptimizer from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer.gif';
+import OperationsOptimizer2 from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer2.gif';
 
 /**
  * Projects - Portfolio project data with full metadata
@@ -64,9 +77,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: false,
     isFrontend: false,
-    coverImage: AiImageGraderWorkflow,
+    coverImage: AiImageGrader2,
     media: [
-      { src: AiImageGraderWorkflow, alt: 'AI Image Grader Logo' }
+      { src: AiImageGrader, alt: 'AI Image Grader GIF' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -108,9 +121,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: false,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: CustomAiGraderSVG,
     media: [
-      { src: Logo, alt: 'Custom AI Grader Logo' }
+      { src: CustomAiGrader, alt: 'Custom AI Grader GIF' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -152,9 +165,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: false,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: QuickAiGraderSVG,
     media: [
-      { src: Logo, alt: 'Quick AI Grader Logo' }
+      { src: QuickAiGrader, alt: 'Quick AI Grader GIF' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -192,9 +205,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: EmailResponderSVG,
     media: [
-      { src: Logo, alt: 'Email Automation Responder Logo' }
+      { src: EmailResponder, alt: 'Email Automation Responder GIF' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -230,9 +243,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: OperationsOptimizer,
     media: [
-      { src: Logo, alt: 'Operations Optimizer Logo' }
+      { src: OperationsOptimizerSVG, alt: 'Operations Optimizer GIF' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -267,9 +280,9 @@ export const allProjects = [
     isPersonal: false,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: PerformanceOptimizationSVG,
     media: [
-      { src: Logo, alt: 'Performance Optimization Logo' }
+      { src: PerformanceOptimization, alt: 'Performance Optimization GIF' }
       // Add screenshots/GIFs here
     ],
     body: {

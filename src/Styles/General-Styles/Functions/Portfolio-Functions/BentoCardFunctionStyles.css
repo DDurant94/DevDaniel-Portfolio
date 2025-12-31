@@ -98,16 +98,7 @@
   background: var(--color-background-secondary);
   border: 2px solid var(--color-accent);
   transition: box-shadow var(--motion-fade);
-  /* -webkit-box-reflect: below 0.25rem linear-gradient(
-  transparent 0 80%,
-  color-mix(in srgb, var(--color-text) 0.1%, transparent),
-  color-mix(in srgb, var(--color-text) 5%, transparent),
-  color-mix(in srgb, var(--color-text) 10%, transparent),
-  color-mix(in srgb, var(--color-text) 20%, transparent)
-); */
 }
-
-
 
 .bento-card:hover, .bento-card:focus-visible {
   box-shadow: var(--box-shadow-elevated);
@@ -256,7 +247,7 @@
   margin: 0.2rem 0 0.5rem 0;
   font-size: clamp(0.9rem, 2.5vw, 1.5rem);
   font-weight: 600;
-
+  padding: 1rem;
   line-height: 1.2;
   color: #ffffff;
   text-shadow: 

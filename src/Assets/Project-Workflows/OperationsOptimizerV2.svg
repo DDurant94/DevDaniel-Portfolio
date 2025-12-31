@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="a1" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="a2" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="a3" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="int" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="rec" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="db" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2"/>
+      <feOffset dx="0" dy="1.5"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="450" fill="#09090b"/>
+  
+  <!-- Arrows -->
+  <path d="M 146 140 L 240 202" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="247,205 239,199 237,208" fill="#334155"/>
+  
+  <path d="M 146 215 h 92" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="243,215 233,210 233,220" fill="#334155"/>
+  
+  <path d="M 146 290 L 240 228" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="247,225 237,222 239,231" fill="#334155"/>
+  
+  <path d="M 342 215 h 80" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="427,215 417,210 417,220" fill="#334155"/>
+  
+  <path d="M 521 215 h 79" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="605,215 595,210 595,220" fill="#334155"/>
+  
+  <!-- Title -->
+  <text x="400" y="62" font-family="system-ui,-apple-system,sans-serif" font-size="26" font-weight="700" fill="#fafafa" text-anchor="middle" letter-spacing="-0.5">Multi-API Integration</text>
+  <text x="400" y="86" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#71717a" text-anchor="middle">Unified Data Pipeline</text>
+  
+  <!-- Logistics API -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="116" width="116" height="48" rx="10" fill="url(#a1)"/>
+    
+    <text x="88" y="147" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle" opacity="0.98">Logistics</text>
+    <text x="88" y="161" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#fff" text-anchor="middle" opacity="0.7">API</text>
+  </g>
+  
+  <!-- Fulfillment API -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="191" width="116" height="48" rx="10" fill="url(#a2)"/>
+    
+    <text x="88" y="222" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle" opacity="0.98">Fulfillment</text>
+    <text x="88" y="236" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#fff" text-anchor="middle" opacity="0.7">API</text>
+  </g>
+  
+  <!-- Shipping API -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="266" width="116" height="48" rx="10" fill="url(#a3)"/>
+    
+    <text x="88" y="297" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle" opacity="0.98">Shipping</text>
+    <text x="88" y="311" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#fff" text-anchor="middle" opacity="0.7">API</text>
+  </g>
+  
+  <!-- Integrate -->
+  <g filter="url(#shadow)">
+    <circle cx="294" cy="215" r="48" fill="url(#int)"/>
+    
+    <circle cx="285" cy="215" r="11" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <circle cx="303" cy="215" r="11" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 285 204 Q 294 207 303 204" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+  </g>
+  <text x="294" y="283" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Integrate</text>
+  <text x="294" y="299" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Merge Data</text>
+  
+  <!-- Reconcile -->
+  <g filter="url(#shadow)">
+    <circle cx="473" cy="215" r="48" fill="url(#rec)"/>
+    
+    <circle cx="473" cy="215" r="23" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 462 215 L 469 223 L 484 206" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+  </g>
+  <text x="473" y="283" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Reconcile</text>
+  <text x="473" y="299" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Validate</text>
+  
+  <!-- Unified DB -->
+  <g filter="url(#shadow)">
+    <rect x="600" y="175" width="128" height="80" rx="10" fill="url(#db)"/>
+    
+    <ellipse cx="664" cy="215" rx="28" ry="11" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 636 215 v 18 Q 636 238 664 238 Q 692 238 692 233 v -18" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 636 224 Q 636 229 664 229 Q 692 229 692 224" fill="none" stroke="#fff" stroke-width="2" opacity="0.98"/>
+  </g>
+  <text x="664" y="272" font-family="system-ui,-apple-system,sans-serif" font-size="15" font-weight="600" fill="#fafafa" text-anchor="middle">Unified DB</text>
+  <text x="664" y="288" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Single Source</text>
+</svg>

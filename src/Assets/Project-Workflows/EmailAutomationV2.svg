@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mon" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="tim" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="dec" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="rep" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2"/>
+      <feOffset dx="0" dy="1.5"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="450" fill="#09090b"/>
+  
+  <!-- Arrows -->
+  <path d="M 160 212 h 62" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="227,212 217,207 217,217" fill="#334155"/>
+  
+  <path d="M 338 212 h 62" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="405,212 395,207 395,217" fill="#334155"/>
+  
+  <!-- Decision arrows -->
+  <path d="M 542 168 L 600 136" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="607,133 599,129 597,138" fill="#334155"/>
+  
+  <path d="M 542 256 L 600 288" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="607,291 597,286 599,295" fill="#334155"/>
+  
+  <!-- Title -->
+  <text x="400" y="62" font-family="system-ui,-apple-system,sans-serif" font-size="26" font-weight="700" fill="#fafafa" text-anchor="middle" letter-spacing="-0.5">Smart Email Automation</text>
+  <text x="400" y="86" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#71717a" text-anchor="middle">Automatic Follow-Up System</text>
+  
+  <!-- Monitor -->
+  <g filter="url(#shadow)">
+    <circle cx="114" cy="212" r="46" fill="url(#mon)"/>
+    
+    <rect x="100" y="202" width="28" height="20" rx="3" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 100 202 L 114 211 L 128 202" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" opacity="0.98"/>
+    <circle cx="126" cy="204" r="3.5" fill="#ef4444"/>
+  </g>
+  <text x="114" y="274" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Monitor</text>
+  <text x="114" y="290" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Watch Inbox</text>
+  
+  <!-- Timer -->
+  <g filter="url(#shadow)">
+    <circle cx="292" cy="212" r="46" fill="url(#tim)"/>
+    
+    <circle cx="292" cy="212" r="19" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <line x1="292" y1="212" x2="292" y2="199" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.98"/>
+    <line x1="292" y1="212" x2="302" y2="212" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.98"/>
+  </g>
+  <text x="292" y="274" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">23 Hours</text>
+  <text x="292" y="290" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Wait Period</text>
+  
+  <!-- Decision -->
+  <g filter="url(#shadow)">
+    <path d="M 466 212 L 504 174 L 542 212 L 504 250 Z" fill="url(#dec)"/>
+    
+    <text x="504" y="221" font-family="system-ui,-apple-system,sans-serif" font-size="27" font-weight="700" fill="#fff" text-anchor="middle" opacity="0.98">?</text>
+  </g>
+  <text x="504" y="280" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Resolved?</text>
+  <text x="504" y="296" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Check Status</text>
+  
+  <!-- Yes Path -->
+  <text x="580" y="125" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#71717a">YES</text>
+  <text x="657" y="140" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#52525b" text-anchor="middle">No action needed</text>
+  
+  <!-- Auto Reply -->
+  <g filter="url(#shadow)">
+    <circle cx="657" cy="296" r="47" fill="url(#rep)"/>
+    
+    <!-- Sent letter with motion lines -->
+    <rect x="648" y="288" width="24" height="16" rx="2" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 648 288 L 660 297 L 672 288" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" opacity="0.98"/>
+    <!-- Motion lines showing movement -->
+    <line x1="642" y1="292" x2="646" y2="292" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="640" y1="298" x2="645" y2="298" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="642" y1="304" x2="646" y2="304" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+  <text x="657" y="360" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Auto Reply</text>
+  <text x="657" y="376" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Send Follow-Up</text>
+  
+  <!-- No label -->
+  <text x="580" y="300" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#71717a">NO</text>
+</svg>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="g4" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="g5" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2"/>
+      <feOffset dx="0" dy="1.5"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="450" fill="#09090b"/>
+  
+  <!-- Arrows -->
+  <path d="M 144 160 L 208 178" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="215,180 206,175 207,184" fill="#334155"/>
+  
+  <path d="M 144 240 L 208 222" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="215,220 207,216 206,225" fill="#334155"/>
+  
+  <path d="M 300 195 h 90" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="395,195 385,190 385,200" fill="#334155"/>
+  
+  <path d="M 485 202 h 93" stroke="#334155" stroke-width="2.5" fill="none"/>
+  <polygon points="583,202 573,197 573,207" fill="#334155"/>
+  
+  <!-- Title -->
+  <text x="400" y="62" font-family="system-ui,-apple-system,sans-serif" font-size="26" font-weight="700" fill="#fafafa" text-anchor="middle" letter-spacing="-0.5">Parallel Processing Pipeline</text>
+  <text x="400" y="86" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#71717a" text-anchor="middle">Dual-Path AI Analysis</text>
+  
+  <!-- Upload -->
+  <g filter="url(#shadow)">
+    <circle cx="100" cy="200" r="44" fill="url(#g1)"/>
+    
+    <path d="M 100 210 v -18 m -7 7 l 7 -7 l 7 7" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.98"/>
+    <rect x="89" y="210" width="22" height="9" rx="2" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+  </g>
+  <text x="100" y="258" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Upload</text>
+  <text x="100" y="274" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Documents</text>
+  
+  <!-- Image Pipeline -->
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="170" r="44" fill="url(#g2)"/>
+    
+    <rect x="242" y="159" width="28" height="22" rx="3" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <circle cx="248" cy="166" r="2.5" fill="#fff" opacity="0.98"/>
+    <path d="M 242 177 l 5 -5 l 5 5 l 7 -7 l 9 9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" opacity="0.98"/>
+  </g>
+  <text x="256" y="228" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Image</text>
+  <text x="256" y="244" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Processing</text>
+  
+  <!-- Text Pipeline -->
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="230" r="44" fill="url(#g3)"/>
+    
+    <rect x="242" y="219" width="28" height="22" rx="3" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <line x1="247" y1="225" x2="265" y2="225" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.98"/>
+    <line x1="247" y1="230" x2="265" y2="230" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.98"/>
+    <line x1="247" y1="235" x2="260" y2="235" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.98"/>
+  </g>
+  <text x="256" y="288" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Text</text>
+  <text x="256" y="304" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Extraction</text>
+  
+  <!-- Unified AI -->
+  <g filter="url(#shadow)">
+    <circle cx="438" cy="202" r="47" fill="url(#g4)"/>
+    
+    <circle cx="438" cy="202" r="26" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 426 194 Q 429 190 438 192.5 Q 447 190 450 194" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <path d="M 426 210 Q 429 214 438 211.5 Q 447 214 450 210" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.98"/>
+    <circle cx="430" cy="202" r="2.5" fill="#fff" opacity="0.98"/>
+    <circle cx="446" cy="202" r="2.5" fill="#fff" opacity="0.98"/>
+  </g>
+  <text x="438" y="268" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Unified AI</text>
+  <text x="438" y="284" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Multi-Modal</text>
+  
+  <!-- Instant -->
+  <g filter="url(#shadow)">
+    <circle cx="628" cy="202" r="47" fill="url(#g5)"/>
+    
+    <path d="M 633 188 L 623 202 L 630 202 L 623 216 L 637 200 L 630 200 Z" fill="#fff" opacity="0.98"/>
+  </g>
+  <text x="628" y="268" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#fafafa" text-anchor="middle">Instant</text>
+  <text x="628" y="284" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#71717a" text-anchor="middle">Results</text>
+</svg>
