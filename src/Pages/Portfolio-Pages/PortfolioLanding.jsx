@@ -216,7 +216,7 @@ export default function PortfolioLandingPage() {
       <main id="portfolio-main-content">
         <section id="projects-intro-section">
           <div id="projects-intro-container">
-            <h1>&#60;Explore My Work /&#62;</h1>
+            <h1>Explore My Work</h1>
             <p>
               Here's a curated selection of my work — from professional client
               projects to personal experiments that kept me up way too late.

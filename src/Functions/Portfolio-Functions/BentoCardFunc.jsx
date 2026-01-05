@@ -1,6 +1,8 @@
 // src/Functions/Portfolio-Functions/BentoCardFunc.jsx
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
+import useLazyLoad from '../../Hooks/Utility-Hooks/useLazyLoad';
+import { getMediaType } from '../../Utils/mediaHelpers.js';
 import './../../Styles/General-Styles/Functions/Portfolio-Functions/BentoCardFunctionStyles.css';
 
 /**
@@ -43,6 +45,7 @@ import './../../Styles/General-Styles/Functions/Portfolio-Functions/BentoCardFun
  * @param {string} props.title - Project title (required)
  * @param {string} props.description - Project description
  * @param {string} props.coverImage - Primary image URL
+ * @param {string} props.logoOverlay - Optional SVG logo to overlay on coverImage
  * @param {Array<{src: string, alt: string}>} props.media - Additional images
  * @param {string[]} props.techs - Technologies used
  * @param {Function} props.onClick - Click handler
@@ -70,6 +73,7 @@ export default function BentoCard({
   title,
   description,
   coverImage,
+  logoOverlay, // Optional SVG logo to overlay on video/image
   media = [],
   techs = [],
   onClick = () => {},
@@ -80,19 +84,29 @@ export default function BentoCard({
   showCategoryBadge = true, // New prop to control when to show category
   personalText = 'Personal', // Customizable text
   professionalText = 'Pro', // Customizable text
+  eagerLoad = false, // Load immediately (for first few cards)
 }) {
+  // Lazy load hook - load media when card enters viewport
+  const { ref, hasIntersected } = useLazyLoad({ 
+    rootMargin: '200px', // Start loading 200px before entering viewport
+    threshold: 0.01 
+  });
+
   // Limit displayed techs based on card size
   const techLimit = size === 'bento-large' ? 4 : size === 'bento-small' ? 2 : 3;
   const displayedTechs = techs.slice(0, techLimit);
   const remainingCount = Math.max(techs.length - techLimit, 0);
   const primaryMedia = coverImage || (media.length > 0 ? media[0]?.src : null);
+  
+  const mediaType = getMediaType(primaryMedia);
+  const shouldLoad = eagerLoad || hasIntersected;
 
   // Show description only on larger cards
   const showDescription = size === 'bento-large' || size === 'bento-wide' || size === 'bento-tall' || size==='bento-medium';
   
   // Truncate description for medium cards
-  const truncatedDescription = description && description.length > 100 
-    ? description.substring(0, 100) + '...'
+  const truncatedDescription = description && description.length > 200 
+    ? description.substring(0, 200) + '...'
     : description;
 
   // Get the first type for display
@@ -105,6 +119,7 @@ export default function BentoCard({
 
   return (
     <motion.div
+      ref={ref}
       className={`bento-card ${size} ${isFeatured ? 'featured' : ''} ${isPersonal ? 'personal' : 'professional'}`}
       onClick={onClick}
       role="button"
@@ -140,15 +155,50 @@ export default function BentoCard({
         )}
       </div>
 
-      {/* Background Image */}
-      {primaryMedia && (
+      {/* Background Image/Video */}
+      {primaryMedia && shouldLoad && (
         <div className="bento-card__image-container">
-          <img
-            src={primaryMedia}
-            alt={title}
-            className="bento-card__image"
-            loading="eager"
-          />
+          {mediaType === 'video' ? (
+            <video
+              className="bento-card__image"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              disablePictureInPicture
+            >
+              <source src={primaryMedia} type="video/mp4" />
+              {/* Fallback for WebM */}
+              <source src={primaryMedia.replace('.mp4', '.webm')} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={primaryMedia}
+              alt={title}
+              className="bento-card__image"
+              loading={eagerLoad ? "eager" : "lazy"}
+            />
+          )}
+          
+          {/* Logo Overlay (if provided) */}
+          {logoOverlay && (
+            <img
+              src={logoOverlay}
+              alt={`${title} Logo`}
+              className="bento-card__logo-overlay"
+              loading={eagerLoad ? "eager" : "lazy"}
+            />
+          )}
+          
+          <div className="bento-card__image-overlay"></div>
+        </div>
+      )}
+      
+      {/* Placeholder for unloaded media */}
+      {primaryMedia && !shouldLoad && (
+        <div className="bento-card__image-container bento-card__image-placeholder">
           <div className="bento-card__image-overlay"></div>
         </div>
       )}
@@ -198,6 +248,7 @@ BentoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   coverImage: PropTypes.string,
+  logoOverlay: PropTypes.string, // SVG logo overlay
   media: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string.isRequired,
@@ -213,4 +264,5 @@ BentoCard.propTypes = {
   showCategoryBadge: PropTypes.bool,
   personalText: PropTypes.string,
   professionalText: PropTypes.string,
+  eagerLoad: PropTypes.bool,
 };

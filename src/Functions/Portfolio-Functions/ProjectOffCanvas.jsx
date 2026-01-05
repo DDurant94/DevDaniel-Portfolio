@@ -2,9 +2,10 @@
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import FadeInOut from './../../Components/Effects/Fade-Effect/FadeInOut.jsx';
 import { useNavigation } from '../../Context/Navigation-Context/NavigationContext';
 import { useMediaQuery } from '../../Context/MediaQueryContext';
+import { getMediaType } from './../../Utils/mediaHelpers.js';
+import FullscreenMediaViewer from './../../Components/UI/FullscreenMediaViewer/FullscreenMediaViewer.jsx';
 import './../../Styles/General-Styles/DesignSystem-Styles/Design-Component-Styles/OffCanvasStyles.css';
 
 /**
@@ -83,6 +84,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
     isFrontend = false,
     coverImage,
     image,
+    logoOverlay,
     media = [],
     body = {},
   } = content || {};
@@ -106,35 +108,35 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
     return Array.from(set.values());
   }, [coverImage, image, media, title]);
 
+
   const [activeIdx, setActiveIdx] = useState(0);
-  const [fitMode, setFitMode] = useState('cover'); // 'cover' | 'contain'
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const stageRef = useRef(null);
-  const [showFitToggle, setShowFitToggle] = useState(true);
   // Parallax removed per user request
 
-  // Determine orientation after image load to adjust scaling & whether toggle is needed
+  // Determine orientation after media load
   const handleImageLoad = (e) => {
-    const img = e.target;
-    const { naturalWidth: w, naturalHeight: h } = img;
-    const orientation = w >= h ? 'landscape' : 'portrait';
-    img.dataset.orientation = orientation;
-    // Hide toggle if image already fits comfortably (difference in aspect ratio small)
-    const stage = stageRef.current;
-    if (stage) {
-      const rect = stage.getBoundingClientRect();
-      const stageRatio = rect.width / rect.height;
-      const imgRatio = w / h;
-      const ratioDiff = Math.abs(stageRatio - imgRatio);
-      setShowFitToggle(ratioDiff > 0.18 && window.innerWidth > 560); // threshold tweakable
+    const media = e.target;
+    let w, h;
+    
+    // Handle both images and videos
+    if (media.tagName === 'VIDEO') {
+      w = media.videoWidth;
+      h = media.videoHeight;
+    } else {
+      w = media.naturalWidth;
+      h = media.naturalHeight;
     }
+    
+    if (!w || !h) return; // Skip if dimensions aren't available yet
+    
+    const orientation = w >= h ? 'landscape' : 'portrait';
+    media.dataset.orientation = orientation;
   };
 
   useEffect(() => {
     setActiveIdx(0);
   }, [mediaItems]);
-
-  const next = () => setActiveIdx((i) => (i + 1) % mediaItems.length);
-  const prev = () => setActiveIdx((i) => (i - 1 + mediaItems.length) % mediaItems.length);
 
   const wrapperRef = useRef(null);
   const panelRef = useRef(null);
@@ -223,7 +225,6 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
               <div
                 className="ds-offcanvas-media__stage"
                 ref={stageRef}
-                data-fit={fitMode}
                 role="figure"
                 aria-label="Project image preview"
               >
@@ -236,60 +237,92 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <img
-                      src={mediaItems[activeIdx]?.src}
-                      alt={mediaItems[activeIdx]?.alt || title}
-                      className="ds-offcanvas-media__img"
-                      loading="eager"
-                      onLoad={handleImageLoad}
-                    />
+                    {getMediaType(mediaItems[activeIdx]?.src) === 'video' ? (
+                      <video
+                        src={mediaItems[activeIdx]?.src}
+                        className="ds-offcanvas-media__img"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        disablePictureInPicture
+                        onLoadedMetadata={handleImageLoad}
+                        onClick={() => setIsFullscreen(true)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    ) : (
+                      <img
+                        src={mediaItems[activeIdx]?.src}
+                        alt={mediaItems[activeIdx]?.alt || title}
+                        className={`ds-offcanvas-media__img${
+                          mediaItems[activeIdx]?.hasBackground ? ' ds-offcanvas-media__img--with-background' : ''
+                        }`}
+                        loading="eager"
+                        onLoad={handleImageLoad}
+                        onClick={() => setIsFullscreen(true)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    )}
+                    
+                    {/* Logo Overlay (only for media items with hasLogo flag) */}
+                    {mediaItems[activeIdx]?.hasLogo && logoOverlay && (
+                      <img
+                        src={logoOverlay}
+                        alt={`${title} Logo`}
+                        className="ds-offcanvas-media__logo-overlay"
+                        loading="eager"
+                      />
+                    )}
                   </motion.div>
                 </AnimatePresence>
-                {showFitToggle && (
-                  <div className="ds-offcanvas-media__tools">
-                    <button
-                      type="button"
-                      className="ds-offcanvas-media__fit-toggle"
-                      onClick={() => setFitMode(m => m === 'cover' ? 'contain' : 'cover')}
-                      aria-pressed={fitMode === 'contain'}
-                      aria-label={fitMode === 'contain' ? 'Switch to cropped cover view' : 'Show full image'}
-                    >
-                      {fitMode === 'contain' ? 'Fill View' : 'Full Image'}
-                    </button>
-                  </div>
-                )}
-                {mediaItems.length > 1 && (
-                  <>
-                    <button
-                      className="ds-offcanvas-media__nav ds-offcanvas-media__nav--prev"
-                      onClick={prev}
-                      aria-label="Previous image"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      className="ds-offcanvas-media__nav ds-offcanvas-media__nav--next"
-                      onClick={next}
-                      aria-label="Next image"
-                    >
-                      ›
-                    </button>
-                  </>
-                )}
+
               </div>
               {mediaItems.length > 1 && (
                 <div className="ds-offcanvas-media__thumbs">
-                  {mediaItems.map((m, i) => (
-                    <button
-                      key={m.src}
-                      className={`ds-offcanvas-media__thumb ${i === activeIdx ? 'active' : ''}`}
-                      onClick={() => setActiveIdx(i)}
-                      aria-label={`View image ${i + 1}`}
-                      aria-current={i === activeIdx}
-                    >
-                      <img src={m.src} alt={m.alt || `${title} ${i + 1}`} loading="lazy" />
-                    </button>
-                  ))}
+                  {mediaItems.map((m, i) => {
+                    const thumbType = getMediaType(m.src);
+                    return (
+                      <button
+                        key={m.src}
+                        className={`ds-offcanvas-media__thumb ${i === activeIdx ? 'active' : ''}`}
+                        onClick={() => setActiveIdx(i)}
+                        aria-label={`View ${thumbType === 'video' ? 'video' : 'image'} ${i + 1}`}
+                        aria-current={i === activeIdx}
+                      >
+                        {thumbType === 'video' ? (
+                          <>
+                            <video 
+                              src={m.src} 
+                              muted 
+                              playsInline 
+                              preload="auto"
+                              disablePictureInPicture
+                              onLoadedData={(e) => {
+                                // Seek to different time for each video (2.5s or 3.5s)
+                                e.target.currentTime = i === 0 ? 2.5 : 3.5;
+                                e.target.pause();
+                              }}
+                            />
+                            {m.hasLogo && logoOverlay && (
+                              <img
+                                src={logoOverlay}
+                                alt="Logo"
+                                className="ds-offcanvas-media__thumb-logo"
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <img 
+                            src={m.src} 
+                            alt={m.alt || `${title} ${i + 1}`} 
+                            loading="lazy"
+                            className={m.hasBackground ? 'ds-offcanvas-media__img--with-background' : ''}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -297,7 +330,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
 
           {/* On mobile: no scroll reveal, show immediately */}
           {isMobile ? (
-            <div>
+            <div tabIndex={0} role="article" aria-label="Project description">
               {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
               {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
               {offCanvasDescription && (
@@ -351,8 +384,15 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
               )}
             </div>
           ) : (
-            /* Desktop: keep scroll reveal animations */
-            <FadeInOut as="div" y={32} scaleFrom={0.96} duration={0.55} once={false}>
+            /* Desktop: use motion.div for reliable animation on offcanvas open */
+            <motion.div
+              initial={{ opacity: 0, y: 32, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.55, ease: [0.4, 0.7, 0.25, 1] }}
+              tabIndex={0} 
+              role="article" 
+              aria-label="Project description"
+            >
             {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
             {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
             {offCanvasDescription && (
@@ -366,18 +406,19 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                 <h5 className="util-section-title">Technologies Used</h5>
                 <ul className="util-pill-list">
                   {(Array.isArray(techs) ? techs : Object.values(techs).flat()).map((tech, i) => (
-                    <FadeInOut
-                      as="li"
+                    <motion.li
                       key={tech}
                       className="util-pill"
-                      y={20}
-                      scaleFrom={0.94}
-                      duration={0.4}
-                      staggerIndex={i}
-                      once={false}
+                      initial={{ opacity: 0, y: 20, scale: 0.94 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ 
+                        duration: 0.4, 
+                        delay: i * 0.05,
+                        ease: [0.4, 0.7, 0.25, 1]
+                      }}
                     >
                       {tech}
-                    </FadeInOut>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
@@ -388,18 +429,19 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                 <h5 className="util-section-title">Concepts & Domains</h5>
                 <ul className="util-pill-list">
                   {concepts.map((concept, i) => (
-                    <FadeInOut
-                      as="li"
+                    <motion.li
                       key={concept}
                       className="util-pill"
-                      y={20}
-                      scaleFrom={0.94}
-                      duration={0.4}
-                      staggerIndex={i}
-                      once={false}
+                      initial={{ opacity: 0, y: 20, scale: 0.94 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ 
+                        duration: 0.4, 
+                        delay: i * 0.05,
+                        ease: [0.4, 0.7, 0.25, 1]
+                      }}
                     >
                       {concept}
-                    </FadeInOut>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
@@ -422,10 +464,21 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                 ))}
               </ul>
             )}
-          </FadeInOut>
+          </motion.div>
           )}
         </div>
       </section>
+
+      {/* Fullscreen Media Viewer */}
+      <FullscreenMediaViewer
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        mediaSrc={mediaItems[activeIdx]?.src}
+        mediaAlt={mediaItems[activeIdx]?.alt || title}
+        logoSrc={logoOverlay}
+        hasLogo={mediaItems[activeIdx]?.hasLogo}
+        hasBackground={mediaItems[activeIdx]?.hasBackground}
+      />
     </div>
   );
 };

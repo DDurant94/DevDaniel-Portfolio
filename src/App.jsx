@@ -303,7 +303,6 @@ function AppContent({ onLoaded }) {
       {/* Unified Navigation - Desktop sidebar + Mobile full-screen menu */}
       <NavigationBar />
       
-      {/* <ThemeToggleContainer /> */}
       <ScrollToTop />
       
       <Routes>

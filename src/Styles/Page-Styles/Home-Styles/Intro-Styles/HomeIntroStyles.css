@@ -116,6 +116,7 @@
   font-size: calc(1.775rem + 1.5vw);
   font-weight: var(--font-weight-bold);
   background: var(--gradient-brand-horizontal);
+  padding: 0.25rem;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -135,4 +136,20 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.home-logo-container{
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-logo{
+  background-color: rgba(0, 0, 0, 0.951);
+  flex-grow: 1 0;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-primary);
 }

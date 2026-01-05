@@ -1,18 +1,55 @@
 import Logo from './../../Assets/Photos/Logo.png';
 
-import AiImageGrader from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader.gif';
-import AiImageGrader2 from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader2.gif';
-import CustomAiGrader from './../../Assets/Photos/Project-Photos/Custom-AI-Grader/CustomAiGrader.gif';
+import AiImageGrader from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader.mp4';
+import AiImageGrader2 from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader2.mp4';
+
+import CustomAiGrader from './../../Assets/Photos/Project-Photos/Custom-AI-Grader/CustomAiGrader.mp4';
 import CustomAiGraderSVG from './../../Assets/Photos/Project-Photos/Custom-AI-Grader/CustomAiGraderSVG.svg';
-import QuickAiGrader from './../../Assets/Photos/Project-Photos/Quick-AI-Grader/QuickAiGrader.gif';
+
+import QuickAiGrader from './../../Assets/Photos/Project-Photos/Quick-AI-Grader/QuickAiGrader.mp4';
 import QuickAiGraderSVG from './../../Assets/Photos/Project-Photos/Quick-AI-Grader/QuickAiGraderSVG.svg';
-import EmailResponder from './../../Assets/Photos/Project-Photos/Email-Automation-Responder/EmailResponder.gif';
+
+import EmailResponder from './../../Assets/Photos/Project-Photos/Email-Automation-Responder/EmailResponder.mp4';
 import EmailResponderSVG from './../../Assets/Photos/Project-Photos/Email-Automation-Responder/EmailResponderSVG.svg';
-import PerformanceOptimization from './../../Assets/Photos/Project-Photos/Performance-Optimization/PerformanceOptimization.gif';
+
+import PerformanceOptimization from './../../Assets/Photos/Project-Photos/Performance-Optimization/PerformanceOptimization.mp4';
 import PerformanceOptimizationSVG from './../../Assets/Photos/Project-Photos/Performance-Optimization/PerformanceOptimizationSVG.svg';
+
 import OperationsOptimizerSVG from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizerSVG.svg';
-import OperationsOptimizer from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer.gif';
-import OperationsOptimizer2 from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer2.gif';
+import OperationsOptimizer from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer.mp4';
+import OperationsOptimizer2 from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer2.mp4';
+
+import PasswordKeeperLogo from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperLogo.svg';
+import PasswordKeeper from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeper.mp4';
+import PasswordKeeperFlowChart from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperFlowChart.png';
+import PasswordKeeperUserModel from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperUserModel.png';
+import PasswordKeeperYAML from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperYAML.png';
+
+import AdvancedECommerceAPICover from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPICover.jpg';
+import AdvancedECommerceAPIYAML from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPIYAML.jpeg';
+import AdvancedECommerceAPISaveOrder from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPISaveOrder.png';
+
+import FactoryManagementCover from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementCover.jpg';
+import FactoryManagementAPIYAML from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIYAML.jpeg';
+import FactoryManagementAPIProduction from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIProduction.png';
+
+import ECommerceApplication from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplication.mp4';
+import ECommerceApplicationWebsite from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationWebsite.jpeg';
+import ECommerceApplicationSubmitOrder from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationSubmitOrder.png';
+
+import PokeCatcherCover from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherCover.jpg';
+import PokeCatcher from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcher.jpeg';
+import PokeCatcherAPIFetch from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherAPIFetch.png';
+
+import OneStopMarvelCover from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelCover.jpg';
+import OneStopMarvel from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvel.jpeg';
+import OneStopMarvelBrowseCharacters from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelBrowseCharacters.png';
+
+import Portfolio from './../../Assets/Photos/Project-Photos/Portfolio/Portfolio.jpg';
+import PortfolioDemo from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioDemo.mp4';
+import PortfolioApp from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioApp.png';
+
+
 
 /**
  * Projects - Portfolio project data with full metadata
@@ -79,8 +116,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: AiImageGrader2,
     media: [
-      { src: AiImageGrader, alt: 'AI Image Grader GIF' }
-      // Add screenshots/GIFs here
+      { src: AiImageGrader2, alt: 'AI Image Grader Demo' },
+      { src: AiImageGrader, alt: 'AI Image Grader Workflow' }
     ],
     body: {
       powerTitle: 'Turning analog input into digital precision.',
@@ -245,7 +282,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: OperationsOptimizer,
     media: [
-      { src: OperationsOptimizerSVG, alt: 'Operations Optimizer GIF' }
+      { src: OperationsOptimizerSVG, alt: 'Operations Optimizer SVG' },
+      { src: OperationsOptimizer2, alt: 'Operations Optimizer SVG' }
       // Add screenshots/GIFs here
     ],
     body: {
@@ -320,10 +358,13 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: PasswordKeeper,
+    logoOverlay: PasswordKeeperLogo,
     media: [
-      { src: Logo, alt: 'Password Keeper Logo' }
-      // Add more screenshots or GIFs here
+      { src: PasswordKeeper, alt: 'Password Keeper Cover Video', hasLogo: true },
+      { src: PasswordKeeperUserModel, alt: 'Password Keeper User Model' },
+      { src: PasswordKeeperFlowChart, alt: 'Password Keeper Flow Chart' },
+      { src: PasswordKeeperYAML, alt: 'Password Keeper YAML Image' },
     ],
     body: {
       powerTitle: 'Encrypted, organized, accountable.',
@@ -371,9 +412,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: AdvancedECommerceAPICover,
     media: [
-      { src: Logo, alt: 'Advanced E-Commerce API Logo' }
+      { src: AdvancedECommerceAPIYAML, alt: 'Advanced E-Commerce API YAML Image' },
+      { src: AdvancedECommerceAPISaveOrder, alt: 'Advanced E-Commerce API Save Order Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -395,9 +437,9 @@ export const allProjects = [
       ]
     },
     links: [
-      { label: 'Live Demo', url: 'https://advanced-api-deployment.onrender.com/api/docs/' },
       { label: 'GitHub', url: 'https://github.com/DDurant94/Advanced-API-Deployment' },
-      { label: 'Frontend (Coming Soon)', url: 'https://github.com/DDurant94/E-Commerce-React' }
+      { label: 'Frontend (Coming Soon)', url: 'https://github.com/DDurant94/E-Commerce-React' },
+      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
     ]
   },
   {
@@ -412,9 +454,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: false,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: ECommerceApplication,
     media: [
-      { src: Logo, alt: 'E-Commerce Application Logo' }
+      { src: ECommerceApplicationWebsite, alt: 'E-Commerce Application Website Image' },
+      { src: ECommerceApplicationSubmitOrder, alt: 'E-Commerce Application Order Submit Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -453,9 +496,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: true,
     isFrontend: false,
-    coverImage: Logo,
+    coverImage: FactoryManagementCover,
     media: [
-      { src: Logo, alt: 'Factory Management Logo' }
+      { src: FactoryManagementAPIYAML, alt: 'Factory Management YAML Image' },
+      { src: FactoryManagementAPIProduction, alt: 'Factory Management Production Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -495,9 +539,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: false,
     isFrontend: true,
-    coverImage: Logo,
+    coverImage: PokeCatcherCover,
     media: [
-      { src: Logo, alt: 'Poké Catcher Logo' }
+      { src: PokeCatcher, alt: 'Poké Catcher Website Image' },
+      { src: PokeCatcherAPIFetch, alt: 'Poké Catcher API Fetch Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -533,9 +578,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: false,
     isFrontend: true,
-    coverImage: Logo,
+    coverImage: OneStopMarvelCover,
     media: [
-      { src: Logo, alt: 'One Stop Marvel Logo' }
+      { src: OneStopMarvel, alt: 'One Stop Marvel Website Image' },
+      { src: OneStopMarvelBrowseCharacters, alt: 'One Stop Marvel Browse Characters Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -571,9 +617,10 @@ export const allProjects = [
     isPersonal: true,
     isApiOnly: false,
     isFrontend: true,
-    coverImage: Logo,
+    coverImage: Portfolio,
     media: [
-      { src: Logo, alt: 'Daniels Portfolio Logo' }
+      { src: PortfolioDemo, alt: 'Daniels Portfolio Demo' },
+      { src: PortfolioApp, alt: 'Daniels Portfolio App Code Image' }
       // Add more screenshots or GIFs here
     ],
     body: {
@@ -595,7 +642,7 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/Daniels-Website' },
-      { label: 'Live Demo', url: 'https://daniel-durant.onrender.com/' }
+      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
     ]
   }
   ];

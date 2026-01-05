@@ -122,15 +122,47 @@
   z-index: 1;
 }
 
-.bento-card__image {
+/* Placeholder for unloaded media */
+.bento-card__image-placeholder {
+  background: linear-gradient(
+    135deg,
+    var(--color-background-secondary) 0%,
+    var(--color-background-tertiary) 100%
+  );
+}
+
+.bento-card__image,
+.bento-card__image-container video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform var(--motion-panel-enter);
 }
 
-.bento-card:hover .bento-card__image {
+.bento-card:hover .bento-card__image,
+.bento-card:hover .bento-card__image-container video {
   transform: scale(1.05);
+}
+
+/* === Logo Overlay (for SVG over video/image) === */
+.bento-card__logo-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none; /* Don't block clicks on card */
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transition: transform var(--motion-panel-enter), opacity var(--motion-fade);
+}
+
+.bento-card:hover .bento-card__logo-overlay {
+  transform: translate(-50%, -50%) scale(1.05);
+  opacity: 1;
 }
 
 .bento-card__image-overlay {
@@ -145,7 +177,7 @@
     rgba(0, 0, 0, 0.1) 50%,
     rgba(0, 0, 0, 0.3) 100%
   );
-  z-index: 2;
+  z-index: 3;
 }
 
 /* === Content Container === */
@@ -240,21 +272,22 @@
 .bento-card__header {
   margin-bottom: auto;
   padding-top: 2.5rem;
-  
 }
 
 .bento-card__title {
   margin: 0.2rem 0 0.5rem 0;
   font-size: clamp(0.9rem, 2.5vw, 1.5rem);
-  font-weight: 600;
-  padding: 1rem;
-  line-height: 1.2;
-  color: #ffffff;
-  text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.8),
-    0 4px 8px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(0, 0, 0, 0.4);
-  /* text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); */
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  line-height: 1.3;
+  color: white;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.30) 0%, 
+    rgba(0, 0, 0, 0.35) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: var(--radius-md);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -267,12 +300,16 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 500;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.9);
-    text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.8),
-    0 4px 8px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+  color: white;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.30) 0%, 
+    rgba(0, 0, 0, 0.35) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: var(--radius-md);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
 }
 
 /* === Tech Stack === */

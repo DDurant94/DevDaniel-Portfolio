@@ -41,7 +41,7 @@ const AboutIntro = () => {
   return (
     <FadeInWhenVisible as="div" id="about-intro-container" tabIndex="0"  >
       <FadeInWhenVisible as="div" className="intro-header-container" >
-        <h2 id="intro-heading" className="section-header">&#60;Behind the Code /&#62;</h2>
+        <h2 id="intro-heading" className="section-header">Behind the Code</h2>
       </FadeInWhenVisible>
 
       <FadeInWhenVisible as="p" className="metaphor-lead">

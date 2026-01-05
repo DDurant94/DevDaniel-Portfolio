@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { allProjects } from '../../../../DataSets/Portfolio/Projects';
 import { usePageTransition } from '../../../../Hooks/Effect-Hooks/usePageTransition';
+import { getMediaType } from '../../../../Utils/mediaHelpers.js';
 import '../../../../Styles/Page-Styles/Home-Styles/FeaturedProjects-Styles/FeaturedProjectsCarouselStyles.css';
 
 /**
@@ -194,11 +195,31 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
           >
             <div className="slide-card">
               <div className="slide-image-wrapper">
-                <img 
-                  src={slides[index].coverImage} 
-                  alt={`${slides[index].title} cover`} 
-                  loading="lazy"
-                />
+                {getMediaType(slides[index].coverImage) === 'video' ? (
+                  <video
+                    src={slides[index].coverImage}
+                    alt={`${slides[index].title} demo`}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    loading="lazy"
+                  />
+                ) : (
+                  <img 
+                    src={slides[index].coverImage} 
+                    alt={`${slides[index].title} cover`} 
+                    loading="lazy"
+                  />
+                )}
+                {slides[index].logoOverlay && (
+                  <img
+                    src={slides[index].logoOverlay}
+                    alt={`${slides[index].title} logo`}
+                    className="slide-image-wrapper__logo"
+                    loading="eager"
+                  />
+                )}
                 <div className="slide-overlay" />
               </div>
               <div className="slide-content">

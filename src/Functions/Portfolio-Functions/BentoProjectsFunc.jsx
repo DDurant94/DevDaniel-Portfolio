@@ -146,6 +146,7 @@ export default function BentoProjects({ projects = [], onProjectClick }) {
         title={project.title}
         description={project.description}
         coverImage={project.coverImage}
+        logoOverlay={project.logoOverlay} // Pass logo overlay if present
         media={project.media}
         techs={project.body?.techs || []}
         onClick={() => onProjectClick(project)}
@@ -156,6 +157,7 @@ export default function BentoProjects({ projects = [], onProjectClick }) {
         showCategoryBadge={showCategoryBadges}
         personalText="Personal"
         professionalText="Professional"
+        eagerLoad={index < 4} // Eager load first 4 cards, lazy load rest
       />
     </motion.div>
   );

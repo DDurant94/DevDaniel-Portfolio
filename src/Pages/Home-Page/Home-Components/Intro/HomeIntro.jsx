@@ -1,8 +1,8 @@
-
-
 import BaseButton from '../../../../Components/UI/BaseButton/BaseButton.jsx';
 import FadeInWhenVisible from "./../../../../Components/Effects/Fade-Effect/FadeIn";
 import './../../../../Styles/Page-Styles/Home-Styles/Intro-Styles/HomeIntroStyles.css';
+
+import Logo from './../../../../Assets/Photos/Logo.png';
 
 /**
  * handleResumeClick - Opens and downloads resume PDF
@@ -55,7 +55,7 @@ function handleResumeClick() {
 const Intro = () => {
   return (
 
-    <FadeInWhenVisible as="div" id="home-intro-container" tabIndex="0"  >
+    <FadeInWhenVisible as="div" id="home-intro-container" tabIndex="0" aria-labelledby="home-intro-heading">
       <FadeInWhenVisible as="div" className="home-intro-header-container" >
         <h2 id="home-intro-heading" className="home-section-header">Building systems that move ideas forward</h2>
       </FadeInWhenVisible>
@@ -64,6 +64,12 @@ const Intro = () => {
       <FadeInWhenVisible as="p" className='home-intro-body-text'>
         I design and implement solutions where performance, clarity, and adaptability matter. From API orchestration and ML-assisted document pipelines to modern UI flows and 3D interfaces—I focus on maintainability and measurable impact.
       </FadeInWhenVisible>
+
+      <div className='home-logo-container my-4'>
+        <div className='home-logo'>
+          <img src={Logo} alt='Daniel Durant Logo' className='home-intro-logo-img img-fluid mx-auto' />
+        </div>
+      </div>
 
       <div className="home-intro-btn-container" >
         <BaseButton

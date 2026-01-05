@@ -58,8 +58,7 @@ const Skills = () => {
           y={20}
           duration={0.6}>
           <div id="skills-intro-container">
-            {/* <h1>&#60;Technical Expertise /&#62;</h1> */}
-            <h1>&#60;Technical Expertise /&#62;</h1>
+            <h1>Technical Expertise</h1>
             <p>
               From backend architecture to interactive 3D experiences, I bring a diverse skill set
               focused on building scalable, innovative solutions. Here's what I bring to the table.

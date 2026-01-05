@@ -1,0 +1,296 @@
+/* FullscreenMediaViewer Styles - Using Design Tokens */
+
+/* Main Container */
+.fullscreen-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-max);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Backdrop */
+.fullscreen-viewer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay-scrim);
+  backdrop-filter: blur(8px);
+}
+
+/* Media Container */
+.fullscreen-viewer__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Media Wrapper (for transform origin) */
+.fullscreen-viewer__media-wrapper {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+/* Media (Image/Video) */
+.fullscreen-viewer__media {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  box-shadow: var(--shadow-panel);
+}
+
+/* Media with Background (like standalone logos) */
+.fullscreen-viewer__media--with-background {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+}
+
+/* Logo Overlay */
+.fullscreen-viewer__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  max-width: 600px;
+  max-height: 600px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+/* Controls Container */
+.fullscreen-viewer__controls {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  z-index: 2;
+  pointer-events: auto;
+}
+
+/* Close Button (Top) */
+.fullscreen-viewer__btn--close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Zoom Controls (Below Close) */
+.fullscreen-viewer__zoom-controls {
+  margin-top: calc(var(--space-6) + 48px); /* Offset for close button */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: rgba(18, 21, 27, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-control);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Control Buttons (Base) */
+.fullscreen-viewer__btn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 21, 27, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--motion-duration-sm) var(--ease-standard);
+  box-shadow: var(--shadow-control);
+}
+
+.fullscreen-viewer__btn:hover:not(:disabled) {
+  background: rgba(255, 165, 0, 0.15);
+  border-color: var(--color-primary);
+  transform: var(--transform-lift-sm);
+  box-shadow: var(--shadow-composite-default);
+}
+
+.fullscreen-viewer__btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.fullscreen-viewer__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fullscreen-viewer__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring), var(--shadow-control);
+}
+
+/* Zoom Buttons (Smaller) */
+.fullscreen-viewer__btn--zoom {
+  width: 40px;
+  height: 40px;
+}
+
+/* Reset Button */
+.fullscreen-viewer__btn--reset {
+  width: 40px;
+  height: 40px;
+}
+
+/* Zoom Level Display */
+.fullscreen-viewer__zoom-level {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-align: center;
+  padding: var(--space-2) 0;
+  user-select: none;
+}
+
+/* Keyboard Hints */
+.fullscreen-viewer__hints {
+  position: absolute;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 21, 27, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-control);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.fullscreen-viewer__hints kbd {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xs);
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  margin: 0 var(--space-1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .fullscreen-viewer__container {
+    padding: var(--space-6);
+  }
+
+  .fullscreen-viewer__controls {
+    top: var(--space-4);
+    right: var(--space-4);
+  }
+
+  .fullscreen-viewer__btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .fullscreen-viewer__btn--zoom,
+  .fullscreen-viewer__btn--reset {
+    width: 36px;
+    height: 36px;
+  }
+
+  .fullscreen-viewer__logo {
+    width: 60%;
+    height: 60%;
+  }
+
+  .fullscreen-viewer__hints {
+    bottom: var(--space-4);
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .fullscreen-viewer__container {
+    padding: var(--space-4);
+  }
+
+  .fullscreen-viewer__controls {
+    top: var(--space-3);
+    right: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .fullscreen-viewer__zoom-controls {
+    margin-top: calc(var(--space-4) + 44px);
+    padding: var(--space-2);
+  }
+
+  .fullscreen-viewer__btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .fullscreen-viewer__btn--zoom,
+  .fullscreen-viewer__btn--reset {
+    width: 32px;
+    height: 32px;
+  }
+
+  .fullscreen-viewer__btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .fullscreen-viewer__logo {
+    width: 50%;
+    height: 50%;
+  }
+
+  .fullscreen-viewer__hints {
+    display: none; /* Hide hints on very small screens */
+  }
+}
+
+/* Animation States */
+.fullscreen-viewer__media-wrapper {
+  will-change: transform;
+}
+
+/* Prevent text selection during drag */
+.fullscreen-viewer__container[style*="grabbing"] {
+  user-select: none;
+}
+
+/* Loading State (Optional) */
+.fullscreen-viewer__media[src=""],
+.fullscreen-viewer__media:not([src]) {
+  opacity: 0;
+}
