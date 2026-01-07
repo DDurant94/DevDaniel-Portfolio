@@ -5,6 +5,13 @@
   RewriteEngine On
   RewriteBase /
   
+  # Redirect HTTP to HTTPS (must be first)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # Allow access to .well-known directory (for security.txt, etc.)
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  
   # Don't rewrite files or directories
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -58,4 +65,16 @@
   
   # Referrer policy
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Content Security Policy (CSP)
+  # Allow blob: URLs for Three.js GLTF loader and textures
+  # Allow gstatic.com for Draco/KTX2 decoder libraries (used by Three.js)
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:; img-src 'self' https: data: blob:; connect-src 'self' blob: https://api.emailjs.com https://www.gstatic.com; worker-src 'self' blob:; frame-ancestors 'self';"
+  
+  # Permissions Policy (formerly Feature-Policy)
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+  
+  # Strict Transport Security (HSTS) - Force HTTPS for 1 year
+  # Tells browsers to always use HTTPS for your site
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 </IfModule>

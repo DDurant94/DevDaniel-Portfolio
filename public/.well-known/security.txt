@@ -1,0 +1,25 @@
+Contact: mailto:dannyjdurant@gmail.com
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://devdaniel.tech/.well-known/security.txt
+
+# Security Policy for devdaniel.tech
+# 
+# If you discover a security vulnerability, please report it responsibly.
+# 
+# What to report:
+# - Security vulnerabilities
+# - Data exposure issues
+# - Authentication/authorization bypasses
+# - XSS, CSRF, injection vulnerabilities
+# - Any security-related concerns
+# 
+# Please do NOT report:
+# - General questions or support requests
+# - Feature requests
+# - Non-security bugs
+# 
+# Response Time:
+# I aim to respond to security reports within 48 hours.
+# 
+# Thank you for helping keep this site secure!

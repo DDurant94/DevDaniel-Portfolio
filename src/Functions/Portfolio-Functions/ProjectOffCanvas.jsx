@@ -245,7 +245,8 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="none"
+                        loading="lazy"
                         disablePictureInPicture
                         onLoadedMetadata={handleImageLoad}
                         onClick={() => setIsFullscreen(true)}

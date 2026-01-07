@@ -195,7 +195,7 @@ function App() {
       )}
       
       <SmoothScrollProvider>
-        <Suspense fallback={null}>
+        <Suspense fallback={<LoadingFallback />}>
           <AppContent onLoaded={handleLoaded} />
         </Suspense>
       </SmoothScrollProvider>
@@ -233,24 +233,38 @@ function App() {
  */
 function AppContent({ onLoaded }) {
   const [backgroundsReady, setBackgroundsReady] = React.useState(false);
+  const [contentReady, setContentReady] = React.useState(false);
   
   React.useEffect(() => {
-    // Wait a tick to ensure everything is mounted, then hide loader
+    // Wait for all critical content to be ready before hiding loader
+    // This prevents the blank screen issue
     const timer = setTimeout(() => {
-      onLoaded();
+      setContentReady(true);
     }, 100);
-    
-    // Load backgrounds immediately but fade them in after content loads
-    // This prevents them from being counted as LCP
-    const backgroundTimer = setTimeout(() => {
-      setBackgroundsReady(true);
-    }, 100); // Load quickly to prevent flash
     
     return () => {
       clearTimeout(timer);
-      clearTimeout(backgroundTimer);
     };
-  }, [onLoaded]);
+  }, []);
+  
+  React.useEffect(() => {
+    // Only hide loader once content is ready
+    if (contentReady) {
+      const hideTimer = setTimeout(() => {
+        onLoaded();
+      }, 500); // Give time for heavy components to render
+      
+      // Load backgrounds after a short delay
+      const backgroundTimer = setTimeout(() => {
+        setBackgroundsReady(true);
+      }, 300);
+      
+      return () => {
+        clearTimeout(hideTimer);
+        clearTimeout(backgroundTimer);
+      };
+    }
+  }, [contentReady, onLoaded]);
   
   const location = useLocation();
   const validRoutes = ['/', '/about', '/projects', '/skills'];

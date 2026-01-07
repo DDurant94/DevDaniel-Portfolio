@@ -46,7 +46,8 @@ import OneStopMarvel from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/
 import OneStopMarvelBrowseCharacters from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelBrowseCharacters.png';
 
 import Portfolio from './../../Assets/Photos/Project-Photos/Portfolio/Portfolio.jpg';
-import PortfolioDemo from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioDemo.mp4';
+// Optimized video in public folder - lazy loaded, not bundled (171 MB → 1.75 MB)
+const PortfolioDemo = '/videos/portfolio-demo-optimized.mp4';
 import PortfolioApp from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioApp.png';
 
 

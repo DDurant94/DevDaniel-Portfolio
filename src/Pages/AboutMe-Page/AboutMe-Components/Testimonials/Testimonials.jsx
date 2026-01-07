@@ -122,7 +122,7 @@ const Testimonials = () => {
                         aria-hidden="true"
                       >
                         <path 
-                          d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" 
+                          d="M18 7h-3l-2 4v6h6v-6h-3zm-8 0H7L5 11v6h6v-6h-3z" 
                           fill="currentColor" 
                           opacity="0.2"
                         />
@@ -140,11 +140,12 @@ const Testimonials = () => {
                         aria-hidden="true"
                       >
                         <path 
-                          d="M18 7h-3l-2 4v6h6v-6h-3zm-8 0H7L5 11v6h6v-6h-3z" 
+                          d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" 
                           fill="currentColor" 
                           opacity="0.2"
                         />
                       </svg>
+
                     )}
                   </p>
                 ))}
