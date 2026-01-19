@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 /**
  * MediaQueryContext - Centralized responsive breakpoint management
@@ -48,7 +48,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
  * const columns = isTablet ? 2 : width < 480 ? 1 : 3;
  */
 
-const MediaQueryContext = createContext({
+// eslint-disable-next-line react-refresh/only-export-components
+export const MediaQueryContext = createContext({
   // Device breakpoints (mobile-first)
   isMobile: false,       // < 768px
   isTablet: false,       // 768px - 1024px
@@ -82,8 +83,6 @@ const MediaQueryContext = createContext({
   performanceLevel: 'full',
 });
 
-export const useMediaQuery = () => useContext(MediaQueryContext);
-
 export const MediaQueryProvider = ({ children }) => {
   const [queries, setQueries] = useState({
     isMobile: false,
@@ -112,24 +111,20 @@ export const MediaQueryProvider = ({ children }) => {
   useEffect(() => {
     // Define media queries matching common CSS breakpoints
     const mediaQueries = {
-      // Device categories (mobile-first)
       isMobile: '(max-width: 767px)',
       isTablet: '(min-width: 768px) and (max-width: 1023px)',
       isDesktop: '(min-width: 1024px)',
       isLargeDesktop: '(min-width: 1440px)',
       
-      // Granular breakpoints
       isXSmall: '(max-width: 479px)',
       isSmall: '(min-width: 480px) and (max-width: 767px)',
       isMedium: '(min-width: 768px) and (max-width: 1023px)',
       isLarge: '(min-width: 1024px) and (max-width: 1439px)',
       isXLarge: '(min-width: 1440px)',
-      
-      // Orientation
+
       isPortrait: '(orientation: portrait)',
       isLandscape: '(orientation: landscape)',
-      
-      // User preferences
+
       prefersReducedMotion: '(prefers-reduced-motion: reduce)',
       prefersDarkMode: '(prefers-color-scheme: dark)',
     };
@@ -156,19 +151,19 @@ export const MediaQueryProvider = ({ children }) => {
 
       // Performance level detection (layered degradation)
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      const cores = navigator.hardwareConcurrency || 4; // Default to 4 if unknown
+      const cores = navigator.hardwareConcurrency || 4;
       
       let performanceLevel = 'full';
       
       // Priority order: explicit user preferences first, then network/device
       if (connection?.saveData) {
-        performanceLevel = 'minimal'; // User explicitly saving data
+        performanceLevel = 'minimal';
       } else if (newQueries.prefersReducedMotion) {
-        performanceLevel = 'reduced'; // Accessibility preference
+        performanceLevel = 'reduced';
       } else if (connection?.effectiveType === '2g' || connection?.effectiveType === 'slow-2g') {
-        performanceLevel = 'low'; // Very slow network
+        performanceLevel = 'low'; 
       } else if (connection?.effectiveType === '3g' && cores <= 2) {
-        performanceLevel = 'low'; // Slow network + low-end device
+        performanceLevel = 'low';
       }
       
       newQueries.performanceLevel = performanceLevel;
@@ -176,7 +171,6 @@ export const MediaQueryProvider = ({ children }) => {
       // Convenience flags for components
       newQueries.shouldAnimate = performanceLevel === 'full';
       newQueries.shouldRender3D = ['full', 'reduced'].includes(performanceLevel);
-      // Enable smooth scroll for full and reduced performance (unless explicit reduced motion)
       newQueries.shouldSmoothScroll = !newQueries.prefersReducedMotion;
       newQueries.shouldAutoRotate = performanceLevel === 'full';
       newQueries.use3DQuality = performanceLevel === 'low' ? 'low' : 'high';
@@ -184,25 +178,28 @@ export const MediaQueryProvider = ({ children }) => {
       setQueries(newQueries);
     };
 
-    // Initial update
     updateQueries();
 
-    // Add listeners for all media queries
+    // Debounce resize updates to prevent excessive re-renders
+    let resizeTimeout;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateQueries, 150);
+    };
+
     Object.values(mediaQueryLists).forEach((mql) => {
-      // Modern browsers
       if (mql.addEventListener) {
         mql.addEventListener('change', updateQueries);
       } else {
-        // Fallback for older browsers
         mql.addListener(updateQueries);
       }
     });
 
-    // Listen for window resize to update dimensions
-    window.addEventListener('resize', updateQueries);
+    window.addEventListener('resize', debouncedResize);
 
     // Cleanup
     return () => {
+      clearTimeout(resizeTimeout);
       Object.values(mediaQueryLists).forEach((mql) => {
         if (mql.removeEventListener) {
           mql.removeEventListener('change', updateQueries);
@@ -210,7 +207,7 @@ export const MediaQueryProvider = ({ children }) => {
           mql.removeListener(updateQueries);
         }
       });
-      window.removeEventListener('resize', updateQueries);
+      window.removeEventListener('resize', debouncedResize);
     };
   }, []);
 

@@ -34,17 +34,19 @@ import SymbolText from './SymbolText';
  * @param {Object} props
  * @param {boolean} props.enableAnimations - Enable orbital animations (default: true)
  * @param {React.RefObject} props.containerRef - Container ref for scene bounds
+ * @param {boolean} props.isMobile - Mobile device flag for reduced symbol count
  * 
  * @example
  * <CodingSymbolCloud
  *   enableAnimations={!prefersReducedMotion}
  *   containerRef={sceneContainerRef}
+ *   isMobile={isMobile}
  * />
  */
 
 const codeSymbols = ['{ }', '=', '[ ]', '/', ':', ';', '</>', '( )', '&', '|', '+', '-', '*', '%', '$', '#', '@', '!', '?', '< >', '===', '!==', '=>', '++', '--'];
 
-export default function CodingSymbolCloud({ enableAnimations = true, containerRef }) {
+export default function CodingSymbolCloud({ enableAnimations = true, containerRef, isMobile = false }) {
   // fixed center at world origin
   const gearCenterRef = useRef(new THREE.Vector3(0, 0, 0));
   // drives the orbital timing
@@ -52,7 +54,8 @@ export default function CodingSymbolCloud({ enableAnimations = true, containerRe
 
   // generate your cloud of symbols once
   const symbols = useMemo(() => {
-    return Array.from({ length: 200 }, () => {
+    const symbolCount = isMobile ? 50 : 100;
+    return Array.from({ length: symbolCount }, () => {
       const radius = 3.5 + Math.pow(Math.random(), 2.5) * 2;
       const theta = Math.random() * Math.PI * -1.5;
       const phi = Math.PI / 2 + (Math.random() - 0.5) * 0.8 + theta * 0.2;
@@ -74,11 +77,13 @@ export default function CodingSymbolCloud({ enableAnimations = true, containerRe
         speed: 0.005 + Math.random() * 0.0000015,
       };
     });
-  }, []);
+  }, [isMobile]);
 
-  // update elapsed time each frame
+  // update elapsed time each frame only if animations are enabled
   useFrame(({ clock }) => {
-    timeRef.current = clock.getElapsedTime();
+    if (enableAnimations) {
+      timeRef.current = clock.getElapsedTime();
+    }
   });
 
   return (
@@ -91,6 +96,7 @@ export default function CodingSymbolCloud({ enableAnimations = true, containerRe
           timeRef={timeRef}
           enableAnimations={enableAnimations}
           containerRef={containerRef}
+          isMobile={isMobile}
         />
       ))}
     </>

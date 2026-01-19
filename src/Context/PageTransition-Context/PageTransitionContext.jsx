@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { createContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useMediaQuery } from '../MediaQueryContext';
+import { useMediaQuery } from '../MediaQueryContext.hook';
 
 /**
  * PageTransitionContext - Orchestrates smooth page transitions with 3D scene
@@ -62,7 +62,8 @@ import { useMediaQuery } from '../MediaQueryContext';
  *   detail: { to: '/projects', options: {} }
  * }));
  */
-const PageTransitionContext = createContext({
+// eslint-disable-next-line react-refresh/only-export-components
+export const PageTransitionContext = createContext({
   isTransitioning: false,
   transitionState: 'idle',
   currentVariant: 'home',
@@ -70,21 +71,11 @@ const PageTransitionContext = createContext({
   cleanBodyState: () => {}
 });
 
-export const usePageTransition = () => useContext(PageTransitionContext);
-
-// Map routes to scene variants
-const routeToVariant = {
-  '/': 'home',
-  '/about': 'about',
-  '/projects': 'portfolio',
-  '/skills': 'skills',
-  '/contact': 'home',
-};
-
 // Helper function to clean body state
 const cleanBodyState = () => {
   const body = document.body;
   body.classList.remove('page-transitioning');
+  body.classList.remove('page-revealing');
   body.style.position = '';
   body.style.top = '';
   body.style.left = '';
@@ -96,18 +87,10 @@ const cleanBodyState = () => {
 export const PageTransitionProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { performanceLevel, shouldAnimate } = useMediaQuery();
-  
-  const [transitionState, setTransitionState] = useState('idle'); // 'idle', 'covering', 'covered', 'revealing'
-  const [currentVariant, setCurrentVariant] = useState('home');
-  const [showLoadingUI, setShowLoadingUI] = useState(false);
-  
+  const { performanceLevel } = useMediaQuery();
+  const [transitionState, setTransitionState] = useState('idle');
   const previousPathRef = useRef(location.pathname);
-  const loadingTimeoutRef = useRef(null);
-  const coveringCompleteRef = useRef(false);
   const isTransitioningRef = useRef(false);
-  const pendingPathRef = useRef(null);
-  const pendingOptionsRef = useRef(null);
   const savedScrollRef = useRef(0);
   const cleanupRunRef = useRef(false);
 
@@ -115,14 +98,14 @@ export const PageTransitionProvider = ({ children }) => {
   const transitionDurations = useMemo(() => {
     switch (performanceLevel) {
       case 'minimal':
-        return { covering: 0, navigate: 0, covered: 0, revealing: 0 }; // Instant
+        return { fadeOut: 0, fadeIn: 0 }; // Instant
       case 'reduced':
-        return { covering: 0, navigate: 0, covered: 0, revealing: 0 }; // Instant (no motion)
+        return { fadeOut: 0, fadeIn: 0 }; // Instant (no motion)
       case 'low':
-        return { covering: 300, navigate: 400, covered: 100, revealing: 500 }; // Fast fade
+        return { fadeOut: 250, fadeIn: 250 }; // Quick fade
       case 'full':
       default:
-        return { covering: 1000, navigate: 1400, covered: 200, revealing: 1200 }; // Full animation
+        return { fadeOut: 350, fadeIn: 450 }; // Smooth fade (slightly longer)
     }
   }, [performanceLevel]);
 
@@ -137,59 +120,24 @@ export const PageTransitionProvider = ({ children }) => {
       return;
     }
 
-    // Store the target path and options
-    pendingPathRef.current = targetPath;
-    pendingOptionsRef.current = options || null;
     isTransitioningRef.current = true;
-
-    // Clear any existing loading timeout
-    if (loadingTimeoutRef.current) {
-      clearTimeout(loadingTimeoutRef.current);
-      loadingTimeoutRef.current = null;
-    }
-
-    // Save current scroll position
     savedScrollRef.current = window.scrollY;
 
-    // Get the variant for the page we're leaving
-    const leavingVariant = routeToVariant[previousPathRef.current] || 'home';
-    setCurrentVariant(leavingVariant);
-
-    coveringCompleteRef.current = false;
-
-    // Start transition - clouds slide in
-    setTransitionState('covering');
-    setShowLoadingUI(false);
-
-    // Show loading UI only if transition takes too long (15+ seconds)
-    loadingTimeoutRef.current = setTimeout(() => {
-      if (isTransitioningRef.current) {
-        setShowLoadingUI(true);
-      }
-    }, 15000);
-
-    // After clouds mostly cover, navigate to new page
+    // Fade out current page
+    setTransitionState('fadeOut');
+    
+    // Navigate after fade out completes
     setTimeout(() => {
-      if (pendingPathRef.current) {
-        navigate(pendingPathRef.current, pendingOptionsRef.current || {});
-        pendingPathRef.current = null;
-        pendingOptionsRef.current = null;
-      }
-    }, transitionDurations.covering);
-
-    // After slide-in animation completes, mark covering as complete and start revealing
-    setTimeout(() => {
-      coveringCompleteRef.current = true;
-      setTransitionState('covered');
+      window.scrollTo(0, 0);
+      navigate(targetPath, options || {});
       
-      // Brief pause to let new page render at top, then reveal
+      // Start fading in new page
       setTimeout(() => {
-        setTransitionState('revealing');
-      }, transitionDurations.covered);
-    }, transitionDurations.navigate);
+        setTransitionState('fadeIn');
+      }, 50); // Small delay to ensure DOM updates
+    }, transitionDurations.fadeOut);
   }, [location.pathname, navigate, performanceLevel, transitionDurations]);
 
-  // Listen for navigation requests from intercepted clicks
   useEffect(() => {
     const handleTransitionStart = (e) => {
       const targetPath = e.detail.to;
@@ -201,7 +149,6 @@ export const PageTransitionProvider = ({ children }) => {
     return () => window.removeEventListener('startPageTransition', handleTransitionStart);
   }, [startTransition]);
 
-  // Ensure clean state on mount
   if (!cleanupRunRef.current && !isTransitioningRef.current) {
     cleanBodyState();
     cleanupRunRef.current = true;
@@ -214,55 +161,37 @@ export const PageTransitionProvider = ({ children }) => {
     }
   }, []);
 
-  // Manage page visibility based on transition state
   useEffect(() => {
     const body = document.body;
 
     if (transitionState === 'idle') {
       cleanBodyState();
-    } else if (transitionState === 'covering') {
-      body.style.top = `-${savedScrollRef.current}px`;
-      body.classList.remove('page-transitioning');
-    } else if (transitionState === 'covered') {
+    } else if (transitionState === 'fadeOut') {
       body.classList.add('page-transitioning');
-      body.style.top = '0px';
-    } else if (transitionState === 'revealing') {
-      setTimeout(() => {
-        body.classList.remove('page-transitioning');
-        body.style.top = '';
-      }, 100);
+    } else if (transitionState === 'fadeIn') {
+      body.classList.add('page-transitioning');
     }
   }, [transitionState]);
 
-  // Handle transition state changes
   useEffect(() => {
-    if (transitionState === 'revealing') {
+    if (transitionState === 'fadeIn') {
       const timeout = setTimeout(() => {
         setTransitionState('idle');
-        setShowLoadingUI(false);
         previousPathRef.current = location.pathname;
         isTransitioningRef.current = false;
-        
         cleanBodyState();
-        
-        if (loadingTimeoutRef.current) {
-          clearTimeout(loadingTimeoutRef.current);
-          loadingTimeoutRef.current = null;
-        }
-      }, 1200);
+      }, transitionDurations.fadeIn);
       
       return () => clearTimeout(timeout);
     }
-  }, [transitionState, location.pathname]);
+  }, [transitionState, location.pathname, transitionDurations.fadeIn]);
 
   const value = useMemo(() => ({
     isTransitioning: isTransitioningRef.current,
     transitionState,
-    currentVariant,
-    showLoadingUI,
     startTransition,
     cleanBodyState
-  }), [transitionState, currentVariant, showLoadingUI, startTransition]);
+  }), [transitionState, startTransition]);
 
   return (
     <PageTransitionContext.Provider value={value}>

@@ -16,7 +16,7 @@
  * - position: fixed, top: 0, left: 0
  * - height: 100vh (full viewport height)
  * - width: 80px (narrow column)
- * - z-index: 1000 (above content, below modals)
+ * - z-index: var(--z-navigation) (above content, below modals)
  * - flex-direction: column
  * - align-items: center
  * - padding: 1rem 0
@@ -31,7 +31,7 @@
  * - Creates frosted glass effect
  * 
  * Sidebar Logo:
- * - position: relative, z-index: 10
+ * - position: relative, z-index: var(--z-above)
  * - width: 64px, height: 64px
  * - display: flex (centers SVG/image)
  * - margin-bottom: auto (pushes nav to center)
@@ -108,11 +108,22 @@
   left: 0;
   height: 100vh;
   width: 80px;
-  z-index: 1000;
+  z-index: var(--z-tooltip); /* 9999 - needs to be above isolated page content */
   flex-direction: column;
   align-items: center;
-  padding: 1rem 0;
+  padding: var(--gap-md) 0;
   pointer-events: auto;
+}
+
+/* Hide sidebar during initial page load (before React hydrates) */
+.left-sidebar {
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+
+/* Show sidebar once app is loaded */
+body:not(.app-loading) .left-sidebar {
+  opacity: 1;
 }
 
 .sidebar-background {
@@ -122,12 +133,13 @@
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-right: 1px solid var(--color-border);
+  z-index: -1; /* Behind logo and nav */
 }
 
 /* ========== SIDEBAR LOGO ========== */
 .sidebar-logo {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-above);
   width: 64px;
   height: 64px;
   display: flex;
@@ -136,18 +148,18 @@
   margin-bottom: auto;
   padding: 0.25rem;
   background: var(--color-background);
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               background 0.3s ease;
 }
 
 .sidebar-logo:hover {
-  transform: translateY(var(--transform-lift-sm)) scale(1.1);
+  transform: translateY(var(--transform-lift-sm)) scale(var(--transform-scale-hover-lg));
   background: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
 }
 
 .sidebar-logo:active {
-  transform: scale(0.95);
+  transform: scale(var(--transform-scale-active));
   transition: transform 0.1s ease;
 }
 
@@ -161,7 +173,7 @@
 }
 
 .sidebar-logo:hover .logo-svg {
-  transform: scale(1.05);
+  transform: scale(var(--transform-scale-hover));
 }
 
 /* ========== FLOATING NAVIGATION BAR ========== */
@@ -173,8 +185,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
+  gap: var(--space-6);
+  padding: var(--gap-md) var(--space-6);
   background:
     color-mix(in oklab, canvas 42%, transparent),
     color-mix(in oklab, var(--color-primary) 8%, transparent);
@@ -185,7 +197,8 @@
   transition: bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
     0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
-    0 10px 26px color-mix(in oklab, black 30%, transparent);
+    var(--shadow-elevated-sm);
+  z-index: var(--z-tooltip); /* 9999 - needs to be above isolated page content */
 }
 
 .sidebar-nav.scrolled {
@@ -206,9 +219,13 @@
   letter-spacing: 0.02em;
   transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   cursor: pointer;
   overflow: hidden;
+  background: transparent;
+  border: none;
+  width: 100%;
+  font-family: inherit;
 }
 
 .sidebar-nav .nav-link::after {
@@ -224,8 +241,8 @@
   height: 0;
   background: var(--gradient-brand-horizontal);
   transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 12px;
-  z-index: 0;
+  border-radius: var(--radius-md-lg);
+  z-index: var(--z-base);
 }
 
 .sidebar-nav .nav-text {
@@ -237,9 +254,9 @@
 [data-theme='dark'] .sidebar-nav .nav-text,
 [data-theme='contrast'] .sidebar-nav .nav-text {
   text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.8),
-    0 4px 8px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(0, 0, 0, 0.4);
+    0 2px 4px color-mix(in srgb, black 80%, transparent),
+    0 4px 8px color-mix(in srgb, black 60%, transparent),
+    0 0 20px color-mix(in srgb, black 40%, transparent);
 }
 
 .sidebar-nav .nav-link:hover::before {
@@ -251,7 +268,7 @@
 }
 
 .sidebar-nav .nav-link:active {
-  transform: scale(0.95);
+  transform: scale(var(--transform-scale-active));
   transition: transform 0.1s ease;
 }
 
@@ -271,17 +288,16 @@
 /* ========== SIDEBAR FOOTER ========== */
 .sidebar-footer {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-above);
   margin-top: auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 0 0 0;
+  gap: var(--gap-md);
+  padding: var(--gap-md) 0 0 0;
 }
 
-/* Social icons */
 .sidebar-social-list {
   display: flex;
   flex-direction: column;
@@ -300,7 +316,7 @@
   height: 44px;
   color: var(--color-text);
   font-size: 1.35rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   background: var(--color-background);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -314,7 +330,7 @@
   background: var(--gradient-brand-horizontal);
   opacity: 0;
   transition: opacity 0.3s ease;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
 }
 
 .sidebar-social-icon i {
@@ -334,7 +350,6 @@
   box-shadow: 0 8px 20px color-mix(in oklab, var(--color-primary) 20%, transparent);
 }
 
-/* Disable expensive reflections during scroll */
 [data-scrolling="true"] .sidebar-social-icon:hover {
   -webkit-box-reflect: none !important;
 }
@@ -363,7 +378,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   border: 1px solid var(--color-text);
   background: var(--color-bg-alt);
   cursor: pointer;
@@ -371,11 +386,11 @@
 }
 
 .sidebar-theme-toggle-button:hover {
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-2px) scale(var(--transform-scale-hover));
 }
 
 .sidebar-theme-toggle-button:active {
-  transform: scale(0.95);
+  transform: scale(var(--transform-scale-active));
   transition: transform 0.1s ease-in-out;
 }
 
@@ -403,14 +418,14 @@
   position: fixed;
   left: calc(80px + 2px);
   bottom: 1.2rem;
-  z-index: 1002;
+  z-index: var(--z-aside);
   animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideRight {
   from {
     opacity: 0;
-    transform: translateX(-12px) scale(0.95);
+    transform: translateX(-12px) scale(var(--transform-scale-active));
   }
   to {
     opacity: 1;
@@ -420,7 +435,6 @@
 
 /* ========== CONTENT MARGIN FOR SIDEBAR ========== */
 main,
-.container-fluid-center,
 #home-container,
 #about-container,
 #skills-container,
@@ -430,7 +444,6 @@ main,
 
 @media (max-width: 768px) {
   main,
-  .container-fluid-center,
   #home-container,
   #about-container,
   #skills-container,

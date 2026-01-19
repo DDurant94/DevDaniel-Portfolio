@@ -20,7 +20,6 @@
  * 
  * @component
  * @requires motion/react-client - Framer Motion for staggered animations
- * @requires react-bootstrap - Grid layout (Row, Col)
  * @requires usePageTransition - Cloud transition hook for navigation
  * @requires Services dataset - Service offerings data
  * 
@@ -32,7 +31,7 @@
 
 import * as motion from 'motion/react-client';
 import { services } from '../../../../DataSets/About/Services';
-import { Col, Row } from 'react-bootstrap';
+
 import { usePageTransition } from '../../../../Hooks/Effect-Hooks/usePageTransition';
 import './../../../../Styles/Page-Styles/Home-Styles/Services-Styles/HomeServicesPreviewStyles.css';
 
@@ -47,12 +46,12 @@ const HomeServicesPreview = () => {
         <p className="home-services-preview-head-tagline">Focused delivery across architecture, intelligence, and experience is my commitment.</p>
       </div>
       <div className="home-services-grid" role="list">
-        <Row className="home-services-list g-0">
+        <div className="home-services-list">
         {compactServices.map((s, i) => (
-          <Col key={s.title} className="home-service-row" xs={12} md={6}>
+          <div key={s.title} className="home-service-row">
             <motion.div
               role="listitem"
-              className="home-service-card"
+              className="home-service-card util-flex-col-center-all"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true}}
@@ -71,9 +70,9 @@ const HomeServicesPreview = () => {
               <h3 className="home-service-title">{s.title}</h3>
               <p className="home-service-desc">{s.desc}</p>
             </motion.div>
-          </Col>
+          </div>
         ))}
-          <Col>
+          <div>
             <motion.div
               role="listitem"
               className="home-service-card"
@@ -93,7 +92,7 @@ const HomeServicesPreview = () => {
               style={{ cursor: 'pointer' }}
             >
               {totalServiceSteps > 0 ? (
-                <div className="home-additional-services">
+                <div className="home-additional-services util-flex-col-center-all">
                   <button
                     className="home-additional-services-count"
                     onClick={() => navigateWithTransition('/about')}
@@ -110,8 +109,8 @@ const HomeServicesPreview = () => {
                 </div>
               ) : null}
             </motion.div>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </div>
 
 

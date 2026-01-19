@@ -1,25 +1,5 @@
 /**
- * About Me Page Component
- * 
- * @description Personal introduction page featuring hero section, professional workflow,
- * services offered, and client testimonials. Organized into distinct sections with
- * scroll-triggered fade animations.
- * 
- * Page Sections:
- * - Hero: 3D animated introduction with visual elements
- * - Intro: Personal background and professional journey
- * - Process: How I work - development workflow and methodology
- * - Services: Core services and technical offerings
- * - Testimonials: Client feedback and recommendations
- * 
- * @component
- * @requires FadeInWhenVisible - Scroll-triggered reveal animations
- * @requires SkipToMain - Accessibility skip link
- * 
- * @example
- * ```jsx
- * <AboutMe />
- * ```
+ * About Me Page - Personal introduction with workflow, services, and testimonials
  */
 
 import AboutIntro from "./AboutMe-Components/Intro/AboutIntro";
@@ -30,17 +10,23 @@ import FadeInWhenVisible from "./../../Components/Effects/Fade-Effect/FadeIn";
 import SkipToMain from '../../Components/UI/SkipToMain/SkipToMain';
 
 import './../../Styles/Page-Styles/AboutMe-Styles/AboutMeStyles.css';
-import AboutHero from './AboutMe-Components/Hero/AboutHero.jsx';
+import PageHero from '../../Components/UI/PageHero/PageHero.jsx';
+
+const headerStyle = { width: '100%', height: '100vh' };
 
 const AboutMe = () => {
   return (
-    <div id="about-container" className="container-fluid-center">
+    <div id="about-container">
       <SkipToMain targetId="about-main-content" />
       
-      <header id="about-header" style={{ width: '100%', height: '100vh' }}>
+      <header id="about-header" style={headerStyle}>
         <div id="about-hero-container">
           <div id="about-hero">
-            <AboutHero />
+            <PageHero
+              id="about-hero"
+              title="About Me"
+              subtitle="Crafting thoughtful software & immersive experiences."
+            />
           </div>
         </div>
       </header>
@@ -49,7 +35,7 @@ const AboutMe = () => {
         {/* Intro Section */}
         <section 
           id="about-intro-section" 
-          className="container-fluid-center p-2"
+          className="util-p-sm"
           aria-labelledby="intro-heading"
         >
           <FadeInWhenVisible as="div">
@@ -60,7 +46,7 @@ const AboutMe = () => {
         {/* Process Section */}
         <section 
           id="about-process-section" 
-          className="container-fluid-center mt-3"
+          className="util-mt-md"
           aria-labelledby="process-heading"
         >
           <FadeInWhenVisible as="div" className="section-intro">
@@ -78,7 +64,7 @@ const AboutMe = () => {
         {/* Testimonials Section */}
         <section 
           id="about-testimonials-section" 
-          className="container-fluid-center mt-3"
+          className="util-mt-md"
           aria-labelledby="testimonials-heading"
         >
           <FadeInWhenVisible as="div" className="section-intro">
@@ -95,8 +81,7 @@ const AboutMe = () => {
 
         {/* Signoff */}
         <FadeInWhenVisible 
-          id="about-signoff" 
-          className="container-fluid-center" 
+          id="about-signoff"
           tabIndex="0" 
           role="contentinfo"
           aria-label="Closing statement"

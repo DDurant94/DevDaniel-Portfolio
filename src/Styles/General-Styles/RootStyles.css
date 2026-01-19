@@ -1,95 +1,9 @@
 /**
- * Root Styles & Global Reset
- * 
- * @description Foundation styles with CSS reset, base layout, and utility classes.
- * Uses design tokens from Tokens.css for consistent theming.
- * 
- * Strategy:
- * 1. CSS reset for consistent browser defaults
- * 2. Base typography and layout settings
- * 3. Utility classes for common patterns
- * 4. Responsive container system
- * 5. Theme and motion overrides at end of file
- * 
- * Reset Features:
- * - box-sizing: border-box on all elements
- * - Margin reset on typography elements
- * - Smooth scroll behavior
- * - Text rendering optimizations
- * - Image/media display: block
- * - Form element font inheritance
- * - Button cursor: pointer
- * 
- * HTML Base:
- * - -webkit-text-size-adjust: 100%
- * - -moz-text-size-adjust: 100%
- * - text-size-adjust: 100% (prevents zoom on orientation change)
- * - scroll-behavior: smooth (smooth anchor links)
- * 
- * Body Base:
- * - min-height: 100dvh (dynamic viewport height)
- * - text-rendering: optimizeLegibility
- * - No default margin
- * 
- * Main Body:
- * - #main-body: Root element styling
- * - background-color: var(--color-bg)
- * - color: var(--color-text)
- * - font-family: var(--font-family-sans)
- * - line-height: var(--line-height-base)
- * 
- * Layout Containers:
- * - main, footer: max-width var(--container-max-width)
- * - margin-inline: auto (centered)
- * - padding-inline: var(--space-4)
- * - section: padding-block var(--space-section-y)
- * 
- * Utility Classes:
- * - .stack-sm > * + *: margin-top var(--space-2)
- * - .stack-md > * + *: margin-top var(--space-4)
- * - .stack-lg > * + *: margin-top var(--space-6)
- * - .sr-only: Screen reader only (visually hidden)
- * 
- * Container System:
- * - .container: Full width, max-width, auto margins
- * - .container-narrow: max-width var(--container-narrow)
- * - .container-readable: max-width var(--container-readable)
- * - All use padding-inline: var(--space-4)
- * 
- * Screen Reader Only:
- * - position: absolute, 1px size
- * - overflow: hidden, clip: rect(0 0 0 0)
- * - white-space: nowrap, border: 0
- * - Accessible to AT, invisible to sighted users
- * 
- * Token Migration:
- * - Old variables preserved where referenced
- * - Map to new semantic tokens
- * - Prefer var(--color-bg) over raw brand tokens
- * - Tokens defined in Tokens.css
- * 
- * Accessibility:
- * - List role reset for custom styling
- * - Button cursor indicates interactivity
- * - Form font inheritance for consistency
- * - Text rendering optimization
- * - Smooth scroll (consider prefers-reduced-motion)
- * 
- * Performance:
- * - box-sizing: border-box (consistent sizing)
- * - text-rendering: optimizeLegibility
- * - Minimal global selectors
- * - Efficient margin reset
- * 
- * Browser Compatibility:
- * - 100dvh: Modern browsers (Safari 15.4+, Chrome 108+)
- * - scroll-behavior: All modern browsers
- * - text-size-adjust: Universal with prefixes
- * - Custom properties: Widely supported
- * 
- * @layer reset, base, utilities
- * @requires Tokens.css for design token definitions
+ * Root Styles & Global Reset - Foundation styles with CSS reset and utility classes
  */
+
+/* Import shared animations - must come before other CSS rules */
+@import './Animations.css';
 
 /* =====================================================================
    GLOBAL RESET & DESIGN TOKENS
@@ -112,11 +26,9 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* scroll-behavior: smooth; - DISABLED: Lenis handles smooth scroll via JS */
   scroll-behavior: auto;
 }
 
-/* Lenis smooth scroll support */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -145,13 +57,21 @@ img, picture, video, canvas, svg { display: block; max-width: 100%; }
 input, button, textarea, select { font: inherit; }
 button { cursor: pointer; }
 
-/* Tokens moved to tokens.css. This file now focuses on base layout & theme overrides. */
-
-
 /* === BASE LAYOUT === */
 #main-body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-family-sans); line-height: var(--line-height-base); visibility: visible; }
 main, footer { max-width: var(--container-max-width); margin-inline: auto; padding-inline: var(--space-4); }
-section { padding-block: var(--space-section-y); }
+section { 
+  padding-block: var(--space-section-y);
+  /* Improve rendering performance by containing layout/paint */
+  contain: layout paint;
+  /* Hint browser to defer rendering off-screen sections */
+  /* content-visibility support: Chrome 85+, Edge 85+ */
+  content-visibility: auto;
+  /* Fallback for browsers without content-visibility */
+  @supports not (content-visibility: auto) {
+    will-change: auto;
+  }
+}
 
 /* Utility classes (opt-in) */
 .stack-sm > * + * { margin-top: var(--space-2); }
@@ -172,7 +92,6 @@ section { padding-block: var(--space-section-y); }
   :root { --top-margin: var(--space-12); }
 }
 
-/* === Components: Transitional legacy classes (example) === */
 .loading-spinner {
   display: flex;
   justify-content: center;
@@ -182,25 +101,16 @@ section { padding-block: var(--space-section-y); }
   color: var(--color-text-mute);
 }
 
-/* Legacy .btn-3d block removed (unused). Modern .btn variants live below. */
-/* === Pressable Utility Classes (shared extraction) === */
-/* These utilities allow any element to opt into the 3D edge + glow + pressed system without copying shadows. */
 .pressable { position: relative; }
-/* Edge highlight ring */
+
 .pressable-edge::after { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow: var(--pressable-edge-inset); opacity:.55; transition: opacity .35s ease; }
 .pressable-edge:hover::after,
 .pressable-edge:focus-visible::after { opacity:.85; }
-/* Glow variants (outline vs inset stacks) */
+
 .pressable-glow-outline:hover,
 .pressable-glow-outline:focus-visible { box-shadow: var(--pressable-glow-stack-outline); }
 .pressable-glow-inset:hover,
 .pressable-glow-inset:focus-visible { box-shadow: var(--pressable-glow-stack-inset); }
-/* Pressed state */
+
 .pressable.is-pressed,
 .pressable:active { box-shadow: var(--pressable-pressed-stack); transform: translateY(0) scale(.985); }
-
-/* === Keyframes === */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}

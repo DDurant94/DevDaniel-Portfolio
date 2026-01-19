@@ -1,34 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useMediaQuery } from '../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../Context/MediaQueryContext.hook';
 import './../../../Styles/Component-Styles/Background-Styles/TerminalPromptDecorations-Styles/TerminalPromptDecorationsStyles.css';
 
-/**
- * TerminalPromptDecorations - Animated terminal command prompts as background decoration
- * 
- * Displays terminal/shell prompts (npm, git commands) scattered across the background
- * with subtle mouse parallax effect. Creates a developer-themed atmosphere.
- * 
- * Features:
- * - 6 terminal prompts in different positions
- * - Mouse parallax effect (depth-based movement)
- * - Commands: npm run dev, git commit, npm install, npm test, npm build, git push
- * - Desktop only (hidden on mobile)
- * - Respects prefers-reduced-motion (disables parallax)
- * - CSS custom properties for mouse position (--mouse-x, --mouse-y)
- * - Depth values control parallax intensity per prompt
- * 
- * Prompts:
- * - top-left: $ npm run dev (depth 0.5)
- * - top-right: > git commit -m "update" (depth 0.3)
- * - mid-left: $ npm install (depth 0.7)
- * - mid-right: > npm test (depth 0.4)
- * - bottom-left: $ npm build (depth 0.6)
- * - bottom-right: > git push origin main (depth 0.5)
- * 
- * @component
- * @example
- * <TerminalPromptDecorations />
- */
+/** TerminalPromptDecorations - Animated terminal command prompts as background decoration */
 const TerminalPromptDecorations = () => {
   const { isDesktop, prefersReducedMotion } = useMediaQuery();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });

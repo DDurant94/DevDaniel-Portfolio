@@ -82,10 +82,7 @@ const ContactMeForm = () => {
     setLoading(true);
     
     try {
-      // Create email parameters from form data
       const emailParams = createEmailParams(formData);
-      
-      // Send email to you (the owner)
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
         EMAILJS_CONFIG.TEMPLATE_ID,
@@ -97,7 +94,7 @@ const ContactMeForm = () => {
         throw new Error('Failed to send message');
       }
       
-      // Send auto-reply to the user
+      // Send auto-reply to user
       await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
         EMAILJS_CONFIG.AUTO_REPLY_TEMPLATE_ID,
@@ -120,9 +117,9 @@ const ContactMeForm = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="contact-success"
+        className="contact-success util-flex-col-center"
       >
-        <div className="success-icon">
+        <div className="success-icon util-flex-center">
           <i className="fa-solid fa-check-circle" aria-hidden="true"></i>
         </div>
         <h3>Message Sent!</h3>
@@ -145,7 +142,7 @@ const ContactMeForm = () => {
 
   return (
     <motion.form
-      className="contact-form"
+      className="contact-form util-w-full util-flex-col"
       onSubmit={handleSubmit}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -154,14 +151,14 @@ const ContactMeForm = () => {
     >
       {/* Name Field */}
       <div className="form-field">
-        <label htmlFor="contact-name" className="form-label">
+        <label htmlFor="contact-name" className="form-label util-flex util-items-center">
           <i className="fa-solid fa-user" aria-hidden="true"></i>
           Name
         </label>
         <input
           id="contact-name"
           type="text"
-          className={`form-input ${touched.name && !nameValid ? 'input-error' : ''}`}
+          className={`form-input util-w-full ${touched.name && !nameValid ? 'input-error' : ''}`}
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
           onBlur={() => handleBlur('name')}
@@ -171,7 +168,7 @@ const ContactMeForm = () => {
           aria-describedby={touched.name && !nameValid ? "name-error" : undefined}
         />
         {touched.name && !nameValid && (
-          <span id="name-error" className="field-error" role="alert">
+          <span id="name-error" className="field-error util-flex util-items-center" role="alert">
             <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
             Name is required
           </span>
@@ -179,15 +176,15 @@ const ContactMeForm = () => {
       </div>
 
       {/* Email Field */}
-      <div className="form-field">
-        <label htmlFor="contact-email" className="form-label">
+      <div className="form-field util-flex-col">
+        <label htmlFor="contact-email" className="form-label util-flex util-items-center">
           <i className="fa-solid fa-envelope" aria-hidden="true"></i>
           Email
         </label>
         <input
           id="contact-email"
           type="email"
-          className={`form-input ${touched.email && !emailValid ? 'input-error' : ''}`}
+          className={`form-input util-w-full ${touched.email && !emailValid ? 'input-error' : ''}`}
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
           onBlur={() => handleBlur('email')}
@@ -197,7 +194,7 @@ const ContactMeForm = () => {
           aria-describedby={touched.email && !emailValid ? "email-error" : undefined}
         />
         {touched.email && !emailValid && (
-          <span id="email-error" className="field-error" role="alert">
+          <span id="email-error" className="field-error util-flex util-items-center" role="alert">
             <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
             {formData.email ? 'Enter a valid email address' : 'Email is required'}
           </span>
@@ -205,14 +202,14 @@ const ContactMeForm = () => {
       </div>
 
       {/* Message Field */}
-      <div className="form-field">
-        <label htmlFor="contact-message" className="form-label">
+      <div className="form-field util-flex-col">
+        <label htmlFor="contact-message" className="form-label util-flex util-items-center">
           <i className="fa-solid fa-message" aria-hidden="true"></i>
           Message
         </label>
         <textarea
           id="contact-message"
-          className={`form-input form-textarea ${touched.message && !messageValid ? 'input-error' : ''}`}
+          className={`form-input form-textarea util-w-full ${touched.message && !messageValid ? 'input-error' : ''}`}
           value={formData.message}
           onChange={(e) => handleChange('message', e.target.value)}
           onBlur={() => handleBlur('message')}
@@ -223,7 +220,7 @@ const ContactMeForm = () => {
           aria-describedby={touched.message && !messageValid ? "message-error" : undefined}
         />
         {touched.message && !messageValid && (
-          <span id="message-error" className="field-error" role="alert">
+          <span id="message-error" className="field-error util-flex util-items-center" role="alert">
             <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
             Message is required
           </span>
@@ -232,14 +229,14 @@ const ContactMeForm = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="form-error" role="alert">
+        <div className="form-error util-flex util-items-center" role="alert">
           <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
           <span>{error}</span>
         </div>
       )}
 
       {/* Submit Button */}
-      <div className="form-actions">
+      <div className="form-actions util-flex util-justify-center">
         <BaseButton
           variant="primary"
           size="lg"

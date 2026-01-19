@@ -67,15 +67,13 @@ function getSystemPreference() {
  * @param {string} resolvedTheme - Actual theme to apply ('light'|'dark'|'contrast')
  * @param {string} explicitChoice - User's explicit choice ('light'|'dark'|'contrast'|'system')
  */
+
 function applyTheme(resolvedTheme, explicitChoice) {
   const root = document.documentElement; // <html>
-  // Reflect the theme in the attribute so CSS using [data-theme] updates immediately
-  // If user chose an explicit mode (light|dark|contrast), honor it directly; for 'system', use resolvedTheme
   const attrValue = (explicitChoice === 'system') ? resolvedTheme : explicitChoice;
   root.setAttribute('data-theme', attrValue);
-  // Track user mode and resolved theme for debugging/conditional logic if needed
   root.dataset.themeMode = explicitChoice;
-  root.dataset.themeResolved = resolvedTheme; // debug aid (not styled)
+  root.dataset.themeResolved = resolvedTheme;
 }
 
 export default function useTheme() {
@@ -84,7 +82,6 @@ export default function useTheme() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       const userSet = localStorage.getItem(USER_SET_KEY);
-      // If user has never explicitly set a theme, follow system by default
       if (!userSet) return 'system';
       return saved || 'system';
     } catch {
@@ -92,10 +89,8 @@ export default function useTheme() {
     }
   });
 
-  // Derived actual theme applied
   const [resolved, setResolved] = useState(() => theme === 'system' ? getSystemPreference() : (theme === 'contrast' ? 'dark' : theme));
 
-  // Respond to system changes if in system mode
   useEffect(() => {
     if (theme !== 'system') return;
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -109,7 +104,6 @@ export default function useTheme() {
     return () => mq.removeEventListener('change', listener);
   }, [theme]);
 
-  // Apply on theme change
   useEffect(() => {
     const actual = theme === 'system' ? getSystemPreference() : (theme === 'contrast' ? 'dark' : theme);
     setResolved(actual);
@@ -122,17 +116,10 @@ export default function useTheme() {
         localStorage.setItem(STORAGE_KEY, theme);
         localStorage.setItem(USER_SET_KEY, '1');
       }
-    } catch {}
+    } catch {
+      // Silently fail if localStorage unavailable (SSR, privacy mode)
+    }
   }, [theme]);
-
-  // Apply once on mount to sync DOM when theme comes from storage or defaults
-  useEffect(() => {
-    const actual = theme === 'system' ? getSystemPreference() : (theme === 'contrast' ? 'dark' : theme);
-    setResolved(actual);
-    applyTheme(actual, theme);
-    // do not touch storage here
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const cycleTheme = useCallback(() => {
     setTheme(prev => {

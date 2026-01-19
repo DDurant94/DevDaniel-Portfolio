@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { Sky, Clouds, Cloud } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import ParallaxGroup from '../../../3D-Helpers/ParallaxGroup';
@@ -11,25 +11,94 @@ import useGearInteraction from '../../../3D-Hooks/Header-Hooks/useGearInteractio
 import { VARIANTS } from './../../../../DataSets/Hero/HeroScene';
 import { useEffect, useState, useRef } from 'react';
 
+// Cleanup component to dispose WebGL resources on unmount
+function SceneCleanup() {
+  const { gl, scene } = useThree();
+  
+  useEffect(() => {
+    return () => {
+      // Dispose all geometries and materials in the scene
+      scene.traverse((object) => {
+        if (object.geometry) {
+          object.geometry.dispose();
+        }
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(material => material.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      });
+      
+      // Dispose renderer
+      gl.dispose();
+      gl.forceContextLoss();
+    };
+  }, [gl, scene]);
+  
+  return null;
+}
+
+// Component to detect when scene has actually rendered
+function SceneReadyDetector({ onReady }) {
+  const hasCalledReady = useRef(false);
+  const frameCount = useRef(0);
+  const startTime = useRef(Date.now());
+
+  useFrame(() => {
+    frameCount.current += 1;
+    const elapsedTime = Date.now() - startTime.current;
+    
+    // Wait for at least 10 frames AND minimum 1 second to ensure scene is visible
+    if (frameCount.current >= 10 && elapsedTime >= 1000 && !hasCalledReady.current && onReady) {
+      hasCalledReady.current = true;
+      // Additional small delay to ensure textures are fully rendered
+      setTimeout(() => onReady(), 200);
+    }
+  });
+
+  return null;
+}
+
+// Constant styles to prevent re-renders
+const containerStyle = {
+  width: '100%',
+  height: '200vh',
+  position: 'relative'
+};
+
+const canvasStyle = {
+  position: 'sticky',
+  top: 0,
+  height: '100vh',
+  pointerEvents: 'auto'
+};
+
 export default function GearCloudScene({ 
   variant = 'home', 
   containerRef: externalContainerRef, 
   showGear = true,
-  performanceLevel = 'full' 
+  performanceLevel = 'full',
+  onSceneReady,
+  isMobile: isMobileProp
 }) {
   const v = VARIANTS[variant] ?? VARIANTS.home;
   
-  // State
+  // State - use prop if provided, otherwise detect
   const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+    isMobileProp !== undefined ? isMobileProp : 
+    (typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches)
   );
   const [isUltraWide, setIsUltraWide] = useState(() =>
     typeof window !== 'undefined' && window.innerWidth / window.innerHeight >= 2.3
   );
-  const [frameloop, setFrameloop] = useState('always');
+  // Mobile uses 'demand' frameloop (only renders when needed) for better performance
+  const [frameloop, setFrameloop] = useState(isMobile ? 'demand' : 'always');
   
   // Refs
-  const containerRef = externalContainerRef || useRef(null);
+  const internalContainerRef = useRef(null);
+  const containerRef = externalContainerRef || internalContainerRef;
   const targetRotationRef = useRef(0);
   const touchStartRef = useRef({ x: 0, dragging: false });
 
@@ -42,7 +111,11 @@ export default function GearCloudScene({
     if (typeof window === 'undefined') return;
     
     const mq = window.matchMedia('(max-width: 768px)');
-    const onChange = (e) => setIsMobile(e.matches);
+    const onChange = (e) => {
+      setIsMobile(e.matches);
+      // Update frameloop based on device type
+      setFrameloop(e.matches ? 'demand' : 'always');
+    };
     
     mq.addEventListener?.('change', onChange) || mq.addListener?.(onChange);
     
@@ -68,27 +141,39 @@ export default function GearCloudScene({
     
     observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [containerRef]);
 
   // Custom hooks for scroll and gear interaction
   useScrollProgress(containerRef);
-  useGearInteraction(targetRotationRef, touchStartRef);
+  // Enable gear interaction only on desktop to reduce mobile CPU usage
+  useGearInteraction(targetRotationRef, touchStartRef, !isMobile);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '200vh', position: 'relative' }} data-scroll-progress="0">
+    <div ref={containerRef} style={containerStyle} data-scroll-progress="0">
       <Canvas 
         shadows
         dpr={Math.min(window.devicePixelRatio || 1, 2)}
         camera={{ ...(isMobile ? v.camMobile : v.cam), near: 0.5, far: 3000 }} 
         frameloop={frameloop}
-        style={{ position: 'sticky', top: 0, height: '100vh', pointerEvents: 'auto' }}
+        style={canvasStyle}
         gl={{ 
           powerPreference: 'high-performance',
           antialias: true,
           alpha: true,
-          preserveDrawingBuffer: false
+          preserveDrawingBuffer: false,
+          failIfMajorPerformanceCaveat: false
+        }}
+        onCreated={({ gl }) => {
+          // Suppress KHR_materials_pbrSpecularGlossiness warning
+          gl.debug.checkShaderErrors = false;
         }}
       >
+        {/* Cleanup handler */}
+        <SceneCleanup />
+        
+        {/* Scene ready detector - waits for actual frames to render */}
+        {onSceneReady && <SceneReadyDetector onReady={onSceneReady} />}
+        
         {/* Camera scroll animation */}
         <CameraScrollAnimation containerRef={containerRef} initialCam={isMobile ? v.camMobile : v.cam} variant={variant} />
 
@@ -142,7 +227,8 @@ export default function GearCloudScene({
             />
             <CodingSymbolCloud 
               enableAnimations={performanceLevel === 'full'} 
-              containerRef={containerRef} 
+              containerRef={containerRef}
+              isMobile={isMobile}
             />
           </ParallaxGroup>
         )}

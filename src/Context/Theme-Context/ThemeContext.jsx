@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 import useTheme from '../../Hooks/Theme-Hooks/useTheme';
 
 /**
@@ -32,14 +32,13 @@ import useTheme from '../../Hooks/Theme-Hooks/useTheme';
  *   Current: {resolvedTheme}
  * </button>
  */
-const ThemeContext = createContext({
+// eslint-disable-next-line react-refresh/only-export-components
+export const ThemeContext = createContext({
   theme: 'system',
   resolvedTheme: 'light',
   setTheme: () => {},
   cycleTheme: () => {}
 });
-
-export const useThemeContext = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
   const themeValues = useTheme();

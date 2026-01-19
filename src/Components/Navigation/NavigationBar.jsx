@@ -1,35 +1,11 @@
-/**
- * NavigationBar Component
- * 
- * @description Main navigation header with responsive mobile menu, theme toggle, and social links.
- * Features include:
- * - Sticky navigation that responds to scroll position
- * - Responsive mobile hamburger menu with focus trap
- * - Active route highlighting
- * - Theme toggle integration
- * - Contact aside trigger
- * - Social media links
- * - Full keyboard navigation and ARIA support
- * 
- * @component
- * @requires react-router-dom - For navigation and route detection
- * @requires NavigationContext - For menu state management
- * @requires ScrollContext - For scroll position detection
- * @requires ContactAsideContext - For contact panel control
- * 
- * @example
- * ```jsx
- * <NavigationBar />
- * ```
- */
-
-import { Link, useLocation } from 'react-router-dom';
+/** NavigationBar - Responsive header with mobile menu, theme toggle, and social links */
 import { useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useContactAside } from '../../Context/Aside-Context/useContactAside';
+import { useScroll } from '../../Context/Scroll-Context/useScroll';
+import { useNavigation } from '../../Context/Navigation-Context/useNavigation';
 import NavigationBrand from './NavigationBar-Components/NavigationBrand';
 import ThemeToggle from './NavigationBar-Components/ThemeToggle/ThemeToggle';
-import { useContactAside } from '../../Context/Aside-Context/ContactAsideContext';
-import { useScroll } from '../../Context/Scroll-Context/ScrollContext';
-import { useNavigation } from '../../Context/Navigation-Context/NavigationContext';
 import '../../Styles/Component-Styles/NavigationBar-Styles/NavigationStyles.css';
 
 function NavigationBar() {
@@ -91,7 +67,7 @@ function NavigationBar() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   /** Navigation menu items configuration */
   const navItems = [
@@ -120,7 +96,7 @@ function NavigationBar() {
   return (
     <>
       {/* Desktop Sidebar - Left side */}
-      <aside className="left-sidebar desktop-only">
+      <aside className="left-sidebar desktop-only util-flex">
         <div className="sidebar-background" />
         
         <Link to="/" className="sidebar-logo" aria-label="Home">

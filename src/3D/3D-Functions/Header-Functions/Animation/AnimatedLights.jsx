@@ -55,8 +55,6 @@ export default function AnimatedLights({ targetLight }) {
     if (!lightRef.current) return;
     
     const lerpFactor = 0.03;
-    
-    // Lerp position
     currentLightRef.current.pos[0] = THREE.MathUtils.lerp(
       currentLightRef.current.pos[0],
       targetLight.pos[0],
@@ -72,8 +70,6 @@ export default function AnimatedLights({ targetLight }) {
       targetLight.pos[2],
       lerpFactor
     );
-    
-    // Lerp intensity
     currentLightRef.current.intensity = THREE.MathUtils.lerp(
       currentLightRef.current.intensity,
       targetLight.intensity,
@@ -82,8 +78,6 @@ export default function AnimatedLights({ targetLight }) {
     
     lightRef.current.position.set(...currentLightRef.current.pos);
     lightRef.current.intensity = currentLightRef.current.intensity;
-    
-    // Lerp color
     const targetColor = new THREE.Color(targetLight.color);
     lightRef.current.color.lerp(targetColor, lerpFactor);
   });

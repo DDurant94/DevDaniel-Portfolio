@@ -1,29 +1,5 @@
 /**
- * Contact Me Page Component
- * 
- * @description Dedicated contact page with form for inquiries, collaboration requests,
- * and general communication. Features animated entrance and clean, focused layout.
- * 
- * Features:
- * - Contact form with validation
- * - Smooth entrance animation
- * - Body class management for page-specific styling
- * - Accessibility skip link
- * - Clear call-to-action messaging
- * 
- * Page Lifecycle:
- * - Adds 'contact-page' class to body on mount
- * - Removes class on unmount (prevents style bleed)
- * 
- * @component
- * @requires framer-motion - Page entrance animation
- * @requires ContactMeForm - Form component with validation
- * @requires SkipToMain - Accessibility skip link
- * 
- * @example
- * ```jsx
- * <ContactMe />
- * ```
+ * Contact Me Page - Contact form with validation and entrance animation
  */
 
 import ContactMeForm from "./ContactMe-Components/ContactMeForm";

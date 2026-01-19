@@ -35,6 +35,3 @@ dist-ssr
 Testamonials.txt
 
 social-banner-generator.html
-
-# Large video files (use optimized versions instead)
-src/Assets/Photos/Project-Photos/Portfolio/PortfolioDemo.mp4

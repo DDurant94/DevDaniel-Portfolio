@@ -106,7 +106,6 @@
   border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
   border-radius: var(--radius-full);
   background: var(--_tab-bg-base); color: var(--_tab-color); backdrop-filter: blur(6px);
-  /* Motion: background/color/shadow -> fade; transform -> scale */
   transition: background var(--motion-fade),
               box-shadow var(--motion-fade),
               color var(--motion-fade),
@@ -117,7 +116,6 @@
 .ds-tabs [role="tab"]:focus-visible {
   background: var(--_tab-bg-hover);
   outline: none;
-  /* Glow on hover/focus */
   box-shadow: var(--pressable-glow-stack-outline);
 }
 .ds-tabs [role="tab"].active,
@@ -125,7 +123,6 @@
   background: var(--gradient-pressable-active);
   color: var(--color-text-inverse);
   border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
-  /* Active state keeps a stronger glow */
   box-shadow: var(--shadow-tab-active), var(--pressable-glow-stack-outline);
 }
 .ds-tabs [role="tab"]:active { transform: translateY(0) scale(.985); }

@@ -1,42 +1,10 @@
 /**
- * SharedHeroScene Component
- * 
- * @description Persistent 3D hero scene that transitions smoothly between pages without remounting.
- * Manages scene variants based on current route and provides scroll-based parallax movement.
- * 
- * Features:
- * - Route-based scene variants (home, about, projects, skills, notfound)
- * - Smooth variant transitions without unmounting Canvas
- * - Scroll-based vertical translation (moves up with page scroll)
- * - Error boundary with shake animation
- * - Lazy scene initialization for performance
- * - Maintains 3D context across page transitions
- * 
- * Scene Variants:
- * - 'home': Default landing scene
- * - 'about': About page variant with adjusted camera/elements
- * - 'projects': Portfolio showcase variant
- * - 'skills': Technical skills variant
- * - 'notfound': 404 error state
- * 
- * Scroll Behavior:
- * - Scene stays fixed until user scrolls past viewport height
- * - Then translates upward with scroll to reveal content below
- * - Uses direct DOM manipulation for smooth 60fps performance
- * 
- * @component
- * @param {Object} props
- * @param {boolean} [props.showGear=true] - Whether to show animated gear models
- * 
- * @example
- * ```jsx
- * <SharedHeroScene showGear={true} />
- * ```
+ * SharedHeroScene - Persistent 3D scene with route-based variants and scroll parallax
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useMediaQuery } from '../../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../../Context/MediaQueryContext.hook';
 import GearCloudScene from './GearCloudScene.jsx';
 import '../../../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
 
@@ -51,11 +19,142 @@ const routeToVariant = {
 // Valid routes for 404 detection
 const validRoutes = ['/', '/about', '/projects', '/skills'];
 
+// Constant style objects to prevent re-renders
+const loadingContainerStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '12px',
+  color: 'var(--color-primary)',
+  opacity: 0.7,
+  zIndex: 10
+};
+
+const spinnerStyle = {
+  width: '40px',
+  height: '40px',
+  border: '3px solid transparent',
+  borderTopColor: 'var(--color-primary)',
+  borderRadius: '50%',
+  animation: 'spin 1s linear infinite'
+};
+
+const loadingTextStyle = {
+  fontSize: '14px',
+  fontWeight: 500
+};
+
+const fallbackGradientStyle = {
+  position: 'absolute',
+  inset: 0,
+  background: 'linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #FFE5B4 100%)',
+  pointerEvents: 'none'
+};
+
+const errorGradientStyle = {
+  position: 'absolute',
+  inset: 0,
+  background: 'linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #FFE5B4 100%)',
+  pointerEvents: 'none'
+};
+
+const errorLogoContainerStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  opacity: 0.08,
+  pointerEvents: 'none',
+  width: '60%',
+  maxWidth: '800px'
+};
+
+const errorLogoStyle = {
+  width: '100%',
+  height: 'auto',
+  filter: 'grayscale(1)'
+};
+
+const errorMessageStyle = {
+  position: 'absolute',
+  top: '50%',
+  right: '5%',
+  transform: 'translateY(-50%)',
+  maxWidth: '280px',
+  padding: '1.25rem 1.5rem',
+  background: 'rgba(255, 255, 255, 0.75)',
+  backdropFilter: 'blur(20px)',
+  borderRadius: '16px',
+  border: '1px solid rgba(255, 255, 255, 0.5)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+  color: '#2c3e50'
+};
+
+const errorCloseButtonStyle = {
+  position: 'absolute',
+  top: '0.75rem',
+  right: '0.75rem',
+  width: '24px',
+  height: '24px',
+  border: 'none',
+  background: 'rgba(0, 0, 0, 0.05)',
+  borderRadius: '50%',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '0.875rem',
+  color: '#666',
+  transition: 'all 0.2s ease',
+  pointerEvents: 'auto'
+};
+
+const errorNoticeStyle = {
+  fontSize: '0.75rem',
+  textTransform: 'uppercase',
+  letterSpacing: '0.1em',
+  fontWeight: '500',
+  color: '#e74c3c',
+  marginBottom: '0.5rem'
+};
+
+const errorTextStyle = {
+  fontSize: '0.95rem',
+  lineHeight: '1.5',
+  opacity: 0.85
+};
+
+const errorReopenButtonStyle = {
+  position: 'absolute',
+  top: '50%',
+  right: '5%',
+  transform: 'translateY(-50%)',
+  width: '48px',
+  height: '48px',
+  border: '1px solid rgba(255, 255, 255, 0.5)',
+  background: 'rgba(255, 255, 255, 0.75)',
+  backdropFilter: 'blur(20px)',
+  borderRadius: '50%',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '1.25rem',
+  fontWeight: '600',
+  color: '#e74c3c',
+  pointerEvents: 'auto',
+  transition: 'all 0.2s ease'
+};
+
 /**
  * SharedHeroScene - A persistent 3D scene that smoothly transitions between page variants
  * This component stays mounted and updates its variant based on the current route
  */
-export default function SharedHeroScene({ showGear = true }) {
+export default function SharedHeroScene({ showGear = true, isMobile = false }) {
   const location = useLocation();
   const containerRef = useRef(null);
   const { shouldRender3D, performanceLevel } = useMediaQuery();
@@ -63,10 +162,20 @@ export default function SharedHeroScene({ showGear = true }) {
   const [hasError, setHasError] = useState(false);
   const [isErrorVisible, setIsErrorVisible] = useState(true);
   const [shouldShake, setShouldShake] = useState(false);
-  const [sceneReady, setSceneReady] = useState(false);
+  const [isSceneLoaded, setIsSceneLoaded] = useState(false);
+  const hasShownLoader = useRef(false);
 
-  // Skip 3D rendering for minimal/low performance
   const shouldRenderScene = shouldRender3D && performanceLevel !== 'minimal';
+
+  // Track when scene finishes loading - memoized to prevent re-renders
+  const handleSceneReady = useCallback(() => {
+    setIsSceneLoaded(true);
+    hasShownLoader.current = true;
+    // Reset position to top when scene loads to prevent wrong scroll position
+    if (containerRef.current) {
+      containerRef.current.style.transform = 'translateY(0)';
+    }
+  }, []);
 
   // Update variant when route changes
   useEffect(() => {
@@ -75,40 +184,48 @@ export default function SharedHeroScene({ showGear = true }) {
     setCurrentVariant(newVariant);
   }, [location.pathname]);
 
-  // Allow scene animations to start after brief mount delay
+  // Move scene up with scroll instead of hiding it - use RAF for smooth updates
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSceneReady(true);
-    }, 300);
+    let ticking = false;
     
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Move scene up with scroll instead of hiding it - use direct DOM manipulation for smoothness
-  useEffect(() => {
     const handleScroll = () => {
-      if (!containerRef.current) return;
-      
-      const scrollY = window.scrollY;
-      const startMove = window.innerHeight;
-      
-      if (scrollY > startMove) {
-        const moveAmount = scrollY - startMove;
-        containerRef.current.style.transform = `translateY(-${moveAmount}px)`;
-      } else {
-        containerRef.current.style.transform = 'translateY(0)';
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!containerRef.current) {
+            ticking = false;
+            return;
+          }
+          
+          const scrollY = window.scrollY;
+          const startMove = window.innerHeight;
+          
+          if (scrollY > startMove) {
+            const moveAmount = scrollY - startMove;
+            containerRef.current.style.transform = `translateY(-${moveAmount}px)`;
+          } else {
+            containerRef.current.style.transform = 'translateY(0)';
+          }
+          
+          ticking = false;
+        });
+        
+        ticking = true;
       }
     };
 
-    // Use native scroll listener for smoother 3D scene movement
+    // Initialize position to top on mount, regardless of current scroll
+    if (containerRef.current) {
+      containerRef.current.style.transform = 'translateY(0)';
+    }
+
+    // Use native scroll listener with RAF debouncing
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
+    // Don't call handleScroll on mount - let it start at top
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    // Ensure the container is positioned correctly
     if (containerRef.current) {
       containerRef.current.style.position = 'fixed';
       containerRef.current.style.top = '0';
@@ -116,8 +233,8 @@ export default function SharedHeroScene({ showGear = true }) {
       containerRef.current.style.width = '100%';
       containerRef.current.style.height = '100vh';
       containerRef.current.style.zIndex = '0';
-      // Allow pointer events so mouse interaction works with parallax
       containerRef.current.style.pointerEvents = 'auto';
+      containerRef.current.style.overflow = 'hidden';
     }
   }, []);
 
@@ -132,8 +249,7 @@ export default function SharedHeroScene({ showGear = true }) {
     window.addEventListener('error', handleError);
     return () => window.removeEventListener('error', handleError);
   }, []);
-
-  // Shake animation every 4 seconds when there's an error
+  
   useEffect(() => {
     if (!hasError) return;
     
@@ -149,32 +265,14 @@ export default function SharedHeroScene({ showGear = true }) {
     <div ref={containerRef} className="shared-hero-canvas-wrapper">
       {/* Fallback gradient background for errors */}
       {hasError && (
-        <div 
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #FFE5B4 100%)',
-            pointerEvents: 'none'
-          }}
-        >
+        <div style={errorGradientStyle}>
           {/* Subtle logo watermark in center */}
           {hasError && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                opacity: 0.08,
-                pointerEvents: 'none',
-                width: '60%',
-                maxWidth: '800px'
-              }}
-            >
+            <div style={errorLogoContainerStyle}>
               <img 
                 src="/src/Assets/SVGS/LogoIconOnly.svg" 
                 alt=""
-                style={{ width: '100%', height: 'auto', filter: 'grayscale(1)' }}
+                style={errorLogoStyle}
               />
             </div>
           )}
@@ -183,18 +281,7 @@ export default function SharedHeroScene({ showGear = true }) {
           {hasError && isErrorVisible && (
             <div 
               style={{
-                position: 'absolute',
-                top: '50%',
-                right: '5%',
-                transform: 'translateY(-50%)',
-                maxWidth: '280px',
-                padding: '1.25rem 1.5rem',
-                background: 'rgba(255, 255, 255, 0.75)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.5)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
-                color: '#2c3e50',
+                ...errorMessageStyle,
                 animation: shouldShake ? 'shake 0.5s ease-in-out, fadeIn 0.5s ease-out' : 'fadeIn 0.5s ease-out'
               }}
               className="hero-error-message"
@@ -202,24 +289,7 @@ export default function SharedHeroScene({ showGear = true }) {
               {/* Close button */}
               <button
                 onClick={() => setIsErrorVisible(false)}
-                style={{
-                  position: 'absolute',
-                  top: '0.75rem',
-                  right: '0.75rem',
-                  width: '24px',
-                  height: '24px',
-                  border: 'none',
-                  background: 'rgba(0, 0, 0, 0.05)',
-                  borderRadius: '50%',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.875rem',
-                  color: '#666',
-                  transition: 'all 0.2s ease',
-                  pointerEvents: 'auto'
-                }}
+                style={errorCloseButtonStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(0, 0, 0, 0.1)';
                   e.currentTarget.style.transform = 'scale(1.1)';
@@ -232,21 +302,10 @@ export default function SharedHeroScene({ showGear = true }) {
                 ×
               </button>
 
-              <div style={{
-                fontSize: '0.75rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                fontWeight: '500',
-                color: '#e74c3c',
-                marginBottom: '0.5rem'
-              }}>
+              <div style={errorNoticeStyle}>
                 Notice
               </div>
-              <div style={{
-                fontSize: '0.95rem',
-                lineHeight: '1.5',
-                opacity: 0.85
-              }}>
+              <div style={errorTextStyle}>
                 3D experience unavailable. Your device may not support WebGL.
               </div>
             </div>
@@ -257,25 +316,8 @@ export default function SharedHeroScene({ showGear = true }) {
             <button
               onClick={() => setIsErrorVisible(true)}
               style={{
-                position: 'absolute',
-                top: '50%',
-                right: '5%',
-                transform: 'translateY(-50%)',
-                width: '48px',
-                height: '48px',
-                border: '1px solid rgba(255, 255, 255, 0.5)',
-                background: 'rgba(255, 255, 255, 0.75)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.25rem',
-                color: '#e74c3c',
-                transition: 'all 0.2s ease',
+                ...errorReopenButtonStyle,
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-                pointerEvents: 'auto',
                 animation: shouldShake ? 'shake 0.5s ease-in-out, fadeIn 0.3s ease-out' : 'fadeIn 0.3s ease-out'
               }}
               onMouseEnter={(e) => {
@@ -294,27 +336,29 @@ export default function SharedHeroScene({ showGear = true }) {
         </div>
       )}
       
-      {/* 3D Scene - conditionally render based on performance */}
+      {/* Loading indicator for 3D scene - only show during initial load */}
+      {!hasError && shouldRenderScene && !isSceneLoaded && !hasShownLoader.current && (
+        <div style={loadingContainerStyle}>
+          <div style={spinnerStyle} />
+          <span style={loadingTextStyle}>Loading 3D Scene...</span>
+        </div>
+      )}
+
+      {/* 3D Scene - renders immediately */}
       {!hasError && shouldRenderScene && (
         <GearCloudScene 
           variant={currentVariant} 
           containerRef={containerRef}
-          sceneReady={sceneReady}
           showGear={showGear}
           performanceLevel={performanceLevel}
+          onSceneReady={handleSceneReady}
+          isMobile={isMobile}
         />
       )}
 
       {/* Fallback gradient for minimal performance mode */}
       {!hasError && !shouldRenderScene && (
-        <div 
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #FFE5B4 100%)',
-            pointerEvents: 'none'
-          }}
-        />
+        <div style={fallbackGradientStyle} />
       )}
     </div>
   );

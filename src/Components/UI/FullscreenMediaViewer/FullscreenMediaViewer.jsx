@@ -1,54 +1,11 @@
 // src/Components/UI/FullscreenMediaViewer/FullscreenMediaViewer.jsx
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { getMediaType } from '../../../Utils/mediaHelpers.js';
 import './../../../Styles/Component-Styles/UI-Styles/FullscreenMediaViewer-Styles/FullscreenMediaViewerStyles.css';
 
-/**
- * FullscreenMediaViewer - Interactive fullscreen overlay for media viewing
- * 
- * Provides fullscreen viewing with zoom and pan controls for images/videos.
- * Features smooth animations, keyboard controls, and responsive behavior.
- * 
- * Features:
- * - Fullscreen overlay with dark backdrop
- * - Zoom in/out controls (25% - 200%)
- * - Pan/drag when zoomed
- * - Reset zoom and position
- * - Keyboard shortcuts (Escape, +/-, 0, arrows)
- * - Touch gestures support
- * - Preserves video playback state
- * - Logo overlay support
- * 
- * Keyboard Controls:
- * - Escape: Close viewer
- * - +/=: Zoom in
- * - -: Zoom out
- * - 0: Reset zoom
- * - Arrow keys: Pan (when zoomed)
- * - Space: Play/pause video
- * 
- * @component
- * @param {Object} props
- * @param {boolean} props.isOpen - Viewer visibility state
- * @param {Function} props.onClose - Close handler
- * @param {string} props.mediaSrc - Media URL (image or video)
- * @param {string} props.mediaAlt - Alt text for accessibility
- * @param {string} props.logoSrc - Optional logo overlay URL
- * @param {boolean} props.hasLogo - Whether to show logo overlay
- * @param {boolean} props.hasBackground - Whether media has background styling
- * 
- * @example
- * <FullscreenMediaViewer
- *   isOpen={isFullscreen}
- *   onClose={() => setIsFullscreen(false)}
- *   mediaSrc={currentMedia.src}
- *   mediaAlt={currentMedia.alt}
- *   logoSrc={project.logoOverlay}
- *   hasLogo={currentMedia.hasLogo}
- * />
- */
+/** FullscreenMediaViewer - Interactive fullscreen overlay for media viewing with zoom and pan controls */
 export default function FullscreenMediaViewer({
   isOpen,
   onClose,
@@ -56,7 +13,8 @@ export default function FullscreenMediaViewer({
   mediaAlt,
   logoSrc,
   hasLogo,
-  hasBackground
+  hasBackground,
+  mediaType: mediaTypeProp
 }) {
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -65,10 +23,18 @@ export default function FullscreenMediaViewer({
   const containerRef = useRef(null);
   const mediaRef = useRef(null);
 
-  const mediaType = getMediaType(mediaSrc);
+  const mediaType = mediaTypeProp || getMediaType(mediaSrc);
+  const isPDF = mediaType === 'pdf';
   const minZoom = 0.25;
   const maxZoom = 2;
   const zoomStep = 0.25;
+
+  // Debug logging
+  useEffect(() => {
+    if (isOpen && mediaSrc) {
+      console.log('FullscreenMediaViewer:', { mediaType, mediaSrc, hasBackground });
+    }
+  }, [isOpen, mediaSrc, mediaType, hasBackground]);
 
   // Reset zoom and position when media changes or viewer closes
   useEffect(() => {
@@ -94,9 +60,39 @@ export default function FullscreenMediaViewer({
     setPosition({ x: 0, y: 0 });
   };
 
+  // Handle PDF download
+  const handleDownload = (e) => {
+    if (e) e.preventDefault();
+    
+    // Use fetch to get the file and trigger download
+    fetch(mediaSrc)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = mediaAlt || 'DanielDurantsResume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(err => {
+        console.error('Download failed:', err);
+        // Fallback: try direct download
+        const link = document.createElement('a');
+        link.href = mediaSrc;
+        link.download = mediaAlt || 'DanielDurantsResume.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+  };
+
   // Handle mouse down for dragging
   const handleMouseDown = (e) => {
-    if (zoom <= 1) return; // Only allow dragging when zoomed in
+    if (zoom <= 1 || isPDF) return; // Only allow dragging when zoomed in and not PDF
     setIsDragging(true);
     setDragStart({
       x: e.clientX - position.x,
@@ -125,20 +121,28 @@ export default function FullscreenMediaViewer({
     const handleKeyDown = (e) => {
       switch (e.key) {
         case 'Escape':
+          e.preventDefault();
+          e.stopPropagation();
           onClose();
           break;
         case '+':
         case '=':
-          e.preventDefault();
-          handleZoomIn();
+          if (!isPDF) {
+            e.preventDefault();
+            handleZoomIn();
+          }
           break;
         case '-':
-          e.preventDefault();
-          handleZoomOut();
+          if (!isPDF) {
+            e.preventDefault();
+            handleZoomOut();
+          }
           break;
         case '0':
-          e.preventDefault();
-          handleReset();
+          if (!isPDF) {
+            e.preventDefault();
+            handleReset();
+          }
           break;
         case 'ArrowLeft':
           if (zoom > 1) {
@@ -181,7 +185,7 @@ export default function FullscreenMediaViewer({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, zoom, onClose, mediaType]);
+  }, [isOpen, zoom, onClose, mediaType, isPDF]);
 
   // Prevent body scroll when viewer is open
   useEffect(() => {
@@ -199,7 +203,7 @@ export default function FullscreenMediaViewer({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fullscreen-viewer"
+          className="fullscreen-viewer util-flex-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -217,7 +221,7 @@ export default function FullscreenMediaViewer({
           {/* Media Container */}
           <div
             ref={containerRef}
-            className="fullscreen-viewer__container"
+            className="fullscreen-viewer__container util-flex-center"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -227,15 +231,41 @@ export default function FullscreenMediaViewer({
             }}
           >
             <motion.div
-              className="fullscreen-viewer__media-wrapper"
+              className="fullscreen-viewer__media-wrapper util-flex-center"
               animate={{
-                scale: zoom,
-                x: position.x,
-                y: position.y
+                scale: isPDF ? 1 : zoom,
+                x: isPDF ? 0 : position.x,
+                y: isPDF ? 0 : position.y
               }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              {mediaType === 'video' ? (
+              {isPDF ? (
+                <div className="fullscreen-viewer__pdf-container">
+                  <object
+                    data={mediaSrc}
+                    type="application/pdf"
+                    className="fullscreen-viewer__pdf"
+                    aria-label={mediaAlt || "PDF Document"}
+                    tabIndex="-1"
+                  >
+                    {/* Fallback for browsers that don't support embedded PDFs */}
+                    <div className="fullscreen-viewer__pdf-fallback util-flex-center">
+                      <div className="pdf-fallback-content">
+                        <i className="fa-solid fa-file-pdf" aria-hidden="true"></i>
+                        <h3>PDF Preview Unavailable</h3>
+                        <p>Your browser doesn't support embedded PDF viewing.</p>
+                        <button
+                          className="fullscreen-viewer__btn fullscreen-viewer__btn--download util-flex util-items-center"
+                          onClick={handleDownload}
+                        >
+                          <i className="fa-solid fa-download" aria-hidden="true"></i>
+                          Download PDF
+                        </button>
+                      </div>
+                    </div>
+                  </object>
+                </div>
+              ) : mediaType === 'video' ? (
                 <video
                   ref={mediaRef}
                   src={mediaSrc}
@@ -244,6 +274,17 @@ export default function FullscreenMediaViewer({
                   loop
                   muted
                   playsInline
+                />
+              ) : mediaType === 'svg' ? (
+                <img
+                  ref={mediaRef}
+                  src={mediaSrc}
+                  alt={mediaAlt}
+                  className={`fullscreen-viewer__media fullscreen-viewer__media--svg${hasBackground ? ' fullscreen-viewer__media--with-background' : ''}`}
+                  draggable={false}
+                  style={{ minWidth: '300px', minHeight: '300px' }}
+                  onLoad={() => console.log('SVG loaded:', mediaSrc)}
+                  onError={(e) => console.error('SVG load error:', mediaSrc, e)}
                 />
               ) : (
                 <img
@@ -255,8 +296,8 @@ export default function FullscreenMediaViewer({
                 />
               )}
 
-              {/* Logo Overlay */}
-              {hasLogo && logoSrc && (
+              {/* Logo Overlay (not for PDFs) */}
+              {!isPDF && hasLogo && logoSrc && (
                 <img
                   src={logoSrc}
                   alt="Logo"
@@ -267,25 +308,43 @@ export default function FullscreenMediaViewer({
             </motion.div>
           </div>
 
-          {/* Controls */}
-          <div className="fullscreen-viewer__controls">
-            {/* Close Button */}
-            <button
-              className="fullscreen-viewer__btn fullscreen-viewer__btn--close"
-              onClick={onClose}
-              aria-label="Close fullscreen viewer"
-              title="Close (Esc)"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+          {/* Close Button - Top Right */}
+          <button
+              className="fullscreen-viewer__btn fullscreen-viewer__btn--close-top util-flex-center"
+            onClick={onClose}
+            aria-label="Close viewer"
+            title="Close (Esc)"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
 
-            {/* Zoom Controls */}
-            <div className="fullscreen-viewer__zoom-controls">
+          {/* PDF Download Button - Top Right */}
+          {isPDF && (
+            <button
+              className="fullscreen-viewer__btn--download-primary util-flex util-items-center"
+              onClick={handleDownload}
+              aria-label="Download PDF"
+              title="Download Resume PDF"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>Download PDF</span>
+            </button>
+          )}
+
+          {/* Controls */}
+          <div className="fullscreen-viewer__controls util-flex-col">
+            {/* Zoom Controls (not for PDFs) */}
+            {!isPDF && (
+              <div className="fullscreen-viewer__zoom-controls util-flex-col">
               <button
-                className="fullscreen-viewer__btn fullscreen-viewer__btn--zoom"
+                className="fullscreen-viewer__btn fullscreen-viewer__btn--zoom util-flex-center"
                 onClick={handleZoomOut}
                 disabled={zoom <= minZoom}
                 aria-label="Zoom out"
@@ -303,7 +362,7 @@ export default function FullscreenMediaViewer({
               </span>
 
               <button
-                className="fullscreen-viewer__btn fullscreen-viewer__btn--zoom"
+                className="fullscreen-viewer__btn fullscreen-viewer__btn--zoom util-flex-center"
                 onClick={handleZoomIn}
                 disabled={zoom >= maxZoom}
                 aria-label="Zoom in"
@@ -318,7 +377,7 @@ export default function FullscreenMediaViewer({
               </button>
 
               <button
-                className="fullscreen-viewer__btn fullscreen-viewer__btn--reset"
+                className="fullscreen-viewer__btn fullscreen-viewer__btn--reset util-flex-center"
                 onClick={handleReset}
                 disabled={zoom === 1 && position.x === 0 && position.y === 0}
                 aria-label="Reset zoom and position"
@@ -332,13 +391,19 @@ export default function FullscreenMediaViewer({
                 </svg>
               </button>
             </div>
+            )}
           </div>
 
           {/* Keyboard Hints */}
           <div className="fullscreen-viewer__hints" aria-live="polite" aria-atomic="true">
-            <kbd>Esc</kbd> Close · <kbd>+/-</kbd> Zoom · <kbd>0</kbd> Reset
-            {zoom > 1 && <> · <kbd>↑↓←→</kbd> Pan</>}
-            {mediaType === 'video' && <> · <kbd>Space</kbd> Play/Pause</>}
+            <kbd>Esc</kbd> Close
+            {!isPDF && (
+              <>
+                · <kbd>+/-</kbd> Zoom · <kbd>0</kbd> Reset
+                {zoom > 1 && <> · <kbd>↑↓←→</kbd> Pan</>}
+                {mediaType === 'video' && <> · <kbd>Space</kbd> Play/Pause</>}
+              </>
+            )}
           </div>
         </motion.div>
       )}
@@ -353,5 +418,6 @@ FullscreenMediaViewer.propTypes = {
   mediaAlt: PropTypes.string,
   logoSrc: PropTypes.string,
   hasLogo: PropTypes.bool,
-  hasBackground: PropTypes.bool
+  hasBackground: PropTypes.bool,
+  mediaType: PropTypes.oneOf(['image', 'video', 'pdf'])
 };

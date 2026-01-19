@@ -1,9 +1,8 @@
 /**
- * Home Services Preview Styles
- * 
- * @description Service cards preview section on home page with gradient headers and interactive cards.
- * Features hover transforms, gradient text, and consistent card layouts.
- * 
+ * Home Services Preview - Service cards with gradient headers
+ */
+
+/**
  * Components:
  * - .home-services-preview-head-container: Header wrapper
  * - #home-services-preview-head-heading: Section title
@@ -104,15 +103,27 @@
 .home-services-preview-head-tagline {
   font-size: calc(0.9rem + 0.4vw);
   color: var(--color-text-soft);
-  margin: 1rem 0;
+  margin: var(--gap-md) 0;
 }
 
+.home-services-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  gap: 0;
+}
+
+@media (min-width: 768px) {
+  .home-services-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 .home-service-card{
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
   background-color: var(--color-bg) !important;
   -webkit-backdrop-filter: none;
@@ -120,10 +131,10 @@
   border-radius: var(--radius-lg);
   height: auto;
   min-height: 20rem;
-  padding: 2rem;
-  margin: 1rem;
+  padding: var(--gap-lg);
+  margin: var(--gap-md);
   box-shadow: var(--box-shadow-container);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.2s ease;
+  transition: transform var(--motion-duration-sm) var(--ease-out), box-shadow var(--motion-duration-sm) var(--ease-out), outline var(--motion-duration-xs) var(--ease-out);
   outline: var(--outline-width-default) solid transparent;
   outline-offset: var(--outline-offset-default);
   isolation: isolate;
@@ -146,7 +157,7 @@
   & button:hover {
     cursor: pointer;
     color: var(--color-primary);
-    transition: color 300ms ease-in-out;
+    transition: color var(--motion-duration-sm) var(--ease-in-out);
   }
 
   & .home-service-desc{
@@ -176,9 +187,8 @@
 
 .home-additional-services {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 }
@@ -189,7 +199,8 @@
   padding: 0;
   font: inherit;
   cursor: pointer;
-  transition: color 300ms ease-in-out;
+  text-align: center;
+  transition: color var(--motion-duration-sm) var(--ease-in-out);
 }
 
 .home-additional-services-count:focus-visible {

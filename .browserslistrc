@@ -1,0 +1,19 @@
+# Browser support targets for autoprefixer and build tools
+# Supports 95%+ of global users while maintaining modern features
+
+# Modern browsers with good feature support
+> 0.5%
+last 2 versions
+not dead
+
+# Specific browsers for compatibility
+Chrome >= 76
+Firefox >= 103
+Safari >= 14
+Edge >= 79
+iOS >= 14
+Android >= 76
+
+# Exclude obsolete browsers
+not IE 11
+not op_mini all

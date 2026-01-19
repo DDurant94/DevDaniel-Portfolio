@@ -31,7 +31,7 @@
  * ```
  */
 
-import { useContactAside } from "../../../../Context/Aside-Context/ContactAsideContext";
+import { useContactAside } from "../../../../Context/Aside-Context/useContactAside";
 import BaseButton from '../../../../Components/UI/BaseButton/BaseButton.jsx';
 import { services } from "./../../../../DataSets/About/Services";
 import FadeInWhenVisible from "./../../../../Components/Effects/Fade-Effect/FadeIn.jsx";
@@ -45,12 +45,12 @@ const Services = () => {
   return (
     <section
       id="about-srvs-container"
-      className="mt-2 pt-3"
+      className="util-mt-sm util-pt-md"
       aria-labelledby="services-heading"
     >
       {/* Header */}
       <FadeInWhenVisible as="header" className="about-srvs-header" id="about-srvs-header" tabIndex="0">
-        <h2 id="services-heading" className="my-2">What I Build & Offer</h2>
+        <h2 id="services-heading" className="util-my-sm">What I Build & Offer</h2>
         <p>
           I craft immersive, scalable, and intelligent web experiences that fuse technical depth with creative vision. 
           Whether you're launching a product, visualizing data, or building a brand, I bring precision and personality to every line of code.
@@ -95,7 +95,7 @@ const Services = () => {
           If you're looking for a developer who blends <strong>engineering precision</strong> with <strong>creative flair</strong>—check out my projects. Let’s build something remarkable.
         </p>
 
-        <div id="srvs-cta-btn-container" className='mt-1'>
+        <div id="srvs-cta-btn-container" className='util-mt-sm util-flex util-justify-center util-flex-wrap'>
           <BaseButton
             variant="primary"
             size="md"

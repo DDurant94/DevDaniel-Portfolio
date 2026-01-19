@@ -1,26 +1,5 @@
 /**
- * NotFound (404) Page Component
- * 
- * @description User-friendly 404 error page with navigation options and helpful links.
- * Provides clear messaging and multiple pathways to navigate back to valid pages.
- * 
- * Features:
- * - Clear 404 error messaging with visual error code
- * - "Take Me Home" primary action button
- * - Quick navigation links to key pages (About, Projects, Skills)
- * - Router-based navigation using useNavigate
- * - Accessibility support with ARIA labels
- * - Responsive layout
- * 
- * @component
- * @requires react-router-dom - For programmatic navigation
- * @requires BaseButton - For consistent button styling and navigation
- * 
- * @example
- * ```jsx
- * // Automatically rendered by React Router for unmatched routes
- * <Route path="*" element={<NotFound />} />
- * ```
+ * 404 Page - Error page with navigation options
  */
 
 import { useNavigate } from 'react-router-dom';
@@ -35,10 +14,10 @@ const NotFound = () => {
   };
 
   return (
-    <div id="notfound-container" className="container-fluid-center">
-      <main id="notfound-main-content" role="main">
+    <div id="notfound-container" className="util-flex-center">
+      <main id="notfound-main-content" className="util-w-full" role="main">
         <section id="notfound-section">
-          <div id="notfound-content">
+          <div id="notfound-content" className="util-flex-col-center">
             <div className="notfound-error-code">
               404
             </div>
@@ -49,7 +28,7 @@ const NotFound = () => {
               Looks like you've ventured into uncharted territory. The page you're looking for doesn't exist or has been moved.
             </p>
 
-            <div className="notfound-actions">
+            <div className="notfound-actions util-w-full">
               <BaseButton
                 variant="primary"
                 size="lg"

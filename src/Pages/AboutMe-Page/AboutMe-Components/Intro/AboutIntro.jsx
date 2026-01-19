@@ -39,12 +39,12 @@ import './../../../../Styles/Page-Styles/AboutMe-Styles/Intro-Styles/AboutIntroS
  */
 const AboutIntro = () => {
   return (
-    <FadeInWhenVisible as="div" id="about-intro-container" tabIndex="0"  >
-      <FadeInWhenVisible as="div" className="intro-header-container" >
+    <FadeInWhenVisible as="div" id="about-intro-container" className="util-flex-col-center-all util-flex-wrap" tabIndex="0"  >
+      <FadeInWhenVisible as="div" className="intro-header-container util-text-center" >
         <h2 id="intro-heading" className="section-header">Behind the Code</h2>
       </FadeInWhenVisible>
 
-      <FadeInWhenVisible as="p" className="metaphor-lead">
+      <FadeInWhenVisible as="p" className="metaphor-lead util-max-w-readable">
         Behind every seamless interaction—whether it's a swipe, a search, or a suggestion—
         is a system quietly orchestrating the moment. That's where I live: in the architecture of experience.
       </FadeInWhenVisible>

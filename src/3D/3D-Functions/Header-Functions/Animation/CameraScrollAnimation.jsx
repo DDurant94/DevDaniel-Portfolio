@@ -61,9 +61,8 @@ export default function CameraScrollAnimation({ containerRef, initialCam, varian
     
     const progress = parseFloat(containerRef.current.dataset.scrollProgress || 0);
     scrollProgressRef.current = progress;
-    
-    // Smoothly lerp camera to target values with threshold check
-    const lerpFactor = 0.08;
+  
+    const lerpFactor = 0.15; // Faster lerping for smoother transitions
     const threshold = 0.001;
     
     // Check distance to target for each axis
@@ -71,8 +70,7 @@ export default function CameraScrollAnimation({ containerRef, initialCam, varian
     const yDiff = Math.abs(currentCamRef.current.position[1] - targetCamRef.current.position[1]);
     const zDiff = Math.abs(currentCamRef.current.position[2] - targetCamRef.current.position[2]);
     const fovDiff = Math.abs(currentCamRef.current.fov - targetCamRef.current.fov);
-    
-    // Only lerp if not close enough, otherwise snap to target
+
     if (xDiff > threshold) {
       currentCamRef.current.position[0] = THREE.MathUtils.lerp(
         currentCamRef.current.position[0],
@@ -114,7 +112,7 @@ export default function CameraScrollAnimation({ containerRef, initialCam, varian
     }
     
     // Move camera backward based on scroll so clouds come toward the viewer
-    const moveDistance = 12; // How far to pull back
+    const moveDistance = 12;
     const scrollOffset = progress * moveDistance;
     camera.position.set(
       currentCamRef.current.position[0],
@@ -124,7 +122,7 @@ export default function CameraScrollAnimation({ containerRef, initialCam, varian
     
     // For projects variant, also move camera to the right to avoid clipping
     if (variant === 'projects') {
-      camera.position.x += progress * 3; // Move right (positive X)
+      camera.position.x += progress * 3;
     }
     
     camera.fov = currentCamRef.current.fov;

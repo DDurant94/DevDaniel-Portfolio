@@ -104,22 +104,18 @@
 
 /* === Filterable Projects Layout === */
 .filterable-projects {
-  margin-top: var(--space-3); /* 0.75rem */
+  margin-top: var(--space-3);
 }
 
-/* === Filter bar container (animated by Framer Motion) === */
 .filters-bar-top {
   margin-bottom: 1rem;
-  overflow: hidden; /* smooth height animation */
-  /* Glassy, elevated panel with subtle brand border */
+  overflow: hidden;
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
   background:
-    /* content layer */
     linear-gradient(180deg,
       color-mix(in srgb, var(--color-surface) 92%, transparent) 0%,
       color-mix(in srgb, var(--color-surface-alt) 86%, transparent) 100%) padding-box,
-    /* border ring */
     linear-gradient(180deg,
       color-mix(in srgb, var(--brand-orange-500) 18%, transparent) 0%,
       color-mix(in srgb, var(--brand-orange-500) 6%, transparent) 100%) border-box;
@@ -141,7 +137,7 @@
   font-size: clamp(0.65rem, 2.2vw, 0.95rem);
   font-weight: 600;
   cursor: pointer;
-  padding: 0.45rem 0.9rem; /* match chip base */
+  padding: 0.45rem 0.9rem;
   border-radius: var(--radius-full);
   transition: background var(--motion-fade), color var(--motion-fade), border-color var(--motion-fade), box-shadow var(--motion-fade), transform var(--motion-scale);
   box-shadow: none;
@@ -157,7 +153,7 @@
 }
 
 .filter-toggle::after {
-  content: '\25BC'; /* down chevron */
+  content: '\25BC';
   display: inline-block;
   font-size: 0.75rem;
   margin-left: .2rem;
@@ -182,7 +178,7 @@
   font-size: clamp(0.65rem, 2.2vw, 0.95rem);
   font-weight: 600;
   cursor: pointer;
-  padding: 0.45rem 0.9rem; /* align with chip proportions */
+  padding: 0.45rem 0.9rem;
   border-radius: var(--radius-full);
   transition: background var(--motion-fade), color var(--motion-fade), border-color var(--motion-fade), box-shadow var(--motion-fade), transform var(--motion-scale);
   box-shadow: none;
@@ -199,7 +195,7 @@
 }
 
 .clear-filters-btn svg {
-  width: 1rem; /* slightly smaller for better text balance */
+  width: 1rem;
   height: 1rem;
 }
 
@@ -211,7 +207,6 @@
   font-size: 0.95rem;
 }
 
-/* === Filter Group (used inside FilterableProjects) === */
 /* === Filter group label === */
 .filter-group-label {
   font-size: .95rem;
@@ -252,46 +247,40 @@
   list-style: none;
 }
 
-/* Keep label/header at the top of the group */
 .filter-group {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Header row aligns label left and Clear All right */
 .filter-group-header {
   width: 100%;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  flex-wrap: wrap; /* allow Clear All to break below when space is tight */
+  flex-wrap: wrap;
   margin-bottom: var(--space-3);
-  /* Enable container queries based on header inline size */
   container-type: inline-size;
 }
 
 .filter-group-header .filter-group-label {
-  margin-bottom: 0; /* reset since header arranges it */
+  margin-bottom: 0;
 }
 
 .filter-group-header .clear-filters-btn {
-  margin-left: auto; /* keep it pushed to the right on its row */
+  margin-left: auto;
 }
 
-/* Mobile: when it wraps under the title, give Clear All a little top spacing and keep it right-aligned */
 @media (max-width: 640px) {
   .filter-group-header {
     row-gap: var(--space-2);
     margin-bottom: var(--space-2);
   }
   .filter-group-header .clear-filters-btn {
-    /* default: keep aligned right on the same line */
     margin-left: auto;
   }
 }
 
-/* When the header itself is 263px or narrower (wrap point), align Clear All left and add top spacing */
 @container (max-width: 263px) {
   .filter-group-header .clear-filters-btn {
     margin-left: 0;
@@ -299,7 +288,6 @@
   }
 }
 
-/* Row wrapper to place the More/Less toggle inline with chips */
 .filter-chips-row {
   display: flex;
   flex-wrap: wrap;
@@ -310,7 +298,6 @@
   margin: 0.25rem 0 0 0;
 }
 
-/* Keep toggle visually at the end of the row */
 .filter-chips-row .filter-toggle { margin-left: auto; }
 
 .filter-chip {
@@ -340,7 +327,6 @@
               0 6px 14px -6px color-mix(in srgb, var(--color-primary) 28%, transparent);
 }
 
-/* Hover / focus tactile lift */
 .filter-chip:hover,
 .filter-chip:focus-visible {
   background: var(--gradient-pressable-hover);
@@ -358,7 +344,6 @@
   box-shadow: var(--pressable-glow-stack-outline);
 }
 
-/* Disabled state */
 .filter-chip.disabled {
   opacity: 0.5 !important;
   cursor: not-allowed;
@@ -366,20 +351,17 @@
   box-shadow: none;
 }
 
-/* Press feedback */
 .filter-chip:active:not(.disabled) {
   transform: translateY(0) scale(0.97);
   box-shadow: var(--pressable-pressed-stack-active);
 }
 
-/* Checkmark for selected chips */
 .chip-check {
   margin-left: 0.35rem;
   font-size: 0.8rem;
   line-height: 1;
 }
 
-/* Ripple Effect */
 .filter-chip::after {
   content: "";
   position: absolute;
@@ -394,47 +376,13 @@
   pointer-events: none;
 }
 
-/* .filter-chip:active::after {
-  animation: chipRipple 0.6s ease-out;
-}
-
-@keyframes chipRipple {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(4);
-    opacity: 0;
-  }
-} */
-
-/* Entrance animation for chips */
-/* .filter-chip {
-  animation: chipFadeSlide 0.35s ease forwards;
-  animation-delay: calc(var(--index) * 0.05s);
-}
-
-@keyframes chipFadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-} */
-
 /* === Mobile adjustments === */
 @media (max-width: 600px) {
   .filter-chip {
     padding: 0.25rem .5rem;
-    /* font-size: 0.9rem; */
   }
 }
 
-/* Compact padding on very small screens to match chip compaction */
 @media (max-width: 600px) {
   .filter-toggle,
   .clear-filters-btn { padding: 0.32rem 0.6rem; }

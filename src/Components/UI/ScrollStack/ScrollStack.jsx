@@ -1,92 +1,7 @@
-/**
- * ScrollStack Component
- * 
- * @description Advanced scroll-driven stacking animation with smooth Lenis integration.
- * Cards stack and scale with perspective as user scrolls, creating depth effect.
- * 
- * Features:
- * - Smooth scroll with Lenis (configurable window or container)
- * - Scale animation with custom easing functions
- * - Pin/unpin cards at configurable viewport positions
- * - Rotation and blur effects (optional)
- * - Keyboard navigation (Arrow keys, Home, End)
- * - Per-frame RAF updates for ultra-smooth animations
- * - ResizeObserver and MutationObserver for dynamic layouts
- * - Time-based exponential smoothing for scale transitions
- * - Sub-pixel precision (no rounding) for smoother motion
- * 
- * Animation Mechanics:
- * - Cards trigger when reaching stackPosition (default 2% from top)
- * - Scale from 1.0 down to baseScale + (index * itemScale)
- * - Pin at stackPosition with itemStackDistance offset per card
- * - Unpin when reaching end element
- * - Optional rotation (degrees) and blur (px) based on depth
- * 
- * Easing Functions:
- * - 'linear': No easing
- * - 'easeInOut': Cubic ease in/out (default)
- * - 'easeOutQuad': Quadratic ease out
- * - 'easeOutCubic': Cubic ease out
- * - 'easeInQuad': Quadratic ease in
- * - Custom function: (progress) => easedProgress
- * 
- * Keyboard Navigation:
- * - ArrowDown: Focus next card
- * - ArrowUp: Focus previous card
- * - Home: Focus first card
- * - End: Focus last card
- * - Smooth scroll keeps focused card in view
- * 
- * Performance Optimizations:
- * - will-change on wrappers (not cards)
- * - backfaceVisibility: hidden
- * - Transform caching (only update if changed > threshold)
- * - Time-delta smoothing (adaptive to frame rate)
- * - ResizeObserver for efficient layout recomputation
- * 
- * @component
- * @param {Object} props
- * @param {React.ReactNode} props.children - ScrollStackItem components to stack
- * @param {string} [props.className=''] - Additional CSS class for container
- * @param {number} [props.itemDistance=450] - Bottom margin (px) between cards
- * @param {number} [props.itemScale=0.03] - Scale reduction per card index
- * @param {number} [props.itemStackDistance=8] - Vertical offset (px) between stacked cards
- * @param {string} [props.stackPosition='2%'] - Viewport position to start stacking
- * @param {string} [props.scaleEndPosition='30%'] - Viewport position where scaling completes
- * @param {number} [props.baseScale=0.85] - Minimum scale for deepest card
- * @param {number} [props.scaleDuration=0.5] - Smoothing duration (seconds) for scale transitions
- * @param {number} [props.rotationAmount=0] - Degrees of rotation per card (0 = no rotation)
- * @param {number} [props.blurAmount=0] - Blur (px) applied to cards behind top card
- * @param {boolean} [props.useWindowScroll=false] - Use window scroll vs container scroll
- * @param {string|Function} [props.scaleEasing='easeInOut'] - Easing function or key
- * @param {Function} [props.onStackComplete] - Callback when last card enters stack view
- * 
- * @example
- * ```jsx
- * <ScrollStack
- *   itemDistance={500}
- *   itemScale={0.05}
- *   baseScale={0.8}
- *   scaleDuration={0.6}
- *   rotationAmount={2}
- *   scaleEasing="easeOutCubic"
- *   useWindowScroll={true}
- * >
- *   <ScrollStackItem>
- *     <h2>Card 1</h2>
- *     <p>Content here</p>
- *   </ScrollStackItem>
- *   <ScrollStackItem>
- *     <h2>Card 2</h2>
- *     <p>More content</p>
- *   </ScrollStackItem>
- * </ScrollStack>
- * ```
- */
-
-import { useLayoutEffect, useRef, useCallback, useEffect } from 'react';
+/** ScrollStack - Scroll-based stacked card animation system */
+import { useLayoutEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
-import { useMediaQuery } from '../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../Context/MediaQueryContext.hook';
 import './../../../Styles/Component-Styles/UI-Styles/ScrollStack-Styles/ScrollStackStyles.css';
 
 /**
@@ -160,10 +75,9 @@ const ScrollStack = ({
   scaleEasing = 'easeInOut', // string key or function(progress)=>progress
   onStackComplete
 }) => {
-  const { prefersReducedMotion, isMobile, isTablet, isTouchDevice } = useMediaQuery();
+  const { prefersReducedMotion, isMobile, isTablet } = useMediaQuery();
   
   // Disable animations only for mobile/tablet OR reduced motion
-  // Don't disable for isTouchDevice alone - many desktops have touchscreens
   const shouldDisableAnimations = prefersReducedMotion || isMobile || isTablet;
   
   const scrollerRef = useRef(null);
@@ -581,7 +495,9 @@ const ScrollStack = ({
       stackCompletedRef.current = false;
       cardsRef.current = [];
       wrappersRef.current = [];
-      lastTransformsRef.current.clear();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const lastTransforms = lastTransformsRef.current;
+      lastTransforms.clear();
       isUpdatingRef.current = false;
       if (resizeObserver) resizeObserver.disconnect();
       else window.removeEventListener('resize', recomputeLayoutMetrics);
@@ -606,7 +522,7 @@ const ScrollStack = ({
 
   return (
     <div
-      className={`scroll-stack-scroller ${className}`.trim()}
+      className={`scroll-stack-scroller util-full ${className}`.trim()}
       ref={scrollerRef}
       style={{ overflowY: useWindowScroll ? 'visible' : 'auto' }}
     >

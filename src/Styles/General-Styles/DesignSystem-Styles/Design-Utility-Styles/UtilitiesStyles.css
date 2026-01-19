@@ -1,51 +1,14 @@
 /**
- * Design System Utilities (.util-)
- * 
- * @description Single-responsibility CSS utility classes for common layout, spacing,
- * and styling patterns. Follows atomic CSS principles with token-based values.
- * 
- * Utility Categories:
- * - Layout: Flexbox and Grid helpers (.util-flex, .util-grid, .util-flex-center)
- * - Spacing: Consistent gaps, margins, padding (.util-gap-*, .util-p-*, .util-mx-auto)
- * - Stacks: Vertical rhythm utilities (.util-stack-sm/md/lg)
- * - Shadows: Elevation-based shadow utilities (.util-shadow-sm/md/lg)
- * - Text: Truncation and accessibility (.util-text-truncate, .util-visually-hidden)
- * - Components: Pills, badges, thumbnails
- * - States: Interactive and focus ring utilities
- * - Radius: Border radius overrides (.util-radius-*)
- * - Scrollbar: Custom scrollbar styling
- * 
- * Design Principles:
- * - Single-responsibility: Each class does ONE thing well
- * - Composition-friendly: Combine multiple utilities
- * - Token-based: All values reference design tokens
- * - Theme-agnostic: No hardcoded theme colors (use tokens)
- * - Minimal specificity: Avoid deep nesting
- * 
- * Usage Examples:
- * ```html
- * <!-- Centered flex layout -->
- * <div class="util-flex-center util-gap-md">
- * 
- * <!-- Pill with custom variant -->
- * <span class="util-pill" data-variant="subtle">Tag</span>
- * 
+ * Design System Utilities - Single-responsibility classes for layout, spacing, and common patterns
+ */
+
+/* Design System Utilities Layer (.util-)
  * <!-- Stack with vertical rhythm -->
  * <div class="util-stack-md">
  *   <p>Item 1</p>
  *   <p>Item 2</p>
  * </div>
  * ```
- * 
- * Theme Support:
- * - Utilities adapt to active theme via CSS custom properties
- * - Dark/contrast theme specific overrides included
- * - No theme-switching logic in utilities (handled by tokens)
- * 
- * Browser Compatibility:
- * - Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
- * - Uses color-mix() for dynamic colors (fallback to static values if needed)
- * - Flexbox and Grid (IE11 not supported)
  */
 
 /* Design System Utilities Layer (.util-) 
@@ -58,9 +21,20 @@
 .util-inline-flex { display:inline-flex; }
 .util-flex-center { display:flex; align-items:center; justify-content:center; }
 .util-flex-col { display:flex; flex-direction:column; }
+.util-flex-col-center { display:flex; flex-direction:column; align-items:center; }
+.util-flex-between { display:flex; justify-content:space-between; align-items:center; }
+.util-flex-wrap { flex-wrap: wrap; }
+.util-items-center { align-items: center; }
+.util-justify-center { justify-content: center; }
+.util-justify-between { justify-content: space-between; }
 .util-grid { display:grid; }
 .util-grid-center { display:grid; place-items:center; }
 .util-center-abs { position:absolute; inset:50%; transform:translate(-50%, -50%); }
+
+/* Position helpers */
+.util-abs-fill { position: absolute; inset: 0; }
+.util-fixed-fill { position: fixed; inset: 0; }
+.util-rel { position: relative; }
 
 /* Flex gap helpers (use tokens) */
 .util-gap-xs { gap: var(--space-2, .35rem); }
@@ -95,6 +69,24 @@
 /* Text helpers */
 .util-text-truncate { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .util-visually-hidden { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.util-text-center { text-align: center; }
+
+/* Sizing helpers */
+.util-w-full { width: 100%; }
+.util-h-full { height: 100%; }
+.util-full { width: 100%; height: 100%; }
+.util-max-w-readable { max-width: 80ch; } /* Optimal reading width for paragraphs */
+.util-max-w-compact { max-width: 55ch; } /* Compact readable width */
+.util-max-w-narrow { max-width: 70ch; } /* Narrow readable width */
+.util-max-w-full { max-width: 100%; }
+
+/* Overflow helpers */
+.util-overflow-hidden { overflow: hidden; }
+.util-overflow-auto { overflow: auto; }
+
+/* Pointer events helpers */
+.util-pointer-none { pointer-events: none; }
+.util-pointer-auto { pointer-events: auto; }
 
 /* Pills & Badges (structural base) */
 .util-pill { --_pill-bg: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface)); --_pill-fg: var(--color-primary); display:inline-flex; align-items:center; font-weight:600; font-size:.68rem; letter-spacing:.5px; padding:.35rem .6rem; border-radius:50px; background: var(--_pill-bg); color: var(--_pill-fg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 45%, transparent), 0 2px 4px -1px rgba(0,0,0,.25); }
@@ -118,7 +110,12 @@
 
 /* State helpers */
 .util-interactive { cursor:pointer; user-select:none; -webkit-user-select:none; }
+.util-cursor-pointer { cursor: pointer; }
 .util-focus-ring:focus-visible { outline:var(--outline-width-default) solid var(--color-primary); outline-offset:var(--outline-offset-sm); border-radius: inherit; }
+
+/* Extended flex combinations */
+.util-flex-col-justify-center { display:flex; flex-direction:column; justify-content:center; }
+.util-flex-col-center-all { display:flex; flex-direction:column; align-items:center; justify-content:center; }
 
 /* Dark / contrast tweaks (light scoping) */
 [data-theme='dark'] .util-pill[data-variant='contrast'] { --_pill-bg: var(--color-surface); --_pill-fg: var(--color-text); }
@@ -143,14 +140,13 @@
    Use sparingly to avoid utility sprawl. Prefer component variables
    and layout primitives first. These map strictly to spacing tokens.
 ------------------------------------------------------------------- */
-/* Padding */
+
 .util-p-xs { padding: var(--space-1); }
 .util-p-sm { padding: var(--space-2); }
 .util-p-md { padding: var(--space-4); }
 .util-p-lg { padding: var(--space-6); }
 .util-p-xl { padding: var(--space-8); }
 
-/* Padding axis */
 .util-px-sm { padding-left: var(--space-2); padding-right: var(--space-2); }
 .util-px-md { padding-left: var(--space-4); padding-right: var(--space-4); }
 .util-px-lg { padding-left: var(--space-6); padding-right: var(--space-6); }
@@ -158,7 +154,13 @@
 .util-py-md { padding-top: var(--space-4); padding-bottom: var(--space-4); }
 .util-py-lg { padding-top: var(--space-6); padding-bottom: var(--space-6); }
 
-/* Margin */
+.util-pt-sm { padding-top: var(--space-2); }
+.util-pt-md { padding-top: var(--space-4); }
+.util-pt-lg { padding-top: var(--space-6); }
+.util-pb-sm { padding-bottom: var(--space-2); }
+.util-pb-md { padding-bottom: var(--space-4); }
+.util-pb-lg { padding-bottom: var(--space-6); }
+
 .util-m-0 { margin:0; }
 .util-m-xs { margin: var(--space-1); }
 .util-m-sm { margin: var(--space-2); }
@@ -166,7 +168,6 @@
 .util-m-lg { margin: var(--space-6); }
 .util-m-xl { margin: var(--space-8); }
 
-/* Margin block (vertical rhythm helpers) */
 .util-mt-sm { margin-top: var(--space-2); }
 .util-mt-md { margin-top: var(--space-4); }
 .util-mt-lg { margin-top: var(--space-6); }
@@ -176,11 +177,18 @@
 .util-mb-lg { margin-bottom: var(--space-6); }
 .util-mb-xl { margin-bottom: var(--space-8); }
 
-/* Gaps */
+.util-mx-xs { margin-left: var(--space-1); margin-right: var(--space-1); }
+.util-mx-sm { margin-left: var(--space-2); margin-right: var(--space-2); }
+.util-mx-md { margin-left: var(--space-4); margin-right: var(--space-4); }
+.util-mx-lg { margin-left: var(--space-6); margin-right: var(--space-6); }
+
+.util-my-xs { margin-top: var(--space-1); margin-bottom: var(--space-1); }
+.util-my-sm { margin-top: var(--space-2); margin-bottom: var(--space-2); }
+.util-my-md { margin-top: var(--space-4); margin-bottom: var(--space-4); }
+.util-my-lg { margin-top: var(--space-6); margin-bottom: var(--space-6); }
+
 .util-gap-sm { gap: var(--space-2); }
 .util-gap-md { gap: var(--space-4); }
 .util-gap-lg { gap: var(--space-6); }
 .util-gap-xl { gap: var(--space-8); }
-
-/* Section vertical padding (semantic wrapper) */
 .util-section-y { padding-top: var(--space-section-y); padding-bottom: var(--space-section-y); }

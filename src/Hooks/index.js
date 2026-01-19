@@ -28,11 +28,13 @@
 export { default as useTheme } from './Theme-Hooks/useTheme.jsx';
 
 // Effect Hooks
+export { useIntersection } from './Effect-Hooks/useIntersection.jsx';
 export { useEffectVisibility } from './Effect-Hooks/useEffectVisibility.jsx';
 export { usePageTransition } from './Effect-Hooks/usePageTransition.jsx';
 
 // Utility Hooks
 export { default as useLazyComponent } from './Utility-Hooks/useLazyComponent.jsx';
+export { useLazyLoad, useImagePreload, useResponsiveImage } from './Utility-Hooks/useImageLoading.js';
 
 // Portfolio Hooks
 export { default as useProjectFilters } from './Portfolio-Hooks/useProjectFilters.jsx';

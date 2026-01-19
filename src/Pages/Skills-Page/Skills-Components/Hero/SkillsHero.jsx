@@ -25,7 +25,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { useScroll } from '../../../../Context/Scroll-Context/ScrollContext';
+import { useScroll } from '../../../../Context/Scroll-Context/useScroll';
 import '../../../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
 
 export default function SkillsHero() {
@@ -33,7 +33,6 @@ export default function SkillsHero() {
   const { scrollY } = useScroll();
 
   useEffect(() => {
-    // Fade out hero text as user scrolls
     const heroEl = heroRef.current;
     if (!heroEl) return;
     

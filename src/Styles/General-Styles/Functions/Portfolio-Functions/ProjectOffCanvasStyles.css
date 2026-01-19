@@ -111,9 +111,7 @@
 .offcanvas__title {
   font-size: 1.25rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2); /* 0.5rem */
+  gap: var(--space-2);
 }
 
 /* === Badge === */
@@ -128,7 +126,7 @@
 
 /* === Media Gallery === */
 .offcanvas-media {
-  margin-bottom: var(--space-6); /* 1.5rem */
+  margin-bottom: var(--space-6);
 }
 
 .offcanvas-media__stage {
@@ -156,7 +154,7 @@
   color: var(--color-text);
   border: none;
   font-size: 2rem;
-  padding: var(--space-1) var(--space-2); /* 0.25rem 0.5rem */
+  padding: var(--space-1) var(--space-2);
   cursor: pointer;
   border-radius: 50%;
   transition: background var(--motion-fade);
@@ -174,13 +172,11 @@
   right: 0.5rem;
 }
 
-/* Thumbnails */
 .offcanvas-media__thumbs {
-  display: flex;
-  gap: var(--space-2); /* 0.5rem */
-  margin-top: var(--space-3); /* 0.75rem */
+  gap: var(--space-2);
+  margin-top: var(--space-3);
   overflow-x: auto;
-  padding-bottom: var(--space-1); /* 0.25rem */
+  padding-bottom: var(--space-1);
 }
 
 .offcanvas-media__thumb {
@@ -205,7 +201,7 @@
 
 /* === Body Content === */
 .offcanvas__body-text {
-  margin: var(--space-4) 0; /* 1rem */
+  margin: var(--space-4) 0;
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--color-text);
@@ -214,17 +210,16 @@
 /* === Tech & Concepts Lists === */
 .offcanvas__tech-section,
 .offcanvas__concepts-section {
-  margin-top: var(--space-6); /* 1.5rem */
+  margin-top: var(--space-6);
 }
 
 .offcanvas__tech-list,
 .offcanvas__concepts-list {
   list-style: none;
   padding: 0;
-  margin: var(--space-2) 0 0; /* 0.5rem */
-  display: flex;
+  margin: var(--space-2) 0 0;
   flex-wrap: wrap;
-  gap: var(--space-2); /* 0.5rem */
+  gap: var(--space-2);
 }
 
 .offcanvas__tech-item,
@@ -232,7 +227,7 @@
   background: var(--bg-accent-translucent);
   color: var(--color-primary);
   font-size: 0.8rem;
-  padding: .3rem .6rem; /* kept micro values (optical) */
+  padding: .3rem .6rem;
   border-radius: var(--radius-md);
   font-weight: 500;
 }
@@ -241,11 +236,11 @@
 .offcanvas__link-list {
   list-style: none;
   padding: 0;
-  margin: var(--space-6) 0 0; /* 1.5rem */
+  margin: var(--space-6) 0 0;
 }
 
 .offcanvas__link-item {
-  margin-bottom: var(--space-2); /* 0.5rem */
+  margin-bottom: var(--space-2);
 }
 
 .offcanvas__link-item a {

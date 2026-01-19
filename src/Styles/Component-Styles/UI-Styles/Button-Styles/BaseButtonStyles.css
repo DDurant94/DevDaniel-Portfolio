@@ -87,7 +87,6 @@
   text-decoration: none;
   background: var(--gradient-pressable-base);
   color: var(--btn-primary-text, var(--color-text));
-  /* Motion: use semantic tokens (scale for transform, fade for color/background/shadow) */
   transition: transform var(--motion-scale),
               background var(--motion-fade),
               box-shadow var(--motion-fade),
@@ -96,7 +95,6 @@
   -webkit-box-reflect: below 3px linear-gradient(transparent 0 30%, var(--reflect-stop-faint), var(--reflect-stop-strong));
 }
 
-/* Disable expensive reflections during scroll */
 [data-scrolling="true"] .base-btn {
   -webkit-box-reflect: none !important;
 }
@@ -104,12 +102,7 @@
 .base-btn:focus { outline: none; }
 .base-btn:focus-visible { outline: var(--focus-ring); box-shadow: var(--shadow-focus-ring); }
 .base-btn.is-pressed, .base-btn:active { box-shadow: var(--pressable-pressed-stack); }
-
-/* Glow highlight overlay replicating previous ::before pattern */
-/* Highlight overlay (from previous 3D button system) */
-/* Overlay fades: map 350ms ease -> fade (sm std) */
 .base-btn::before { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: var(--gradient-pressable-highlight); mix-blend-mode: soft-light; opacity: .7; transition: opacity var(--motion-fade); }
-/* Edge ring overlay (from legacy 3D button system) */
 .base-btn::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: 0 0 0 1px color-mix(in srgb,var(--color-primary) 55%, transparent) inset; mix-blend-mode: normal; opacity: .5; transition: opacity var(--motion-fade); }
 .base-btn:hover::after, .base-btn:focus-visible::after { opacity: .85; }
 
@@ -117,25 +110,20 @@
 /* Hover / focus elevated state (add subtle glow lift) */
 .base-btn:hover,
 .base-btn:focus-visible { background: var(--gradient-pressable-hover); transform: translateY(-2px); color: var(--color-text); box-shadow: var(--shadow-pressable-hover), var(--pressable-glow-stack-outline); }
-
-/* Active: slightly compress & use active stack */
 .base-btn:active { transform: translateY(0) scale(.985); box-shadow: var(--shadow-pressable-active), var(--pressable-pressed-stack); }
-
-/* Transitional pressed class (JS can add .is-pressed for longer holding interactions) */
 .base-btn.is-pressed { box-shadow: var(--pressable-pressed-stack-active); }
 
 /* Disabled / Loading */
 .base-btn.is-disabled, .base-btn[aria-disabled='true'] { opacity: .55; cursor: not-allowed; transform: none; }
 .base-btn.is-loading { cursor: progress; }
 .base-btn.is-loading .btn-label { opacity: .55; }
-/* Spinner: keep linear rotation but use ambient duration primitive for consistency */
 .base-btn .btn-spinner { width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: btn-spin var(--motion-duration-ambient) linear infinite; }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
 
 /* Variants */
 /* Primary inherits base gradient intentionally */
 .btn-variant-secondary { background: var(--gradient-surface, var(--color-surface-alt)); color: var(--color-text); }
-.btn-variant-ghost { background: transparent; box-shadow: none; border: 1px solid var(--border-subtle, rgba(255,255,255,0.15)); }
+.btn-variant-ghost { background: transparent; box-shadow: none; border: 1px solid var(--border-subtle, color-mix(in srgb, white 15%, transparent)); }
 .btn-variant-ghost:hover { background: var(--gradient-pressable-hover); }
 .btn-variant-outline { background: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); box-shadow: none; }
 .btn-variant-outline:hover { background: color-mix(in srgb, var(--color-primary) 15%, transparent); }
@@ -145,31 +133,24 @@
 /* Sizes */
 .btn-size-sm { --_pad-y: var(--space-2); --_pad-x: var(--space-3); font-size: .85rem; }
 .btn-size-lg { --_pad-y: var(--space-4); --_pad-x: var(--space-6); font-size: 1.15rem; }
-
 .btn-block { width: 100%; }
-
-/* Icon positioning */
 .base-btn .btn-icon { display: inline-flex; align-items: center; }
 .base-btn .btn-icon.left { margin-right: var(--space-1); }
 .base-btn .btn-icon.right { margin-left: var(--space-1); }
 
-/* Contrast Theme Adjustments */
-[data-theme='contrast'] .base-btn { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: 0 0 0 0.005rem #ffffff, 0 2px 4px rgba(0,0,0,0.65), 0 6px 14px -4px rgba(0,0,0,0.75); }
+[data-theme='contrast'] .base-btn { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: 0 0 0 0.005rem #ffffff, 0 2px 4px color-mix(in srgb, black 65%, transparent), 0 6px 14px -4px color-mix(in srgb, black 75%, transparent); }
 [data-theme='contrast'] .base-btn:hover { background: color-mix(in srgb, var(--color-primary) 90%, black 10%); }
 [data-theme='contrast'] .base-btn:active { background: color-mix(in srgb, var(--color-primary) 85%, black 15%); }
 
-/* Dark theme: ensure pressed state looks 3D and visible */
 [data-theme='dark'] .base-btn:hover {
-  /* slightly stronger outer glow to lift from dark bg */
   box-shadow: var(--shadow-pressable-hover), var(--pressable-glow-stack-outline);
 }
 [data-theme='dark'] .base-btn:active,
 [data-theme='dark'] .base-btn.is-pressed {
-  /* Add a thin luminous outline + inset depth so press is readable on dark */
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--color-primary) 45%, transparent),
-    0 2px 6px rgba(0,0,0,0.4) inset,
-    0 2px 6px rgba(0,0,0,0.28),
+    0 2px 6px color-mix(in srgb, black 40%, transparent) inset,
+    0 2px 6px color-mix(in srgb, black 28%, transparent),
     0 6px 14px -5px color-mix(in srgb, var(--brand-orange-600) 45%, transparent);
 }
 

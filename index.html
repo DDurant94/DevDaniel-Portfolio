@@ -46,16 +46,16 @@
     <meta property="og:url" content="https://devdaniel.tech/">
     <meta property="og:title" content="Daniel Durant - Full Stack Developer Portfolio">
     <meta property="og:description" content="Full Stack Developer specializing in React, Node.js, and modern web technologies. Explore my projects, skills, and experience.">
-    <meta property="og:image" content="https://devdaniel.tech/Photos/og-image.jpg">
+    <meta property="og:image" content="https://devdaniel.tech/Photos/og-image.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:type" content="image/webp">
     <meta property="og:image:alt" content="Daniel Durant - Full Stack Developer - React, Node.js, Python">
     <!-- Alternative image for LinkedIn -->
-    <meta property="og:image" content="https://devdaniel.tech/Photos/linkedin-card.jpg">
+    <meta property="og:image" content="https://devdaniel.tech/Photos/linkedin-card.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="627">
-    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:type" content="image/webp">
     <meta property="og:site_name" content="Daniel Durant Portfolio">
     <meta property="og:locale" content="en_US">
     
@@ -64,7 +64,7 @@
     <meta name="twitter:url" content="https://devdaniel.tech/">
     <meta name="twitter:title" content="Daniel Durant - Full Stack Developer Portfolio">
     <meta name="twitter:description" content="Full Stack Developer specializing in React, Node.js, and modern web technologies. Explore my projects and skills.">
-    <meta name="twitter:image" content="https://devdaniel.tech/Photos/twitter-card.jpg">
+    <meta name="twitter:image" content="https://devdaniel.tech/Photos/twitter-card.webp">
     <meta name="twitter:image:alt" content="Daniel Durant - Full Stack Developer - React, Node.js, Python">
     <meta name="twitter:creator" content="@yourhandle">
     <meta name="twitter:site" content="@yourhandle">>
@@ -72,19 +72,42 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://devdaniel.tech/">
 
-    <link rel="icon" href="./src/Assets/SVGS/LogoIconOnly.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" fetchpriority="high" />
+    <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
 
-  <!-- Design tokens & root styles are imported through global.css for ordering -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <!-- Preload critical fonts to prevent FOIT (Flash of Invisible Text) -->
+    <link rel="preload" href="/fonts/helvetiker_regular.typeface.json" as="fetch" type="application/json" crossorigin>
+    
+    <!-- Preload LCP image for mobile (logo) -->
+    <link rel="preload" href="/Photos/Logo.webp" as="image" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
 
-    <!-- No-flash theme script: apply stored theme or system preference before React mounts -->
+    <!-- Preconnect to CDNs for faster resource loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    
+    <!-- DNS prefetch for external assets only if needed -->
+    <!-- <link rel="dns-prefetch" href="https://raw.githubusercontent.com"> -->
+    
+    <!-- Design tokens & root styles are imported through global.css for ordering -->
+    <!-- Load icon fonts asynchronously to prevent render blocking -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" media="print" onload="this.media='all';this.onload=null;">
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    </noscript>
+    
+    <title>Daniel's Personal Website and Portfolio</title>
+
+  </head>
+
+  <body id="main-body">
+
+    <div id="root"></div>
+
+    <!-- Deferred theme script (non-blocking) -->
     <script>
       (function() {
         try {
           let STORAGE_KEY = 'site-theme';
-          let saved = localStorage.getItem(STORAGE_KEY); // 'light' | 'dark' | 'contrast' | 'system' | null
+          let saved = localStorage.getItem(STORAGE_KEY);
           let root = document.documentElement;
           let systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           let resolved = systemDark ? 'dark' : 'light';
@@ -93,18 +116,18 @@
             let choice = userSet ? (saved || 'system') : 'system';
             let appliedAttr = (choice === 'system') ? resolved : choice;
             root.setAttribute('data-theme', appliedAttr);
-          // Useful dataset flags for CSS/JS that may key off of these on first paint
           root.dataset.themeMode = choice;
           root.dataset.themeResolved = resolved;
         } catch (e) {
-          // On any error, fall back to system preference
           let systemDark2 = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           document.documentElement.setAttribute('data-theme', systemDark2 ? 'dark' : 'light');
         }
       })();
     </script>
 
-    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Deferred SEO scripts (non-blocking) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -207,16 +230,6 @@
       "keywords": "web developer portfolio, full stack developer, React developer, Node.js developer, software engineer"
     }
     </script>
-
-    <title>Daniel's Personal Website and Portfolio</title>
-
-  </head>
-
-  <body id="main-body">
-
-    <div id="root"></div>
-
-    <script type="module" src="/src/main.jsx"></script>
 
   </body>
 </html>

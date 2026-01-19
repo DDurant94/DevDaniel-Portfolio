@@ -90,8 +90,7 @@
 .theme-segmented {
   --seg-height: 2.25rem;
   --seg-padding: 0.25rem;
-  --seg-radius: 14px; /* match container radius */
-  /* glassy base via tokens */
+  --seg-radius: 14px;
   --seg-bg: var(--tt-grad-seg);
   --seg-border: color-mix(in oklab, currentColor 12%, transparent);
   --seg-thumb: color-mix(in oklab, currentColor 10%, transparent);
@@ -107,8 +106,8 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(var(--count, 3), minmax(0, 1fr));
-  gap: 0.2rem; /* add breathing room between icons */
-  align-content: center; /* center grid content vertically */
+  gap: 0.2rem;
+  align-content: center;
   height: var(--seg-height);
   padding: calc(var(--seg-padding) + 1px);
   border-radius: var(--seg-radius);
@@ -120,17 +119,14 @@
   overflow: visible;
   -webkit-user-select: none;
   user-select: none;
-  touch-action: none; /* allow horizontal sliding without scrolling */
+  touch-action: none;
 }
 
-/* Contrast: slightly stronger shadow for structure */
 [data-theme='contrast'] .theme-segmented .segments{
   box-shadow:
     0 0 0 1px color-mix(in oklab, white 14%, transparent) inset,
     0 12px 28px color-mix(in oklab, black 28%, transparent);
 }
-
-/* Avoid cramped layout when up against viewport edges */
 .theme-segmented{ min-width: calc( (1.75rem + 0.2rem) * var(--count, 3) + (var(--seg-padding) * 2) + 2px ); }
 
 .theme-segmented .thumb {
@@ -145,22 +141,18 @@
     0 0 0 1px var(--seg-thumb) inset,
     0 12px 28px color-mix(in oklab, black 22%, transparent),
     0 1px 0 color-mix(in oklab, white 10%, transparent) inset;
-  /* Fractional position across slots; --pos is 0..1 and equals index/(count-1) when not dragging */
   transform: translateX(calc(var(--pos, 0) * (var(--count, 3) - 1) * (100% + 0.2rem)));
   transition: transform var(--motion-duration-fast, 180ms) var(--motion-ease-standard, ease),
               width var(--motion-duration-fast, 180ms) var(--motion-ease-standard, ease);
   pointer-events: none;
 }
-/* Theme-specific thumb backgrounds provided by tokens */
 html[data-theme="dark"] .theme-segmented .thumb{ background: var(--tt-grad-thumb); }
 [data-theme='contrast'] .theme-segmented .thumb{ background: var(--tt-grad-thumb); }
 
-/* Make the thumb snappy while dragging */
 .theme-segmented[data-dragging="true"] .thumb{
   transition: none;
 }
 
-/* Specular highlight on the glass thumb */
 .theme-segmented .thumb::before {
   content: '';
   position: absolute;
@@ -193,7 +185,6 @@ html[data-theme="dark"] .theme-segmented .thumb{ background: var(--tt-grad-thumb
   cursor: pointer;
 }
 
-/* Icon-only segments */
 .theme-segmented .segment .segment-icon {
   position: relative;
   z-index: 1;
@@ -204,22 +195,16 @@ html[data-theme="dark"] .theme-segmented .thumb{ background: var(--tt-grad-thumb
   height: 1.75rem;
 }
 
-/* Ensure the SVG centers within the icon box */
 .theme-segmented .segment .segment-icon svg{
   display: block;
   margin: auto;
-  /* Match handle glyph geometry */
   stroke-linecap: round;
   stroke-linejoin: round;
-  /* Theme-aware via tokens */
   stroke: var(--tt-icon-stroke);
   stroke-width: var(--tt-icon-stroke-width);
   filter: var(--tt-icon-filter);
 }
 
-/* Icon specifics are injected via tokens per theme */
-
-/* Soft hover ring for each segment */
 .theme-segmented .segment::before{
   content: '';
   position: absolute;
@@ -232,24 +217,19 @@ html[data-theme="dark"] .theme-segmented .thumb{ background: var(--tt-grad-thumb
   pointer-events: none;
 }
 .theme-segmented .segment:focus-within::before{
-  /* Brand-tinted focus glow (no hover) */
   box-shadow: var(--tt-focus-ring);
   opacity: 1;
 }
 
-/* Dark mode visuals closer to contrast */
 html[data-theme="dark"] .theme-segmented{
-  /* slightly stronger edges like contrast */
   --seg-border: color-mix(in oklab, currentColor 22%, transparent);
   --seg-thumb: color-mix(in oklab, currentColor 20%, transparent);
 }
-/* Per-theme icon values are provided via tokens; no extra dark override needed here */
 
 .theme-segmented .segment.is-selected {
   color: var(--seg-icon-active);
 }
 
-/* Subtle inner gleam on selected icon */
 .theme-segmented .segment.is-selected .segment-icon::after {
   content: '';
   position: absolute;
@@ -264,31 +244,22 @@ html[data-theme="dark"] .theme-segmented{
   opacity: 0.6;
   pointer-events: none;
 }
-/* Faint brand-tinted inner rim on selected segment */
+
 .theme-segmented .segment.is-selected::after{
   content: '';
   position: absolute;
   inset: 3px;
   border-radius: calc(var(--seg-radius) - var(--seg-padding));
-  /* Drop inner ring; keep a softer brand-tinted glow */
   box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary) 14%, transparent) inset;
   opacity: 0.8;
   pointer-events: none;
 }
 
-/* No hover brighten; rely on selection and focus states only */
-
-/* (Removed micro-tooltips per request) */
-
-/* Focus visible ring routed through label for accessibility */
 .theme-segmented .segment input[type="radio"]:focus-visible + .segment-icon,
 .theme-segmented .segment input[type="radio"]:focus-visible ~ .sr-only {
-  outline: none; /* focus indication handled by brand-tinted ::before ring */
+  outline: none;
 }
 
-/* no resolved hint since there's no explicit System segment */
-
-/* Screen-reader only utility (local in case global doesn't exist) */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -311,15 +282,11 @@ html[data-theme="dark"] .theme-segmented{
   }
 }
 
-/* Remove conflicting older dark override for --seg-bg (handled above with gradient) */
-
-/* Contrast mode: neutral glass without brand tint; crisper than dark */
 [data-theme='contrast'] .theme-segmented{
   --seg-bg: var(--tt-grad-seg);
   --seg-thumb: color-mix(in oklab, white 30%, transparent);
 }
 
-/* Contrast: white focus ring and selected rim instead of brand */
 [data-theme='contrast'] .theme-segmented .segment:focus-within::before{
   box-shadow:
     0 0 0 3px color-mix(in srgb, white 85%, transparent),

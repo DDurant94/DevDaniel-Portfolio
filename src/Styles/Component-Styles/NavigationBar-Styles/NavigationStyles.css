@@ -58,7 +58,7 @@
 
 @media (max-width: 768px) {
   .desktop-only {
-    display: none;
+    display: none !important;
   }
   
   .mobile-only {

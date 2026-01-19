@@ -1,50 +1,8 @@
-/**
- * Contact Aside Panel Component
- * 
- * @description Slide-out contact form panel accessible from anywhere in the app.
- * Implements full accessibility with focus trap, keyboard navigation, and ARIA attributes.
- * 
- * Features:
- * - Slide-in animation from right side
- * - Focus trap (Tab cycles through panel elements only)
- * - Escape key to close
- * - Click backdrop to close
- * - Body scroll lock with scrollbar compensation
- * - Allows scrolling within panel body
- * - Auto-focus on open
- * - Closes mobile menu when opening
- * - Success callback on form submission
- * - Full ARIA compliance (modal, dialog, labels)
- * 
- * Accessibility:
- * - aria-modal="true" - Marks as modal dialog
- * - role="dialog" - Semantic dialog role
- * - Focus trap with Shift+Tab support
- * - Keyboard navigation (Tab, Shift+Tab, Escape)
- * - aria-live="polite" - Announces state changes
- * - Backdrop click to close (non-keyboard users)
- * 
- * Body Scroll Management:
- * - Locks body scroll when open
- * - Calculates and compensates for scrollbar width
- * - Allows wheel events inside panel body
- * - Restores scroll on close
- * 
- * @component
- * @param {Object} props
- * @param {boolean} props.open - Whether the aside panel is open
- * @param {Function} props.onClose - Callback to close the panel
- * 
- * @example
- * ```jsx
- * const [isOpen, setIsOpen] = useState(false);
- * <ContactAside open={isOpen} onClose={() => setIsOpen(false)} />
- * ```
- */
+/** ContactAside - Slide-out contact form panel with focus trap and accessibility features */
 
 import { useEffect, useRef } from "react";
 import ContactMeForm from "../../../Pages/ContactMe-Page/ContactMe-Components/ContactMeForm";
-import { useNavigation } from "../../../Context/Navigation-Context/NavigationContext";
+import { useNavigation } from "../../../Context/Navigation-Context/useNavigation";
 import "../../../Styles/Page-Styles/ContactMe-Styles/ContactMeAside-Styles/ContactMeAsideStyles.css";
 
 const ContactAside = ({ open, onClose }) => {

@@ -36,10 +36,18 @@
  * ```
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function useScrollProgress(containerRef) {
+  // Cache canvas element to avoid querySelector on every scroll
+  const canvasRef = useRef(null);
+  
   useEffect(() => {
+    // Re-cache canvas when container changes (e.g., route navigation)
+    if (containerRef.current) {
+      canvasRef.current = containerRef.current.querySelector('canvas');
+    }
+    
     const handleScroll = () => {
       if (!containerRef.current) return;
       
@@ -49,10 +57,13 @@ export default function useScrollProgress(containerRef) {
       // Store scroll progress for camera animation in the Canvas
       containerRef.current.dataset.scrollProgress = progress;
       
-      // Disable pointer events when mostly faded out
-      const canvas = containerRef.current.querySelector('canvas');
-      if (canvas) {
-        canvas.style.pointerEvents = progress > 0.7 ? 'none' : 'auto';
+      // Fade out the canvas based on scroll progress
+      if (canvasRef.current) {
+        // Fade from 1 to 0 as user scrolls down
+        // Keep scene slightly visible (min 0.05) until very end
+        const fadeOpacity = Math.max(0, 1 - progress);
+        canvasRef.current.style.opacity = progress > 0.98 ? 0 : fadeOpacity;
+        canvasRef.current.style.pointerEvents = progress > 0.7 ? 'none' : 'auto';
       }
     };
 

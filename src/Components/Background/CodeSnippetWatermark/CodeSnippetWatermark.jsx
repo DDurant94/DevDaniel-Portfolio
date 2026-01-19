@@ -1,34 +1,7 @@
-import { useMediaQuery } from '../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../Context/MediaQueryContext.hook';
 import './../../../Styles/Component-Styles/Background-Styles/CodeSnippetWatermark-Styles/CodeSnippetWatermarkStyles.css';
 
-/**
- * CodeSnippetWatermark - Faded code snippets as background texture
- * 
- * Displays actual code snippets (React, CSS, Python, etc.) as very subtle
- * watermark patterns throughout the page background. Adds technical aesthetic
- * without interfering with readability. Desktop only.
- * 
- * Features:
- * - 4 code snippets in different positions
- * - React component snippet (useState, useEffect, JSX)
- * - CSS snippet (grid, custom properties, gradients)
- * - Python function snippet (data processing)
- * - Python data science snippet (pandas, numpy)
- * - Extremely low opacity (watermark effect)
- * - Desktop only (hidden on mobile for performance)
- * - Non-interactive decoration
- * 
- * Snippets:
- * 1. React Portfolio component with state and map
- * 2. CSS hero section with grid and custom properties
- * 3. Python data analysis function
- * 4. Pandas/numpy data transformation
- * 
- * @component
- * @example
- * <CodeSnippetWatermark />
- * // Returns null on mobile, renders 4 positioned snippets on desktop
- */
+/** CodeSnippetWatermark - Faded code snippets as background texture (desktop only) */
 const CodeSnippetWatermark = () => {
   const { isDesktop } = useMediaQuery();
 

@@ -98,7 +98,6 @@ export default function useProjectFilters(projects = []) {
     return Infinity;
   };
 
-  // --- Build type filters with key + label ---
   const typeFilters = useMemo(() => {
     const types = new Map();
     projects.forEach((p) => {
@@ -108,7 +107,7 @@ export default function useProjectFilters(projects = []) {
         ? p.type.split(',')
         : [];
       arr.forEach((t) => {
-        const label = t.trim(); // what the user sees
+        const label = t.trim();
         const key = normalize(label);
         if (!types.has(key)) {
           types.set(key, label);
@@ -125,8 +124,6 @@ export default function useProjectFilters(projects = []) {
   const filtered = useMemo(() => {
     return projects.filter((p) => {
       const titleMatch = normalize(p.title).includes(normalize(search));
-      // const descMatch = normalize(p.description).includes(normalize(search));
-      // const offCanvasMatch = normalize(p.body.offCanvasDescription).includes(normalize(search));
       const techMatch = normalize(p.body.techs).includes(normalize(search));
       const conceptMatch = normalize(p.body.concepts).includes(normalize(search));
 

@@ -62,11 +62,13 @@ export const CodingGear = forwardRef((props, ref) => {
           geometry={nodes.Torus012_2.geometry} 
           material={materials.PaletteMaterial001} 
           castShadow 
-          // receiveShadow 
         />
       </group>
     </group>
   );
 });
 
-useGLTF.preload('/models/Gear-Model/GearModelOptimized.glb');
+// Only preload on desktop (avoid mobile bandwidth waste)
+if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+  useGLTF.preload('/models/Gear-Model/GearModelOptimized.glb');
+}

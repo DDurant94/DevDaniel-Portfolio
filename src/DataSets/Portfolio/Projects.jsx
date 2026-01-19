@@ -1,4 +1,4 @@
-import Logo from './../../Assets/Photos/Logo.png';
+import Logo from './../../Assets/Photos/Logo.webp';
 
 import AiImageGrader from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader.mp4';
 import AiImageGrader2 from './../../Assets/Photos/Project-Photos/AI-Image-Grader/AiImageGrader2.mp4';
@@ -20,35 +20,34 @@ import OperationsOptimizer from './../../Assets/Photos/Project-Photos/Operations
 import OperationsOptimizer2 from './../../Assets/Photos/Project-Photos/Operations-Optimizer/OperationsOptimizer2.mp4';
 
 import PasswordKeeperLogo from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperLogo.svg';
-import PasswordKeeper from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeper.mp4';
-import PasswordKeeperFlowChart from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperFlowChart.png';
-import PasswordKeeperUserModel from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperUserModel.png';
-import PasswordKeeperYAML from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperYAML.png';
+const PasswordKeeper = '/videos/PasswordKeeper-optimized.mp4';
+import PasswordKeeperFlowChart from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperFlowChart.webp';
+import PasswordKeeperUserModel from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperUserModel.webp';
+import PasswordKeeperYAML from './../../Assets/Photos/Project-Photos/Password-Keeper/PasswordKeeperYAML.webp';
 
-import AdvancedECommerceAPICover from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPICover.jpg';
-import AdvancedECommerceAPIYAML from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPIYAML.jpeg';
-import AdvancedECommerceAPISaveOrder from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPISaveOrder.png';
+import AdvancedECommerceAPICover from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPICover.webp';
+import AdvancedECommerceAPIYAML from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPIYAML.webp';
+import AdvancedECommerceAPISaveOrder from './../../Assets/Photos/Project-Photos/Advanced-E-Commerce-API/AdvancedECommerceAPISaveOrder.webp';
 
-import FactoryManagementCover from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementCover.jpg';
-import FactoryManagementAPIYAML from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIYAML.jpeg';
-import FactoryManagementAPIProduction from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIProduction.png';
+import FactoryManagementCover from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementCover.webp';
+import FactoryManagementAPIYAML from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIYAML.webp';
+import FactoryManagementAPIProduction from './../../Assets/Photos/Project-Photos/Factory-Management/FactoryManagementAPIProduction.webp';
 
 import ECommerceApplication from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplication.mp4';
-import ECommerceApplicationWebsite from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationWebsite.jpeg';
-import ECommerceApplicationSubmitOrder from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationSubmitOrder.png';
+import ECommerceApplicationWebsite from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationWebsite.webp';
+import ECommerceApplicationSubmitOrder from './../../Assets/Photos/Project-Photos/E-Commerce-Application/ECommerceApplicationSubmitOrder.webp';
 
-import PokeCatcherCover from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherCover.jpg';
-import PokeCatcher from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcher.jpeg';
-import PokeCatcherAPIFetch from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherAPIFetch.png';
+import PokeCatcherCover from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherCover.webp';
+import PokeCatcher from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcher.webp';
+import PokeCatcherAPIFetch from './../../Assets/Photos/Project-Photos/Poke-Catcher/PokeCatcherAPIFetch.webp';
 
-import OneStopMarvelCover from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelCover.jpg';
-import OneStopMarvel from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvel.jpeg';
-import OneStopMarvelBrowseCharacters from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelBrowseCharacters.png';
+import OneStopMarvelCover from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelCover.webp';
+import OneStopMarvel from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvel.webp';
+import OneStopMarvelBrowseCharacters from './../../Assets/Photos/Project-Photos/One-Stop-Marvel/OneStopMarvelBrowseCharacters.webp';
 
-import Portfolio from './../../Assets/Photos/Project-Photos/Portfolio/Portfolio.jpg';
-// Optimized video in public folder - lazy loaded, not bundled (171 MB → 1.75 MB)
-const PortfolioDemo = '/videos/portfolio-demo-optimized.mp4';
-import PortfolioApp from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioApp.png';
+import Portfolio from './../../Assets/Photos/Project-Photos/Portfolio/Portfolio.webp';
+import PortfolioDemo from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioDemo.mp4';
+import PortfolioApp from './../../Assets/Photos/Project-Photos/Portfolio/PortfolioApp.webp';
 
 
 
@@ -146,7 +145,7 @@ export const allProjects = [
   {
     title: 'Custom AI Grader',
     description: 'Upload. Analyze. Improve. This system extracts text, evaluates quality, and delivers actionable grading feedback - all through a responsive interface backed by robust cloud infrastructure.',
-    featured: false, // Mark as featured
+    featured: false,
     type: [
       'AI/ML Engineering',
       'Cloud Deployment',
@@ -161,8 +160,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: CustomAiGraderSVG,
     media: [
+      { src: CustomAiGraderSVG, alt: 'Custom AI Grader Cover' },
       { src: CustomAiGrader, alt: 'Custom AI Grader GIF' }
-      // Add screenshots/GIFs here
     ],
     body: {
       powerTitle: 'Custom intelligence for document workflows.',
@@ -190,7 +189,7 @@ export const allProjects = [
   {
     title: 'Quick AI Grader',
     description: 'From handwritten notes to structured text, this high-speed platform delivers real-time grading across images and documents - powered by dual AI pipelines and scalable cloud infrastructure.',
-    featured: false, // Mark as featured
+    featured: false,
     type: [
       'AI/ML Engineering',
       'Cloud Deployment',
@@ -205,8 +204,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: QuickAiGraderSVG,
     media: [
+      { src: QuickAiGraderSVG, alt: 'Quick AI Grader Logo', hasBackground: true },
       { src: QuickAiGrader, alt: 'Quick AI Grader GIF' }
-      // Add screenshots/GIFs here
     ],
     body: {
       powerTitle: 'One engine, all formats.',
@@ -245,8 +244,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: EmailResponderSVG,
     media: [
+      { src: EmailResponderSVG, alt: 'Email Automation Responder Logo', hasBackground: true },
       { src: EmailResponder, alt: 'Email Automation Responder GIF' }
-      // Add screenshots/GIFs here
     ],
     body: {
       powerTitle: 'Never miss a follow-up.',
@@ -283,9 +282,9 @@ export const allProjects = [
     isFrontend: false,
     coverImage: OperationsOptimizer,
     media: [
-      { src: OperationsOptimizerSVG, alt: 'Operations Optimizer SVG' },
-      { src: OperationsOptimizer2, alt: 'Operations Optimizer SVG' }
-      // Add screenshots/GIFs here
+      { src: OperationsOptimizerSVG, alt: 'Operations Optimizer Logo', hasBackground: true },
+      { src: OperationsOptimizer, alt: 'Operations Optimizer Demo' },
+      { src: OperationsOptimizer2, alt: 'Operations Optimizer Detail' }
     ],
     body: {
       powerTitle: 'Three APIs, one clear path.',
@@ -321,8 +320,8 @@ export const allProjects = [
     isFrontend: false,
     coverImage: PerformanceOptimizationSVG,
     media: [
+      { src: PerformanceOptimizationSVG, alt: 'Performance Optimization Logo', hasBackground: true },
       { src: PerformanceOptimization, alt: 'Performance Optimization GIF' }
-      // Add screenshots/GIFs here
     ],
     body: {
       powerTitle: 'Speed meets precision.',
@@ -417,7 +416,6 @@ export const allProjects = [
     media: [
       { src: AdvancedECommerceAPIYAML, alt: 'Advanced E-Commerce API YAML Image' },
       { src: AdvancedECommerceAPISaveOrder, alt: 'Advanced E-Commerce API Save Order Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: 'Secure, scalable, and service driven.',
@@ -459,7 +457,6 @@ export const allProjects = [
     media: [
       { src: ECommerceApplicationWebsite, alt: 'E-Commerce Application Website Image' },
       { src: ECommerceApplicationSubmitOrder, alt: 'E-Commerce Application Order Submit Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: 'Full-stack infrastructure for digital retail.',
@@ -486,7 +483,7 @@ export const allProjects = [
   {
     title: 'Factory Management',
     description: 'A production-grade API that simulates real-world manufacturing workflows with modular microservices, automated testing, and secure access control.',
-    featured: false, // Mark as featured
+    featured: false,
     type: [
       'Logistics',
       'Manufacturing Systems',
@@ -501,7 +498,6 @@ export const allProjects = [
     media: [
       { src: FactoryManagementAPIYAML, alt: 'Factory Management YAML Image' },
       { src: FactoryManagementAPIProduction, alt: 'Factory Management Production Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: 'Manufacturing meets microservices.',
@@ -544,7 +540,6 @@ export const allProjects = [
     media: [
       { src: PokeCatcher, alt: 'Poké Catcher Website Image' },
       { src: PokeCatcherAPIFetch, alt: 'Poké Catcher API Fetch Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: "Catch'em all—with code.",
@@ -583,7 +578,6 @@ export const allProjects = [
     media: [
       { src: OneStopMarvel, alt: 'One Stop Marvel Website Image' },
       { src: OneStopMarvelBrowseCharacters, alt: 'One Stop Marvel Browse Characters Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: 'Superheroes meet React.',
@@ -622,7 +616,6 @@ export const allProjects = [
     media: [
       { src: PortfolioDemo, alt: 'Daniels Portfolio Demo' },
       { src: PortfolioApp, alt: 'Daniels Portfolio App Code Image' }
-      // Add more screenshots or GIFs here
     ],
     body: {
       powerTitle: 'Where it all began-animated, responsive, and modular.',

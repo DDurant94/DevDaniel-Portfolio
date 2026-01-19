@@ -1,353 +1,58 @@
 /**
- * Page Transition Styles
- * 
- * @description Full-screen transition overlay with 3D canvas effects during route changes.
- * Features quadrant-based slide animations, body scroll lock, and covering/uncovering states.
- * 
- * Components:
- * - .page-transition: Fixed overlay container
- * - .transition-canvas-wrapper: 3D scene background
- * - .transition-canvas-wrapper::before/::after: Quadrant slide elements
- * - body.page-transitioning: Scroll lock state
- * 
- * Body Transition State:
- * - overflow: hidden (prevents scroll)
- * - position: fixed, inset: 0 (locks position)
- * - Applied during route transitions
- * - Removed when transition completes
- * 
- * Content Hiding:
- * - body.page-transitioning #root > *:not(.page-transition)
- * - display: none !important (hides all except overlay)
- * - Ensures clean transition without content flash
- * - PageTransition always visible during transition
- * 
- * Page Transition Container:
- * - position: fixed, top: 0, left: 0
- * - width: 100vw, height: 100vh (full screen)
- * - z-index: 9999 (top layer)
- * - pointer-events: none (default, non-blocking)
- * - overflow: hidden (clips slide animations)
- * 
- * Transition States:
- * - .covering: Transition starting (sliding in)
- * - .covered: Fully covered (between pages)
- * - pointer-events: all (blocks interaction)
- * - Controls when overlay is interactive
- * 
- * Canvas Wrapper:
- * - position: absolute, top: 0, left: 0
- * - width: 100%, height: 100%
- * - z-index: 1 (behind text/UI if any)
- * - Contains 3D scene or animated background
- * 
- * Quadrant Slide System:
- * - ::before and ::after pseudo-elements
- * - Create 4 corner sections that slide in
- * - Geometric patterns or solid colors
- * - Animated via transforms
- * - Synchronized timing for cohesive effect
- * 
- * Animation Flow:
- * 1. Route change triggered
- * 2. body.page-transitioning class added
- * 3. .page-transition.covering slides in
- * 4. .page-transition.covered (fully covered)
- * 5. Route changes (hidden behind overlay)
- * 6. .page-transition.uncovering slides out
- * 7. body.page-transitioning removed
- * 8. Normal scroll restored
- * 
- * State Management:
- * - Controlled via React Router or navigation context
- * - Classes toggled at specific animation keyframes
- * - Framer Motion AnimatePresence integration
- * - Timing synchronized with route changes
- * 
- * Accessibility:
- * - aria-live="polite" for transition announcements
- * - Focus management during transitions
- * - Reduced motion support (should be added)
- * - Keyboard navigation paused during transition
- * 
- * Performance:
- * - position: fixed removes from layout
- * - transform animations: GPU accelerated
- * - overflow: hidden enables optimizations
- * - Short transition duration (< 600ms)
- * - will-change on animating elements
- * 
- * Browser Compatibility:
- * - position: fixed: Universal support
- * - vw/vh units: All modern browsers
- * - Pseudo-elements: Universal support
- * - Custom properties: Widely supported
- * 
- * @layer components
- * @requires React Router, navigation context, 3D scene (optional)
+ * Page Transition Styles - Clean Fade System
  */
 
-/* Hide page content during transition - but NOT the transition overlay itself */
+/* Lock body scroll during transitions */
 body.page-transitioning {
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
-/* Hide all content except PageTransition during transition */
-body.page-transitioning #root > *:not(.page-transition) {
-  display: none !important;
+/* Prevent scrollbar layout shift on desktop (mobile uses overlay scrollbars) */
+@media (min-width: 769px) {
+  html {
+    scrollbar-gutter: stable;
+  }
 }
 
-/* Keep PageTransition visible */
-.page-transition {
-  opacity: 1 !important;
-  pointer-events: all !important;
-}
-
-/* Page Transition Container */
-.page-transition {
+/* Simple overlay that fades in/out */
+.page-transition-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
+  background: var(--bg-color);
+  z-index: 9998;
   pointer-events: none;
-  overflow: hidden;
+  opacity: 0;
+  will-change: opacity;
 }
 
-.page-transition.covering,
-.page-transition.covered {
-  pointer-events: all;
+/* Fade out - overlay becomes visible */
+.page-transition-overlay.fadeOut {
+  animation: fadeOverlayIn 0.3s ease-out forwards;
 }
 
-/* 3D Scene Wrapper - split into 4 quadrants */
-.transition-canvas-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Create 4 corner sections that slide in */
-.transition-canvas-wrapper::before,
-.transition-canvas-wrapper::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-/* Main canvas that gets clipped */
-.transition-canvas-wrapper > * {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-/* Covering state - clouds slide in from all sides to center */
-.page-transition.covering .transition-canvas-wrapper {
-  animation: slideInFromSides 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Covered state - clouds fully cover screen */
-.page-transition.covered .transition-canvas-wrapper {
+/* Fade in - overlay becomes transparent */
+.page-transition-overlay.fadeIn {
   opacity: 1;
-  transform: scale(1);
+  animation: fadeOverlayOut 0.4s ease-in forwards;
 }
 
-/* Revealing state - clouds slide out to all sides from center */
-.page-transition.revealing .transition-canvas-wrapper {
-  animation: slideOutToSides 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slideInFromSides {
-  0% {
-    opacity: 0;
-    transform: scale(1.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideOutToSides {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.8);
-  }
-}
-
-/* Loading UI Overlay - only shown after 15 seconds */
-.transition-loading-ui {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  pointer-events: none;
-  animation: fadeInUI 0.4s ease-out;
-}
-
-@keyframes fadeInUI {
+@keyframes fadeOverlayIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-/* Loading Logo */
-.transition-loading-ui .loading-logo {
-  margin-bottom: 2rem;
-  animation: floatLogo 3s ease-in-out infinite;
-}
-
-.transition-loading-ui .logo-loader {
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
-}
-
-.transition-loading-ui .logo-path-animated {
-  fill: var(--text-color);
-  animation: pulseFill 2s ease-in-out infinite;
-}
-
-@keyframes floatLogo {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulseFill {
-  0%, 100% {
-    fill: var(--text-color);
-  }
-  50% {
-    fill: var(--primary-color);
-  }
-}
-
-/* Loading Text */
-.transition-loading-ui .loading-text {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.transition-loading-ui .loading-text h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0;
-  letter-spacing: 0.05em;
-}
-
-/* Loading Dots Animation */
-.transition-loading-ui .loading-dots {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  padding-top: 0.3rem;
-}
-
-.transition-loading-ui .loading-dots .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  animation: dotPulse 1.4s ease-in-out infinite;
-}
-
-.transition-loading-ui .loading-dots .dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.transition-loading-ui .loading-dots .dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes dotPulse {
-  0%, 80%, 100% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
-  40% {
+@keyframes fadeOverlayOut {
+  from {
     opacity: 1;
-    transform: scale(1.2);
   }
-}
-
-/* Loading Progress Bar */
-.transition-loading-ui .loading-bar {
-  width: var(--container-xs);
-  height: 4px;
-  background-color: rgba(var(--text-color-rgb), 0.1);
-  border-radius: var(--radius-xs);
-  overflow: hidden;
-  position: relative;
-}
-
-.transition-loading-ui .loading-progress {
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--primary-color),
-    var(--secondary-color),
-    var(--primary-color)
-  );
-  background-size: 200% 100%;
-  border-radius: var(--radius-xs);
-  animation: slideProgress 1.5s ease-in-out infinite;
-  box-shadow: 0 0 10px var(--primary-color);
-}
-
-@keyframes slideProgress {
-  0% {
-    transform: translateX(-100%);
-    background-position: 0% 50%;
-  }
-  100% {
-    transform: translateX(100%);
-    background-position: 100% 50%;
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .transition-loading-ui .loading-text h2 {
-    font-size: 1.25rem;
-  }
-
-  .transition-loading-ui .loading-logo svg {
-    width: 100px;
-    height: 100px;
-  }
-
-  .transition-loading-ui .loading-bar {
-    width: 150px;
+  to {
+    opacity: 0;
   }
 }

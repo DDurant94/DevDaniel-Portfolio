@@ -58,8 +58,10 @@
 
 .footer-container {
   width: calc(100% - 100px);
-  margin-left: 90px;
+  margin-left: 80px;
   margin-top: 4rem;
+  position: relative;
+  z-index: var(--z-content);
 }
 
 @media (max-width: 768px) {
@@ -96,10 +98,9 @@
   justify-content: center;
   padding: 0;
   margin: 0;
-  -webkit-box-reflect: below -8px linear-gradient(transparent, rgba(0,0,0,0.07), rgba(255,255,255,0.42));
+  -webkit-box-reflect: below -8px linear-gradient(transparent, color-mix(in srgb, black 7%, transparent), color-mix(in srgb, white 42%, transparent));
 }
 
-/* Disable expensive reflections during scroll */
 [data-scrolling="true"] #footer-content {
   -webkit-box-reflect: none !important;
 }
@@ -137,13 +138,13 @@
 .footer-resume-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
   padding: 0.75rem 1.5rem;
   background: color-mix(in oklab, var(--color-primary) 12%, transparent);
   color: var(--color-text);
   text-decoration: none;
   border: 1px solid color-mix(in oklab, var(--color-primary) 25%, transparent);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-weight: 500;
   font-size: 0.95rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -161,7 +162,7 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px color-mix(in oklab, var(--color-primary) 20%, transparent);
+  box-shadow: var(--shadow-glow-lg);
 }
 
 .footer-resume-button:hover i {
@@ -178,7 +179,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: var(--gap-lg);
   padding-top: 1.5rem;
   border-top: 1px solid color-mix(in oklab, var(--color-border) 50%, transparent);
 }
@@ -194,10 +195,12 @@
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  text-align: center;
+  padding: var(--gap-sm) var(--gap-md);
+  border-radius: var(--radius-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  letter-spacing: 0.02em;
 }
 
 .footer-email::after {
@@ -255,6 +258,7 @@
   }
 
   .footer-email {
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    padding: var(--gap-sm) 0;
   }
 }

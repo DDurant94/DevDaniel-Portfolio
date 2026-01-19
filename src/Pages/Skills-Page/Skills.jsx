@@ -1,28 +1,5 @@
 /**
- * Skills Page Component
- * 
- * @description Technical expertise showcase featuring hero section, animated logo carousel,
- * and interactive tech stack grid. Displays programming languages, frameworks, tools,
- * and technologies with proficiency levels.
- * 
- * Features:
- * - 3D animated hero section
- * - Infinite scrolling logo carousel of tech icons
- * - Interactive tech stack cards with hover effects
- * - Categorized skill display (Frontend, Backend, Tools, etc.)
- * - Scroll-triggered animations using Framer Motion
- * - Contact CTA integration
- * 
- * @component
- * @requires framer-motion - Scroll and reveal animations
- * @requires ContactAsideContext - Contact panel integration
- * @requires LogoLoop - Infinite scrolling logo carousel
- * @requires SkillsTechStack - Interactive skill cards grid
- * 
- * @example
- * ```jsx
- * <Skills />
- * ```
+ * Skills Page - Tech stack showcase with logo carousel and interactive skill cards
  */
 
 import BaseButton from '../../Components/UI/BaseButton/BaseButton.jsx';
@@ -31,20 +8,26 @@ import FadeInWhenVisible from '../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import SkillsTechStack from './Skills-Components/SkillsTechStack/SkillsTechStack';
 import LogoLoop from '../../Components/UI/LogoLoop/LogoLoop.jsx';
 import { IconList } from '../../DataSets/ProgrammingIcons/Icons';
-import { useContactAside } from '../../Context/Aside-Context/ContactAsideContext';
+import { useContactAside } from '../../Context/Aside-Context/useContactAside';
 import './../../Styles/Page-Styles/Skills-Styles/SkillsStyles.css';
-import SkillsHero from './Skills-Components/Hero/SkillsHero.jsx';
+import PageHero from '../../Components/UI/PageHero/PageHero.jsx';
+
+const headerStyle = { width: '100%', height: '100vh' };
 
 const Skills = () => {
   const { openContactAside } = useContactAside();
   return (
-    <div id="skills-container" className="container-fluid-center">
+    <div id="skills-container">
       <SkipToMain targetId="skills-main-content" />
       
-      <header id="skills-header" style={{ width: '100%', height: '100vh' }}>
+      <header id="skills-header" style={headerStyle}>
         <div id="skills-hero-container">
           <div id="skills-hero">
-            <SkillsHero />
+            <PageHero
+              id="skills-hero"
+              title="My Skills"
+              subtitle="Core technologies and tools I use to craft immersive, scalable solutions."
+            />
           </div>
         </div>
       </header>
@@ -55,11 +38,12 @@ const Skills = () => {
         <FadeInWhenVisible
           as="section"
           id="skills-intro-section"
+          className="util-text-center util-w-full util-flex util-justify-center"
           y={20}
           duration={0.6}>
           <div id="skills-intro-container">
             <h1>Technical Expertise</h1>
-            <p>
+            <p className="util-max-w-compact">
               From backend architecture to interactive 3D experiences, I bring a diverse skill set
               focused on building scalable, innovative solutions. Here's what I bring to the table.
             </p>
@@ -70,10 +54,11 @@ const Skills = () => {
         <FadeInWhenVisible
           as="section"
           id="skills-tech-section"
+          className="util-w-full"
           y={20}
           duration={0.6}>
-        <div id='logo-loop-container'>
-          <div id='logo-loop-inner'>
+        <div id='logo-loop-container' className='util-flex util-justify-center'>
+          <div id='logo-loop-inner' className='util-w-full'>
             <LogoLoop logos={Object.values(IconList)}
               speed={60}
               direction="left"
@@ -102,7 +87,7 @@ const Skills = () => {
         </FadeInWhenVisible>
 
         {/* CTA */}
-        <div id="skills-cta-btn-container" className='mt-1'>
+        <div id="skills-cta-btn-container" className='util-mt-sm util-flex util-justify-center util-flex-wrap'>
           <BaseButton
             variant="primary"
             size="md"

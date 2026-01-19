@@ -1,17 +1,5 @@
 /**
- * Home Page Styles
- * 
- * @description Main layout and typography for home page sections. Implements centered
- * content container with readable width constraints and gradient text effects.
- * 
- * Features:
- * - Centered readable content (max-width: --container-readable)
- * - Gradient text for headings
- * - Flexible vertical layout with consistent spacing
- * - Responsive typography with fluid sizing
- * 
- * Browser Compatibility:
- * - background-clip: text - Chrome 119+, Safari 14+, Firefox 49+ (with -webkit prefix)
+ * Home Page Styles - Centered layout with gradient text effects
  */
 
 /* ========================================
@@ -23,10 +11,6 @@
  * Centered with max readable width for optimal text readability
  */
 #home-page-main-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: var(--gap-lg);
   padding-inline: 0!important;
   padding: var(--space-8) var(--space-4);
@@ -35,10 +19,6 @@
 }
 
 .home-contact-cta-section{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   text-align: center;
   gap: var(--gap-md);
   padding: var(--space-6) var(--space-4);
@@ -55,7 +35,6 @@
   & p{
     font-size: calc(1.0rem + 0.3vw);
     color: var(--color-text-soft);
-    max-width: 80ch;
     margin: 0 0 2rem 0;
   }
 }

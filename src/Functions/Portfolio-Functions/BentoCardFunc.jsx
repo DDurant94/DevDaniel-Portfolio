@@ -1,79 +1,19 @@
 // src/Functions/Portfolio-Functions/BentoCardFunc.jsx
 import PropTypes from 'prop-types';
-import { motion } from 'framer-motion';
-import useLazyLoad from '../../Hooks/Utility-Hooks/useLazyLoad';
+import { motion } from 'motion/react';
+import { useIntersection } from '../../Hooks/Effect-Hooks/useIntersection';
 import { getMediaType } from '../../Utils/mediaHelpers.js';
+import LazyImage from '../../Components/UI/LazyImage/LazyImage';
+import LazyVideo from '../../Components/UI/LazyVideo/LazyVideo';
 import './../../Styles/General-Styles/Functions/Portfolio-Functions/BentoCardFunctionStyles.css';
 
-/**
- * BentoCard - Individual project card for bento grid layout
- * 
- * Displays a project with image, title, description, tech stack, and badges.
- * Supports multiple size variants (small/medium/large/wide/tall) with adaptive
- * content display. Includes hover effects, keyboard navigation, and accessibility.
- * 
- * Features:
- * - 5 size variants (small, medium, large, wide, tall)
- * - Responsive content based on size
- * - Tech stack with overflow indicator (+N)
- * - Type badge (first type from array)
- * - Category badge (Personal/Professional)
- * - Featured state styling
- * - Framer Motion hover/tap effects
- * - Background image with overlay
- * - Gradient overlay for text readability
- * - Keyboard activation (Enter/Space)
- * - ARIA attributes
- * - Hover indicator arrow
- * 
- * Size-Based Content:
- * - bento-large: Full description, 4 techs
- * - bento-wide/tall: Truncated description (100 chars), 3 techs
- * - bento-medium: Truncated description, 3 techs
- * - bento-small: No description, 2 techs
- * 
- * Badges:
- * - Type badge: First type (truncated at 30 chars)
- * - Category badge: Personal/Pro (only when showCategoryBadge=true)
- * 
- * Animations:
- * - Hover: translateY(-4px), scale(1.02), spring animation
- * - Tap: scale(0.98)
- * 
- * @component
- * @param {Object} props
- * @param {string} props.title - Project title (required)
- * @param {string} props.description - Project description
- * @param {string} props.coverImage - Primary image URL
- * @param {string} props.logoOverlay - Optional SVG logo to overlay on coverImage
- * @param {Array<{src: string, alt: string}>} props.media - Additional images
- * @param {string[]} props.techs - Technologies used
- * @param {Function} props.onClick - Click handler
- * @param {string} props.size - Card size ('bento-small'|'bento-medium'|'bento-large'|'bento-wide'|'bento-tall')
- * @param {boolean} props.isFeatured - Featured project flag
- * @param {string|string[]} props.type - Project type(s)
- * @param {boolean} props.isPersonal - Personal vs professional project
- * @param {boolean} props.showCategoryBadge - Show category badge (default: true)
- * @param {string} props.personalText - Personal badge text (default: 'Personal')
- * @param {string} props.professionalText - Professional badge text (default: 'Pro')
- * 
- * @example
- * <BentoCard
- *   title="AI Image Grader"
- *   description="Upload. Analyze. Grade..."
- *   coverImage="/images/project.jpg"
- *   techs={['React', 'TypeScript', 'Express']}
- *   onClick={() => openOffCanvas(project)}
- *   size="bento-large"
- *   type={['AI/ML Engineering', 'Full-Stack']}
- *   isPersonal={false}
- * />
- */
+/** BentoCard - Individual project card for bento grid layout */
+
 export default function BentoCard({
   title,
   description,
   coverImage,
-  logoOverlay, // Optional SVG logo to overlay on video/image
+  logoOverlay,
   media = [],
   techs = [],
   onClick = () => {},
@@ -81,18 +21,16 @@ export default function BentoCard({
   isFeatured = false,
   type = '',
   isPersonal = false,
-  showCategoryBadge = true, // New prop to control when to show category
-  personalText = 'Personal', // Customizable text
-  professionalText = 'Pro', // Customizable text
-  eagerLoad = false, // Load immediately (for first few cards)
+  showCategoryBadge = true,
+  personalText = 'Personal',
+  professionalText = 'Pro',
+  eagerLoad = false,
 }) {
-  // Lazy load hook - load media when card enters viewport
-  const { ref, hasIntersected } = useLazyLoad({ 
-    rootMargin: '200px', // Start loading 200px before entering viewport
+  const { ref, hasIntersected } = useIntersection({ 
+    rootMargin: '200px',
     threshold: 0.01 
   });
 
-  // Limit displayed techs based on card size
   const techLimit = size === 'bento-large' ? 4 : size === 'bento-small' ? 2 : 3;
   const displayedTechs = techs.slice(0, techLimit);
   const remainingCount = Math.max(techs.length - techLimit, 0);
@@ -101,18 +39,14 @@ export default function BentoCard({
   const mediaType = getMediaType(primaryMedia);
   const shouldLoad = eagerLoad || hasIntersected;
 
-  // Show description only on larger cards
   const showDescription = size === 'bento-large' || size === 'bento-wide' || size === 'bento-tall' || size==='bento-medium';
   
-  // Truncate description for medium cards
   const truncatedDescription = description && description.length > 200 
     ? description.substring(0, 200) + '...'
     : description;
 
-  // Get the first type for display
   const displayType = Array.isArray(type) ? type[0] : type;
   
-  // Truncate type if too long - more generous limit
   const truncatedType = displayType && displayType.length > 30 
     ? displayType.substring(0, 30) + '...' 
     : displayType;
@@ -159,36 +93,38 @@ export default function BentoCard({
       {primaryMedia && shouldLoad && (
         <div className="bento-card__image-container">
           {mediaType === 'video' ? (
-            <video
-              className="bento-card__image"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              disablePictureInPicture
-            >
-              <source src={primaryMedia} type="video/mp4" />
-              {/* Fallback for WebM */}
-              <source src={primaryMedia.replace('.mp4', '.webm')} type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <img
+            <LazyVideo
               src={primaryMedia}
+              className="bento-card__image"
+              autoplay={true}
+              loop={true}
+              muted={true}
+              playsInline={true}
+              pauseWhenOutOfView={true}
+              threshold={eagerLoad ? 0 : 0.1}
+              rootMargin={eagerLoad ? "0px" : "200px"}
+            />
+          ) : (
+            <LazyImage
+              src={primaryMedia}
+              webpSrc={primaryMedia.match(/\.(jpg|jpeg|png)$/i) ? primaryMedia.replace(/\.(jpg|jpeg|png)$/i, '.webp') : undefined}
               alt={title}
               className="bento-card__image"
-              loading={eagerLoad ? "eager" : "lazy"}
+              fadeIn={!eagerLoad}
+              threshold={eagerLoad ? 0 : 0.1}
+              rootMargin={eagerLoad ? "0px" : "200px"}
             />
           )}
           
           {/* Logo Overlay (if provided) */}
           {logoOverlay && (
-            <img
+            <LazyImage
               src={logoOverlay}
               alt={`${title} Logo`}
               className="bento-card__logo-overlay"
-              loading={eagerLoad ? "eager" : "lazy"}
+              fadeIn={false}
+              threshold={eagerLoad ? 0 : 0.1}
+              rootMargin={eagerLoad ? "0px" : "200px"}
             />
           )}
           
@@ -234,7 +170,9 @@ export default function BentoCard({
 
         {/* Hover Indicator */}
         <div className="bento-card__hover-indicator">
-          <i className="bi bi-arrow-up-right" aria-hidden="true"></i>
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path fillRule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"/>
+          </svg>
         </div>
       </div>
 
@@ -248,7 +186,7 @@ BentoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   coverImage: PropTypes.string,
-  logoOverlay: PropTypes.string, // SVG logo overlay
+  logoOverlay: PropTypes.string,
   media: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string.isRequired,

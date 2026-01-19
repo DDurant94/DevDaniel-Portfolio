@@ -47,11 +47,16 @@ import { CodingGear } from '../Models/CodingGearModel';
  *   isMobile={false}
  * />
  */
-export default function GearEntrance({ position, rotation, targetScale, targetRotationRef, isMobile }) {
+export default function GearEntrance({ position, rotation, targetScale, targetRotationRef }) {
   const ref = useRef();
   const startRef = useRef(null);
   const duration = 1.4;
   const animationCompleteRef = useRef(false);
+  
+  // Track current values for smooth lerping after entrance
+  const currentPosRef = useRef([...position]);
+  const currentRotRef = useRef([...rotation]);
+  const currentScaleRef = useRef(targetScale);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
@@ -81,23 +86,37 @@ export default function GearEntrance({ position, rotation, targetScale, targetRo
       const currentZ = startZ + (position[2] - startZ) * eased;
       
       ref.current.position.set(position[0], currentY, currentZ);
+      currentPosRef.current = [position[0], currentY, currentZ];
       
       const startScale = 0.4;
       const currentScale = startScale + (targetScale - startScale) * eased;
       ref.current.scale.setScalar(currentScale);
+      currentScaleRef.current = currentScale;
       
       // Mark animation as complete when finished
       if (t >= 1) {
         animationCompleteRef.current = true;
       }
     } else {
-      // After animation completes, just set the position directly
-      ref.current.position.set(position[0], position[1], position[2]);
-      ref.current.scale.setScalar(targetScale);
+      // After animation completes, lerp smoothly to new targets
+      const lerpFactor = 0.12; // Smooth lerping
+      
+      // Lerp position
+      currentPosRef.current[0] += (position[0] - currentPosRef.current[0]) * lerpFactor;
+      currentPosRef.current[1] += (position[1] - currentPosRef.current[1]) * lerpFactor;
+      currentPosRef.current[2] += (position[2] - currentPosRef.current[2]) * lerpFactor;
+      ref.current.position.set(...currentPosRef.current);
+      
+      // Lerp scale
+      currentScaleRef.current += (targetScale - currentScaleRef.current) * lerpFactor;
+      ref.current.scale.setScalar(currentScaleRef.current);
     }
     
-    ref.current.rotation.x = rotation[0];
-    ref.current.rotation.y = rotation[1];
+    // Lerp X and Y rotation smoothly
+    currentRotRef.current[0] += (rotation[0] - currentRotRef.current[0]) * 0.12;
+    currentRotRef.current[1] += (rotation[1] - currentRotRef.current[1]) * 0.12;
+    ref.current.rotation.x = currentRotRef.current[0];
+    ref.current.rotation.y = currentRotRef.current[1];
     // Z rotation is handled by scroll interaction above
   });
 

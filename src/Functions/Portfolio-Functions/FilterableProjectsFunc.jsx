@@ -1,65 +1,13 @@
 // src/Functions/Portfolio-Functions/FilterableProjectsFunc.jsx
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import BentoProjects from './BentoProjectsFunc';
 import FilterGroup from './FilterGroupFunc';
 import useProjectFilters from './../../Hooks/Portfolio-Hooks/useProjectFilters';
 import './../../Styles/General-Styles/Functions/Portfolio-Functions/FilterableProjectsFunctionStyles.css';
 
-/**
- * FilterableProjects - Complete search and filter UI for portfolio
- * 
- * Combines search input, type filters, and bento grid display with filter state
- * management. Supports external filter instance or creates its own. Includes
- * disabled state for filters with no matching results.
- * 
- * Features:
- * - Search bar with suggestions
- * - Type filters with checkboxes
- * - Disabled filters when no matches
- * - Smart filter sorting (enabled first, alphabetical)
- * - Clear all filters button
- * - Filter panel toggle (animated expand/collapse)
- * - Show more/less types (initial: 6, expanded: all)
- * - Keyboard accessibility (focus management)
- * - Only filters mode (hides project grid)
- * - External filter instance support
- * 
- * Filter Bar Animations:
- * - Height auto with smooth easing
- * - 0.3s duration
- * - Opacity fade
- * 
- * Type Filter Behavior:
- * - Disabled when selected filters would produce no results
- * - Sorted: enabled first, then alphabetical by label
- * - Visual disabled state with opacity + cursor
- * 
- * @component
- * @param {Object} props
- * @param {Array<Object>} props.allProjects - All projects to filter
- * @param {Function} props.onProjectClick - Project card click handler
- * @param {Object} props.externalFilters - External filter instance (optional)
- * @param {boolean} props.onlyFilters - Show only filters, hide grid (default: false)
- * @param {boolean} props.hideSearch - Hide search bar (default: false)
- * 
- * @example
- * // Standalone with internal filters
- * <FilterableProjects
- *   allProjects={allProjects}
- *   onProjectClick={(project) => openOffCanvas(project)}
- * />
- * 
- * @example
- * // With external filter instance (shared across tabs)
- * const filters = useProjectFilters(projects);
- * <FilterableProjects
- *   allProjects={projects}
- *   externalFilters={filters}
- *   onProjectClick={handleClick}
- * />
- */
+/** FilterableProjects - Complete search and filter UI for portfolio */
 
 const filterBarMotion = {
   initial: { height: 0, opacity: 0 },
@@ -73,27 +21,28 @@ export default function FilterableProjects({
   onProjectClick,
   externalFilters,
   onlyFilters = false,
-  hideSearch = false,
 }) {
   const filtersPanelRef = useRef(null);
+  
+  // Always call the hook, but use external filters if provided
+  const internalFilters = useProjectFilters(allProjects);
   const {
-    selectedTypes,       // array of normalized keys
+    selectedTypes,
     search,
     showAllTypes,
     filtersVisible,
     setShowAllTypes,
-    typeFilters,         // array of { key, label }
+    typeFilters,
     handleTypeSelect,
     clearAllFilters,
     filtered = [],
-  } = externalFilters || useProjectFilters(allProjects);
+  } = externalFilters || internalFilters;
 
   const normalize = (v) =>
     v == null
       ? ''
       : String(v).toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim();
 
-  // Build type options with disabled state if no matches
   const normalizedFiltered = filtered.map((p) => {
     const pTypeArr = Array.isArray(p.type)
       ? p.type
@@ -120,7 +69,6 @@ export default function FilterableProjects({
 
   const handleClearAll = () => {
     clearAllFilters();
-    // After clearing, move focus to the filters region so keyboard users can continue
     requestAnimationFrame(() => {
       if (filtersPanelRef.current) {
         filtersPanelRef.current.focus();

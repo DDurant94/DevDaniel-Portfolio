@@ -1,50 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useMediaQuery } from '../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../Context/MediaQueryContext.hook';
 import './../../../Styles/Component-Styles/Background-Styles/CodedBackground-Styles/CodedBackgroundStyles.css';
 
-/**
- * CodedBackground Component
- * 
- * @description Developer-themed background with code editor aesthetic and subtle parallax effects.
- * Creates immersive coding atmosphere with grid patterns, scan lines, and corner decorations.
- * 
- * Features:
- * - Code editor grid pattern with dynamic sizing
- * - Mouse parallax effect (desktop only)
- * - Terminal-style scan lines animation
- * - Corner decorative comments ("Portfolio", "DevDaniel.tech")
- * - Responsive grid density (30px mobile, 25px tablet, 20px desktop)
- * - Accessibility: Respects prefers-reduced-motion
- * - Performance: Disables parallax on mobile
- * 
- * Grid Sizing:
- * - Mobile: 30px grid (lower density for performance)
- * - Tablet: 25px grid
- * - Desktop: 20px grid (highest density)
- * 
- * Parallax Behavior:
- * - Normalized coordinates: -1 to 1 on both axes
- * - Mouse position drives CSS custom properties
- * - Disabled on mobile and reduced motion preference
- * - Subtle movement for depth perception
- * 
- * CSS Custom Properties:
- * - --grid-size: Pixel size of grid cells
- * - --animation-state: 'running' or 'paused'
- * - --mouse-x: Normalized mouse X position (-1 to 1)
- * - --mouse-y: Normalized mouse Y position (-1 to 1)
- * 
- * @component
- * @requires MediaQueryContext - Screen size and accessibility preferences
- * 
- * @example
- * ```jsx
- * <CodedBackground />
- * // Renders full-viewport background with grid, scan lines, and parallax
- * ```
- */
+/** CodedBackground - Developer-themed background with code editor aesthetic and subtle parallax effects */
 const CodedBackground = () => {
-  const { isMobile, isTablet, isDesktop, prefersReducedMotion } = useMediaQuery();
+  const { isMobile, isTablet, prefersReducedMotion } = useMediaQuery();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Adjust pattern density based on screen size

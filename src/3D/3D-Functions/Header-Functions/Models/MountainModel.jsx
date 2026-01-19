@@ -52,7 +52,7 @@ import { useGLTF } from "@react-three/drei";
 import { forwardRef } from 'react';
 
 export const MountainModel = forwardRef((props, ref) => {
-  const { scene } = useGLTF('/models/Mountain-Model/MountainScene.gltf');
+  const { scene } = useGLTF('/models/Mountain-Model/MountainScene.glb');
   
   const clonedScene = scene.clone();
   
@@ -60,7 +60,7 @@ export const MountainModel = forwardRef((props, ref) => {
     if (obj.isMesh && obj.material) {
       obj.material = obj.material.clone();
       obj.material.map = null;
-      obj.material.color.set('#D9B37F');
+      obj.material.color.set('#3e2804');
       
       obj.material.needsUpdate = true;
       
@@ -81,4 +81,7 @@ export const MountainModel = forwardRef((props, ref) => {
   />
 });
 
-useGLTF.preload('/models/Mountain-Model/MountainScene.gltf');
+// Only preload on desktop (avoid mobile bandwidth waste)
+if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+  useGLTF.preload('/models/Mountain-Model/MountainScene.glb');
+}

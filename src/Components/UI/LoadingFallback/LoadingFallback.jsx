@@ -1,37 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
 import './../../../Styles/Component-Styles/UI-Styles/Loader-Styles/LoadingFallbackStyles.css';
 
-/**
- * LoadingFallback - Full-screen loading indicator for lazy-loaded routes
- * 
- * Displays an animated logo with loading text and progress bar while route
- * components are being loaded. Simplified version without 3D scene to avoid
- * WebGL context conflicts with page hero scenes.
- * 
- * Features:
- * - Animated SVG logo (personal logo mark)
- * - "Loading" text with animated dots
- * - Infinite progress bar animation
- * - Full-screen overlay
- * - No 3D scene (prevents WebGL conflicts)
- * 
- * Usage:
- * Used as fallback for React.lazy() route components.
- * 
- * @component
- * @example
- * const Home = lazy(() => import('./Pages/Home'));
- * <Suspense fallback={<LoadingFallback />}>
- *   <Routes>
- *     <Route path="/" element={<Home />} />
- *   </Routes>
- * </Suspense>
- */
+/** LoadingFallback - Full-screen loading indicator for lazy-loaded routes */
 const LoadingFallback = () => {
   // Simplified loader without 3D scene to prevent WebGL context conflicts
   
   return (
-    <div className="loading-screen">
+    <div className="loading-screen util-flex-center">
       {/* Remove 3D scene to prevent WebGL conflicts with page hero scenes */}
       {/* <div className="loading-canvas-wrapper">
         {SceneComponent && (
@@ -49,7 +23,7 @@ const LoadingFallback = () => {
             height="120"
             viewBox="0 0 867.57 503.25"
             xmlns="http://www.w3.org/2000/svg"
-            className="logo-loader"
+            className="logo-loader util-full"
           >
             <g transform="matrix(1.3299 0 0 1.6364 -165.05 -330.99)">
               <path
@@ -71,7 +45,7 @@ const LoadingFallback = () => {
         </div>
 
         <div className="loading-bar">
-          <div className="loading-progress"></div>
+          <div className="loading-progress util-full"></div>
         </div>
       </div>
     </div>

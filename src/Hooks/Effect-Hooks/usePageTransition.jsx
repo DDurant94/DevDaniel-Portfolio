@@ -34,7 +34,7 @@
  * ```
  */
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Custom hook that provides a navigate function with page transition support.
@@ -51,14 +51,12 @@ export const usePageTransition = () => {
   const location = useLocation();
 
   const navigateWithTransition = (to, options = {}) => {
-    // Don't trigger transition if navigating to current page
     if (to === location.pathname) return;
 
-    // Dispatch the transition event
     window.dispatchEvent(new CustomEvent('startPageTransition', { 
       detail: { 
         to,
-        options // Pass through any navigation options (state, replace, etc.)
+        options
       } 
     }));
   };

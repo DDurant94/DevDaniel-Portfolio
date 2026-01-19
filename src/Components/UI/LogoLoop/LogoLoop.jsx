@@ -1,59 +1,4 @@
-/**
- * LogoLoop Component
- * 
- * @description Infinite scrolling logo carousel with smooth, continuous animation. Automatically
- * duplicates logos to create seamless loop effect. Supports both horizontal directions with
- * pause on hover and optimized performance.
- * 
- * Features:
- * - Infinite seamless looping (no jump back)
- * - Automatic logo duplication for smooth wrapping
- * - Configurable speed and direction
- * - Pause on hover for accessibility
- * - Responsive sizing
- * - Image lazy loading support
- * - ResizeObserver for dynamic container adjustments
- * - GPU-accelerated transforms
- * - Automatic copy calculation for container width
- * 
- * How It Works:
- * 1. Measures logo sequence width
- * 2. Duplicates logos to fill container + headroom
- * 3. Animates using CSS transform translateX
- * 4. Resets position when one sequence scrolls out
- * 5. Seamless continuous loop
- * 
- * Performance:
- * - Uses transform (GPU accelerated)
- * - ResizeObserver for efficient resize detection
- * - Memoized calculations
- * - Image load detection for accurate sizing
- * 
- * @component
- * @param {Object} props
- * @param {Array<Object>} props.logos - Array of logo objects with src, alt, etc.
- * @param {number} [props.speed=60] - Pixels per second scroll speed
- * @param {'left'|'right'} [props.direction='left'] - Scroll direction
- * @param {number} [props.logoHeight=3] - Logo height in rem
- * @param {number} [props.gap=40] - Gap between logos in pixels
- * @param {number} [props.maxCopies=Infinity] - Maximum sequence duplications
- * @param {boolean} [props.pauseOnHover=true] - Pause animation on hover
- * @param {string} [props.className=''] - Additional CSS classes
- * 
- * @example
- * ```jsx
- * import { IconList } from './data/icons';
- * 
- * <LogoLoop
- *   logos={Object.values(IconList)}
- *   speed={80}
- *   direction="left"
- *   logoHeight={4}
- *   gap={60}
- *   pauseOnHover={true}
- * />
- * ```
- */
+/** LogoLoop - Infinite scrolling logo carousel with smooth, continuous animation */
 
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import '../../../Styles/Component-Styles/UI-Styles/LogoLoop-Styles/LogoLoopStyles.css';
@@ -88,6 +33,7 @@ const useResizeObserver = (callback, elements, dependencies) => {
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };
 
@@ -124,6 +70,7 @@ const useImageLoader = (seqRef, onLoad, dependencies) => {
         img.removeEventListener('error', handleImageLoad);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };
 
@@ -349,7 +296,7 @@ export const LogoLoop = memo(
       const isNodeItem = 'node' in item;
 
       const content = isNodeItem ? (
-        <span className="logoloop__node" aria-hidden={!!item.href && !item.ariaLabel}>
+        <span className="logoloop__node util-inline-flex util-items-center" aria-hidden={!!item.href && !item.ariaLabel}>
           {item.node}
         </span>
       ) : (
@@ -398,7 +345,7 @@ export const LogoLoop = memo(
       () =>
         Array.from({ length: copyCount }, (_, copyIndex) => (
           <ul
-            className="logoloop__list"
+            className="logoloop__list util-flex util-items-center"
             key={`copy-${copyIndex}`}
             role="list"
             aria-hidden={copyIndex > 0}

@@ -120,11 +120,9 @@
 
 .ds-combobox input {
 	width:100%;
-	/* match BaseButton height via padding */
 	padding: var(--space-3) var(--space-6);
-	/* No leading icon; use normal left padding */
 	padding-left: var(--space-4);
-	padding-right: 3rem; /* room for toggle */
+	padding-right: 3rem;
 	border-radius: var(--radius-full);
 	border:1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border-subtle));
 	font-size: var(--font-size-sm);
@@ -162,7 +160,6 @@
 @media (min-width: 900px) {
 	.ds-combobox .combo-toggle { width: auto; padding: 0 .6rem; gap: .35rem; }
 	.ds-combobox .combo-toggle .combo-toggle-label { display:inline; }
-	/* When label shows, give input more right padding so text never overlaps toggle */
 	.ds-combobox input { padding-right: 7rem; }
 }
 
@@ -172,7 +169,7 @@
 
 .ds-combobox .combo-list { list-style:none; margin:0; padding:0; position:absolute; left:0; top:calc(100% + 0.4rem); width:100%; max-height:260px; overflow-y:auto; border:1px solid var(--color-border-subtle); border-radius: var(--radius-md); background: var(--color-surface); box-shadow: var(--box-shadow-container); opacity:0; transform: translateY(-6px) scale(.975); pointer-events:none; transition: opacity var(--motion-fade), transform var(--motion-scale); will-change: opacity, transform; z-index: var(--z-overlay); }
 .ds-combobox .combo-list.show { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; box-shadow: var(--box-shadow-container), 0 4px 14px -4px color-mix(in srgb, var(--color-primary) 25%, transparent); }
-.ds-combobox .combo-list li { padding:var(--space-2) var(--space-3); /* 0.5rem 0.75rem */ cursor:pointer; font-size:0.9rem; transition: font-size var(--motion-fade), color var(--motion-fade), background-color var(--motion-fade); outline:none; }
+.ds-combobox .combo-list li { padding:var(--space-2) var(--space-3); cursor:pointer; font-size:0.9rem; transition: font-size var(--motion-fade), color var(--motion-fade), background-color var(--motion-fade); outline:none; }
 .ds-combobox .combo-list li:hover { font-size:0.908rem; }
 .ds-combobox .combo-list li:focus-visible { background: color-mix(in srgb, var(--color-primary) 28%, transparent); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 55%, transparent); }
 .ds-combobox .combo-list li.active { background: var(--color-primary); color: var(--color-text-inverse); }

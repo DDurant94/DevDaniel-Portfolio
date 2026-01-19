@@ -1,89 +1,35 @@
 // src/Functions/Portfolio-Functions/ProjectOffCanvas.jsx
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { useNavigation } from '../../Context/Navigation-Context/NavigationContext';
-import { useMediaQuery } from '../../Context/MediaQueryContext';
+import { useNavigation } from '../../Context/Navigation-Context/useNavigation';
+import { useMediaQuery } from '../../Context/MediaQueryContext.hook';
 import { getMediaType } from './../../Utils/mediaHelpers.js';
+import LazyImage from './../../Components/UI/LazyImage/LazyImage';
+import LazyVideo from './../../Components/UI/LazyVideo/LazyVideo';
 import FullscreenMediaViewer from './../../Components/UI/FullscreenMediaViewer/FullscreenMediaViewer.jsx';
 import './../../Styles/General-Styles/DesignSystem-Styles/Design-Component-Styles/OffCanvasStyles.css';
 
-/**
- * ProjectOffCanvas - Full-screen project detail panel with media gallery
- * 
- * Displays comprehensive project information in an off-canvas panel with image gallery,
- * fit mode toggle, and smooth animations. Automatically closes mobile menu when opened.
- * 
- * Features:
- * - Image gallery with thumbnails and navigation
- * - Fit mode toggle (cover/contain) for images
- * - Automatic orientation detection
- * - Smart fit toggle visibility (hides when aspect ratios match)
- * - Link merging (links + offCanvasLinks)
- * - Safe destructuring with defaults
- * - Framer Motion animations
- * - Tech stack and concepts display
- * - Project type badges (Personal/Professional/API/Frontend)
- * - Media deduplication
- * 
- * Gallery Controls:
- * - Thumbnail navigation
- * - Keyboard support (arrows, escape)
- * - Fit mode toggle (visible only when needed)
- * - Responsive aspect ratio handling
- * 
- * @component
- * @param {Object} props
- * @param {boolean} props.show - Panel visibility state
- * @param {Function} props.onHide - Close handler
- * @param {Object} props.content - Project data object
- * @param {string} props.content.title - Project title
- * @param {string} props.content.coverImage - Primary image
- * @param {Array<{src: string, alt: string}>} props.content.media - Gallery images
- * @param {Object} props.content.body - Project details
- * @param {string} props.content.body.powerTitle - Short tagline
- * @param {string} props.content.body.description - Summary
- * @param {string} props.content.body.offCanvasDescription - Full description
- * @param {string[]} props.content.body.techs - Technologies used
- * @param {string[]} props.content.body.concepts - Key concepts
- * @param {Array<{label: string, url: string}>} props.content.links - External links
- * @param {boolean} props.content.isPersonal - Personal project flag
- * @param {boolean} props.content.isApiOnly - API-only flag
- * @param {boolean} props.content.isFrontend - Frontend-only flag
- * 
- * @example
- * const [selectedProject, setSelectedProject] = useState(null);
- * 
- * <ProjectOffCanvas
- *   show={!!selectedProject}
- *   onHide={() => setSelectedProject(null)}
- *   content={selectedProject}
- * />
- */
+/** ProjectOffCanvas - Full-screen project detail panel with media gallery */
 export default function ProjectOffCanvas({ show, onHide, content }) {
   const { closeMobileMenu } = useNavigation();
   const { isMobile } = useMediaQuery();
 
-  // Close mobile menu when offcanvas opens
   useEffect(() => {
     if (show) {
       closeMobileMenu();
     }
   }, [show, closeMobileMenu]);
-  // Merge both link formats so nothing is lost
   const links = [
     ...(Array.isArray(content?.links) ? content.links : []),
     ...(Array.isArray(content?.offCanvasLinks) ? content.offCanvasLinks : []),
   ];
 
-  // Safe destructuring with defaults
   const {
     title = '',
     isPersonal = false,
     isApiOnly = false,
     isFrontend = false,
-    coverImage,
-    image,
     logoOverlay,
     media = [],
     body = {},
@@ -97,42 +43,20 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
     concepts = [],
   } = body;
 
-  // Build media items without duplicates
   const mediaItems = useMemo(() => {
-    const primary = coverImage || image ? [{ src: coverImage || image, alt: title }] : [];
     const rest = Array.isArray(media) ? media : [];
     const set = new Map();
-    [...primary, ...rest].forEach((m) => {
+    // Don't add coverImage separately - it should already be in media array
+    rest.forEach((m) => {
       if (m?.src) set.set(m.src, m);
     });
     return Array.from(set.values());
-  }, [coverImage, image, media, title]);
+  }, [media]);
 
 
   const [activeIdx, setActiveIdx] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const stageRef = useRef(null);
-  // Parallax removed per user request
-
-  // Determine orientation after media load
-  const handleImageLoad = (e) => {
-    const media = e.target;
-    let w, h;
-    
-    // Handle both images and videos
-    if (media.tagName === 'VIDEO') {
-      w = media.videoWidth;
-      h = media.videoHeight;
-    } else {
-      w = media.naturalWidth;
-      h = media.naturalHeight;
-    }
-    
-    if (!w || !h) return; // Skip if dimensions aren't available yet
-    
-    const orientation = w >= h ? 'landscape' : 'portrait';
-    media.dataset.orientation = orientation;
-  };
 
   useEffect(() => {
     setActiveIdx(0);
@@ -142,51 +66,44 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
   const panelRef = useRef(null);
   const bodyRef = useRef(null);
 
-  // Trap initial focus to panel when opened
+  // Consolidated show/hide effects - focus, overflow, scroll lock, and escape handler
   useEffect(() => {
     if (show) {
+      // Focus management
       requestAnimationFrame(() => {
         panelRef.current?.focus();
       });
-    }
-  }, [show]);
 
-  // Lock body scroll when offcanvas is open
-  useEffect(() => {
-    if (show) {
+      // Scroll lock with scrollbar compensation
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = `${scrollbarWidth}px`;
-      
-      // Allow wheel events inside the offcanvas body
+
+      // Wheel event handler
       const handleWheel = (e) => {
-        // If the wheel event is inside the offcanvas body, allow it
         if (bodyRef.current?.contains(e.target)) {
           e.stopPropagation();
         }
       };
       
-      // Capture wheel events before they reach global listeners
+      // Escape key handler
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') onHide();
+      };
+
       window.addEventListener('wheel', handleWheel, { capture: true });
+      window.addEventListener('keydown', handleEscape);
       
       return () => {
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
         window.removeEventListener('wheel', handleWheel, { capture: true });
+        window.removeEventListener('keydown', handleEscape);
       };
     } else {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
     }
-  }, [show]);
-
-  // Close on escape
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key === 'Escape' && show) onHide();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
   }, [show, onHide]);
 
 
@@ -209,7 +126,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
         tabIndex={-1}
       >
         <header className="ds-offcanvas__header">
-          <h2 className="ds-offcanvas__title">
+          <h2 className="ds-offcanvas__title util-flex util-items-center">
             {title}
             {isPersonal && (
               <span className="util-badge" data-legacy="badge-removed">
@@ -238,41 +155,43 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                     transition={{ duration: 0.25 }}
                   >
                     {getMediaType(mediaItems[activeIdx]?.src) === 'video' ? (
-                      <video
+                      <LazyVideo
                         src={mediaItems[activeIdx]?.src}
                         className="ds-offcanvas-media__img"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="none"
-                        loading="lazy"
-                        disablePictureInPicture
-                        onLoadedMetadata={handleImageLoad}
+                        autoplay={true}
+                        loop={true}
+                        muted={true}
+                        playsInline={true}
+                        pauseWhenOutOfView={false}
+                        threshold={0}
+                        rootMargin="0px"
                         onClick={() => setIsFullscreen(true)}
                         style={{ cursor: 'pointer' }}
                       />
                     ) : (
-                      <img
+                      <LazyImage
                         src={mediaItems[activeIdx]?.src}
+                        webpSrc={mediaItems[activeIdx]?.src?.match(/\.(jpg|jpeg|png)$/i) ? mediaItems[activeIdx]?.src?.replace(/\.(jpg|jpeg|png)$/i, '.webp') : undefined}
                         alt={mediaItems[activeIdx]?.alt || title}
                         className={`ds-offcanvas-media__img${
                           mediaItems[activeIdx]?.hasBackground ? ' ds-offcanvas-media__img--with-background' : ''
                         }`}
-                        loading="eager"
-                        onLoad={handleImageLoad}
+                        fadeIn={false}
+                        threshold={0}
+                        rootMargin="0px"
                         onClick={() => setIsFullscreen(true)}
                         style={{ cursor: 'pointer' }}
                       />
                     )}
                     
-                    {/* Logo Overlay (only for media items with hasLogo flag) */}
                     {mediaItems[activeIdx]?.hasLogo && logoOverlay && (
-                      <img
+                      <LazyImage
                         src={logoOverlay}
                         alt={`${title} Logo`}
                         className="ds-offcanvas-media__logo-overlay"
-                        loading="eager"
+                        fadeIn={false}
+                        threshold={0}
+                        rootMargin="0px"
                       />
                     )}
                   </motion.div>
@@ -280,7 +199,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
 
               </div>
               {mediaItems.length > 1 && (
-                <div className="ds-offcanvas-media__thumbs">
+                <div className="ds-offcanvas-media__thumbs util-flex">
                   {mediaItems.map((m, i) => {
                     const thumbType = getMediaType(m.src);
                     return (
@@ -300,7 +219,6 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
                               preload="auto"
                               disablePictureInPicture
                               onLoadedData={(e) => {
-                                // Seek to different time for each video (2.5s or 3.5s)
                                 e.target.currentTime = i === 0 ? 2.5 : 3.5;
                                 e.target.pause();
                               }}
@@ -329,11 +247,10 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
             </div>
           )}
 
-          {/* On mobile: no scroll reveal, show immediately */}
           {isMobile ? (
             <div tabIndex={0} role="article" aria-label="Project description">
               {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
-              {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
+              {description && <p className="util-my-md" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
               {offCanvasDescription && (
                 <p className="offcanvas__body-text" style={{ whiteSpace: 'pre-wrap' }}>
                   {offCanvasDescription}
@@ -385,7 +302,6 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
               )}
             </div>
           ) : (
-            /* Desktop: use motion.div for reliable animation on offcanvas open */
             <motion.div
               initial={{ opacity: 0, y: 32, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -395,7 +311,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
               aria-label="Project description"
             >
             {powerTitle && <h4 style={{ whiteSpace: 'pre-wrap' }}>{powerTitle}</h4>}
-            {description && <p className="my-3" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
+            {description && <p className="util-my-md" style={{ whiteSpace: 'pre-wrap' }}>{description}</p>}
             {offCanvasDescription && (
               <p className="offcanvas__body-text" style={{ whiteSpace: 'pre-wrap' }}>
                 {offCanvasDescription}
@@ -479,6 +395,7 @@ export default function ProjectOffCanvas({ show, onHide, content }) {
         logoSrc={logoOverlay}
         hasLogo={mediaItems[activeIdx]?.hasLogo}
         hasBackground={mediaItems[activeIdx]?.hasBackground}
+        mediaType={getMediaType(mediaItems[activeIdx]?.src)}
       />
     </div>
   );

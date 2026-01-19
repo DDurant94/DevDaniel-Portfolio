@@ -1,52 +1,7 @@
-/**
- * ThemeToggle Component
- * 
- * @description Accessible segmented control for theme switching (Light/Dark/High Contrast).
- * Features smooth sliding indicator, pointer-based dragging, and keyboard navigation.
- * Integrates with theme context to apply site-wide theme changes.
- * 
- * Features:
- * - Segmented radio button control with sliding indicator
- * - Pointer drag to select (mouse/touch)
- * - Keyboard navigation (Arrow keys, Space, Enter)
- * - Smooth sliding animation
- * - System theme detection and reflection
- * - Optional high contrast mode
- * - ARIA-compliant radio group
- * - Visual feedback for selected state
- * 
- * Interaction Modes:
- * - Click: Select theme segment
- * - Drag: Slide across segments to select
- * - Keyboard: Arrow keys to navigate, Space/Enter to select
- * - Hover: Visual feedback on segments
- * 
- * Theme Options:
- * - Light: Light theme
- * - Dark: Dark theme
- * - High Contrast: High contrast dark theme (optional)
- * 
- * System Theme:
- * - When theme is 'system', indicator shows resolved OS preference
- * - User selection overrides system preference
- * 
- * @component
- * @param {Object} props
- * @param {string} [props.className=''] - Additional CSS classes
- * @param {boolean} [props.showContrast=true] - Show high contrast option
- * 
- * @example
- * ```jsx
- * // With all options
- * <ThemeToggle showContrast={true} />
- * 
- * // Light/Dark only
- * <ThemeToggle showContrast={false} />
- * ```
- */
+/** ThemeToggle - Accessible segmented control for theme switching (Light/Dark/High Contrast) */
 
 import React, { useId, useMemo, useRef, useState } from 'react';
-import { useThemeContext } from '../../../../Context/Theme-Context/ThemeContext';
+import { useThemeContext } from '../../../../Context/Theme-Context/useThemeContext';
 import '../../../../Styles/Component-Styles/NavigationBar-Styles/NavigationBar-Components/ThemeToggle-Styles/ThemeToggleStyles.css';
 
 /**
@@ -106,7 +61,7 @@ export default function ThemeToggle({ className = '', showContrast = true, ...re
   const getRelFromClientX = (clientX) => relFromClientX(segmentsRef.current, clientX);
 
   const onPointerDown = (e) => {
-    if (e.button !== undefined && e.button !== 0) return; // left click only
+    if (e.button !== undefined && e.button !== 0) return;
     const idx = getIndexFromClientX(e.clientX);
     setPos(getRelFromClientX(e.clientX));
     const choice = options[idx]?.id;
@@ -131,7 +86,7 @@ export default function ThemeToggle({ className = '', showContrast = true, ...re
     if (!dragging) return;
     if (pointerIdRef.current !== (e.pointerId ?? 'mouse')) return;
     setDragging(false);
-    setPos(null); // snap back to discrete index rendering
+    setPos(null);
     pointerIdRef.current = null;
     segmentsRef.current?.releasePointerCapture?.(e.pointerId);
   };

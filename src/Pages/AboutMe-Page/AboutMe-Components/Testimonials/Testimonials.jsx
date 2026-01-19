@@ -18,6 +18,7 @@
 
 import { useState } from 'react';
 import { TestimonialData } from '../../../../DataSets/Testimonials/TestimonialData';
+import LazyImage from '../../../../Components/UI/LazyImage/LazyImage';
 import './../../../../Styles/Page-Styles/AboutMe-Styles/Testimonial-Styles/TestimonialStyles.css';
 
 const Testimonials = () => {
@@ -60,7 +61,7 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="testimonials-container">
+    <div className="testimonials-container util-w-full">
       <div className="testimonials-grid">
         {TestimonialData.map((testimonial) => {
           const isExpanded = expandedIds.has(testimonial.id);
@@ -78,14 +79,18 @@ const Testimonials = () => {
             <div className="testimonial-light-overlay" aria-hidden="true"></div>
             <div className="testimonial-shine" aria-hidden="true"></div>
             
-            <div className="testimonial-content">
+            <div className="testimonial-content util-flex-col">
               <header className="testimonial-author">
                 {testimonial.image && (
                   <div className="author-image-wrapper">
-                    <img 
-                      src={testimonial.image} 
+                    <LazyImage
+                      src={testimonial.image}
+                      webpSrc={testimonial.image.match(/\.(jpg|jpeg|png)$/i) ? testimonial.image.replace(/\.(jpg|jpeg|png)$/i, '.webp') : undefined}
                       alt={`${testimonial.name}, ${testimonial.role}`}
-                      className="author-image"
+                      className="author-image util-full"
+                      fadeIn={true}
+                      threshold={0.1}
+                      rootMargin="150px"
                     />
                   </div>
                 )}

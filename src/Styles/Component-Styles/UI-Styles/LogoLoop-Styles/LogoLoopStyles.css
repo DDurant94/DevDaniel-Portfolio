@@ -63,22 +63,18 @@
 
   position: relative;
   overflow-x: hidden;
-  overflow-y: visible; /* ensure labels above icons aren't clipped vertically */
+  overflow-y: visible;
   background-color: var(--color-background);
 
-  --logoloop-gap: 32px;
+  --logoloop-gap: var(--space-8);
   --logoloop-logoHeight: 28px;
   --logoloop-fadeColorAuto: #ffffff;
-  /* Theming hooks for the hover label */
   --logoloop-label-bg: var(--color-background);
   --logoloop-label-fg: var(--color-text);
   --logoloop-label-shadow: var(--box-shadow-container);
   --logoloop-label-radius: var(--radius-sm);
   --logoloop-label-offset: 6px;
-  /* Reserve space above icons for labels (opt-in) */
   --logoloop-label-space: 1.5rem;
-
-  /* Add top padding if label space is provided */
   padding-top: var(--logoloop-label-space);
 }
 
@@ -102,8 +98,6 @@
 }
 
 .logoloop__list {
-  display: flex;
-  align-items: center;
 }
 
 .logoloop__item {
@@ -120,8 +114,6 @@
 
 .logoloop__node {
   color: var(--color-primary);
-  display: inline-flex;
-  align-items: center;
 }
 
 .logoloop__item img {
@@ -132,8 +124,7 @@
   image-rendering: -webkit-optimize-contrast;
   -webkit-user-drag: none;
   pointer-events: none;
-  /* Links handle interaction */
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--motion-duration-sm) var(--ease-standard);
 }
 
 .logoloop--scale-hover .logoloop__item {
@@ -147,7 +138,7 @@
 }
 
 .logoloop--scale-hover .logoloop__node {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--motion-duration-sm) var(--ease-standard);
 }
 
 .logoloop__link {
@@ -155,7 +146,7 @@
   align-items: center;
   text-decoration: none;
   border-radius: var(--radius-sm);
-  transition: opacity 0.2s ease;
+  transition: opacity var(--motion-duration-xs) var(--ease-out);
 }
 
 .logoloop__link:hover {
@@ -167,13 +158,12 @@
   outline-offset: 2px;
 }
 
-/* Tooltip-like label shown on hover */
 .logoloop__label {
   position: absolute;
   left: 50%;
   bottom: calc(105% + var(--logoloop-label-offset));
   transform: translateX(-50%) translateY(4px);
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--logoloop-label-radius);
   font-size: 0.8rem;
   line-height: 1.2;
@@ -183,7 +173,7 @@
   box-shadow: var(--logoloop-label-shadow);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 360ms ease, transform 160ms ease;
+  transition: opacity var(--motion-duration-lg) var(--ease-out), transform var(--motion-duration-xs) var(--ease-out);
   z-index: 2;
 }
 
@@ -192,8 +182,6 @@
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-
-/* Previously duplicate list labels were hidden; rule removed so all visible copies show labels for consistency */
 
 .logoloop--fade::before,
 .logoloop--fade::after {
@@ -211,7 +199,7 @@
   background: linear-gradient(
     to right,
     var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%,
-    rgba(0, 0, 0, 0) 100%
+    transparent 100%
   );
 }
 
@@ -220,7 +208,7 @@
   background: linear-gradient(
     to left,
     var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%,
-    rgba(0, 0, 0, 0) 100%
+    transparent 100%
   );
 }
 

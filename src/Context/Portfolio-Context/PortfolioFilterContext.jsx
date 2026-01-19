@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useState, useCallback, useMemo } from 'react';
 import useProjectFilters from '../../Hooks/Portfolio-Hooks/useProjectFilters';
 import { allProjects } from '../../DataSets/Portfolio/Projects';
 
@@ -49,7 +49,8 @@ import { allProjects } from '../../DataSets/Portfolio/Projects';
  * 
  * {activeFilters.filtered.map(project => <ProjectCard {...project} />)}
  */
-const PortfolioFilterContext = createContext({
+// eslint-disable-next-line react-refresh/only-export-components
+export const PortfolioFilterContext = createContext({
   activeTab: 'All',
   allFilters: {},
   professionalFilters: {},
@@ -59,12 +60,9 @@ const PortfolioFilterContext = createContext({
   clearAllFiltersForTab: () => {}
 });
 
-export const usePortfolioFilter = () => useContext(PortfolioFilterContext);
-
 export const PortfolioFilterProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState('All');
 
-  // Create filter instances for each tab
   const allFilters = useProjectFilters(allProjects);
   const professionalFilters = useProjectFilters(
     allProjects.filter((p) => !p.isPersonal)
@@ -73,7 +71,6 @@ export const PortfolioFilterProvider = ({ children }) => {
     allProjects.filter((p) => p.isPersonal)
   );
 
-  // Get the active filter set based on current tab
   const activeFilters = useMemo(() => {
     switch (activeTab) {
       case 'Professional':
@@ -85,7 +82,6 @@ export const PortfolioFilterProvider = ({ children }) => {
     }
   }, [activeTab, allFilters, professionalFilters, personalFilters]);
 
-  // Clear all filters for the active tab
   const clearAllFiltersForTab = useCallback(() => {
     activeFilters.clearAllFilters();
   }, [activeFilters]);

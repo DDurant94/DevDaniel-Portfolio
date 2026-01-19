@@ -1,15 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useScroll } from '../../../Context/Scroll-Context/ScrollContext';
+import { useScroll } from '../../../Context/Scroll-Context/useScroll';
 
-/**
- * parseColorToRgbTriplet - Converts color formats to R,G,B string
- * 
- * Handles hex (#rgb, #rrggbb), rgba(), rgb(), and raw "r,g,b" formats.
- * Used to set CSS custom property for cloud tinting.
- * 
- * @param {string} input - Color in any supported format
- * @returns {string|null} - "r,g,b" string or null if invalid
- */function parseColorToRgbTriplet(input) {
+/** parseColorToRgbTriplet - Converts color formats to R,G,B string */
+function parseColorToRgbTriplet(input) {
   if (!input) return null;
   let s = String(input).trim();
   if (s.startsWith('#')) {
@@ -34,51 +27,7 @@ import { useScroll } from '../../../Context/Scroll-Context/ScrollContext';
   return null;
 }
 
-/**
- * CloudZoomTransition - Scroll-based cloud zoom effect with content fade reveal
- * 
- * Creates a scroll-driven "into clouds then reveal" effect where a cloud overlay
- * scales up and becomes opaque as you scroll, then fades away to reveal content below.
- * Includes optional tint color override and blur effect on target content.
- * 
- * Features:
- * - Scroll progress tracking (0-1 based on viewport position)
- * - Cloud scale animation (desktop: 1-2.4x, mobile: 1-1.6x)
- * - Opacity peak at 75% scroll, then fade out
- * - Target content fade + blur (starts at 30/35% scroll)
- * - Cubic ease-out for smooth reveals
- * - Responsive behavior (different scales/blur for mobile)
- * - Tint color override via CSS custom property
- * - Cleanup on unmount
- * 
- * Effect Timeline:
- * - 0% scroll: Scale 1, opacity 0, content invisible
- * - 75% scroll: Peak opacity (1.0), content starting to fade in
- * - 100% scroll: Max scale, opacity 0, content fully visible
- * 
- * Desktop vs Mobile:
- * - Desktop: Max scale 2.4x, blur 6px, content fade start 30%
- * - Mobile: Max scale 1.6x, blur 3px, content fade start 35%
- * 
- * CSS Variables Set:
- * - --cz-scale: Transform scale value
- * - --cz-opacity: Cloud overlay opacity
- * - --cloud-tint-rgb: RGB triplet for tinting (if tint prop provided)
- * 
- * @component
- * @param {Object} props
- * @param {string} props.targetSelector - CSS selector for content to fade in
- * @param {string} props.height - Container height (default: '100vh')
- * @param {string} props.width - Container width (default: '100%')
- * @param {string} props.tint - Optional color tint (hex, rgb, or rgba)
- * 
- * @example
- * <CloudZoomTransition
- *   targetSelector=".hero-content"
- *   height="100vh"
- *   tint="#ffd6a6"
- * />
- */
+/** CloudZoomTransition - Scroll-based cloud zoom effect with content fade reveal */
 export default function CloudZoomTransition({ targetSelector, height = '100vh', width = '100%', tint }) {
   const ref = useRef(null);
   const { scrollY } = useScroll();

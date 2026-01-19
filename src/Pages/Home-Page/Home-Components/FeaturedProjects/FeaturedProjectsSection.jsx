@@ -32,17 +32,19 @@
  * ```
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import * as motion from 'motion/react-client';
 import { allProjects } from '../../../../DataSets/Portfolio/Projects';
 import FeaturedProjectsCarousel from './FeaturedProjectsCarousel';
-import BaseButton from '../../../../Components/UI/BaseButton/BaseButton.jsx';
+import LazyImage from '../../../../Components/UI/LazyImage/LazyImage';
 import '../../../../Styles/Page-Styles/Home-Styles/FeaturedProjects-Styles/FeaturedProjectsSectionStyles.css';
 
-
-// Section that can show either a carousel, a grid, or both (carousel primary, grid fallback for no-JS / SEO)
 const FeaturedProjects = ({ onSelectProject }) => {
   const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const handleCarouselSelect = useCallback((i) => {
+    setCarouselIndex(i);
+  }, []);
 
   const featured = useMemo(() => {
     return allProjects.filter(p => p.featured === true);
@@ -58,7 +60,7 @@ const FeaturedProjects = ({ onSelectProject }) => {
       <div className="home-featured-carousel-wrapper">
         <FeaturedProjectsCarousel
           index={carouselIndex}
-            onSelect={(i) => setCarouselIndex(i)}
+          onSelect={handleCarouselSelect}
           onDetails={onSelectProject}
         />
       </div>
@@ -68,9 +70,17 @@ const FeaturedProjects = ({ onSelectProject }) => {
           {featured.map(project => (
             <article key={project.title} className="project-card">
               <div className="project-media-wrapper">
-                <img src={project.coverImage} alt={`${project.title} cover`} className='img-fluid mx-auto' />
+                <LazyImage
+                  src={project.coverImage}
+                  webpSrc={project.coverImage.match(/\.(jpg|jpeg|png)$/i) ? project.coverImage.replace(/\.(jpg|jpeg|png)$/i, '.webp') : undefined}
+                  alt={`${project.title} cover`}
+                  className='img-fluid mx-auto'
+                  fadeIn={true}
+                  threshold={0.1}
+                  rootMargin="100px"
+                />
               </div>
-              <div className="project-content container-fluid-center mx-4">
+              <div className="project-content util-mx-md">
                 <h3 className="project-title">{project.title}</h3>
                 <p className="project-desc">{project.description}</p>
               </div>
@@ -79,7 +89,7 @@ const FeaturedProjects = ({ onSelectProject }) => {
         </div>
       </noscript>
 
-      <div className="grid-fallback visually-hidden" aria-hidden="true">
+      <div className="util-visually-hidden" aria-hidden="true">
         {featured.map(project => (
           <motion.article
             key={project.title}

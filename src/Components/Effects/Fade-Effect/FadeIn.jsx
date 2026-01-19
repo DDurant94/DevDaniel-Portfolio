@@ -1,60 +1,7 @@
-/**
- * FadeInWhenVisible Component
- * 
- * @description Scroll-triggered fade-in animation using IntersectionObserver and CSS utilities.
- * Animates elements into view when they enter the viewport. Optimized for performance
- * using CSS transitions instead of JavaScript animations.
- * 
- * Features:
- * - IntersectionObserver-based visibility detection
- * - Configurable stagger delay for sequential animations
- * - Y-axis translation on entrance
- * - Once mode (animate only on first view)
- * - Customizable duration and timing
- * - CSS-based animations (GPU accelerated)
- * - Removes transition delay after animation for hover states
- * 
- * Animation Flow:
- * 1. Element starts with opacity: 0 and translateY
- * 2. IntersectionObserver detects viewport entry
- * 3. Adds 'is-visible' class triggering CSS transition
- * 4. Removes transitionDelay after animation completes
- * 
- * @component
- * @param {Object} props
- * @param {React.ReactNode} props.children - Content to animate
- * @param {number} [props.delay=0] - Manual delay in seconds (fallback if no staggerIndex)
- * @param {number} [props.staggerIndex] - Index for auto-calculated stagger delay
- * @param {boolean} [props.once=true] - Animate only once (freeze after first view)
- * @param {number|string} [props.y=20] - Y-axis translation distance (px or CSS value)
- * @param {number} [props.duration=0.6] - Animation duration in seconds
- * @param {string} [props.className=''] - Additional CSS classes
- * @param {string} [props.as='div'] - HTML tag or component to render
- * @param {string} [props.onVisibleClass='is-visible'] - Class added when visible
- * 
- * @example
- * ```jsx
- * // Simple fade in
- * <FadeInWhenVisible>
- *   <h1>Welcome</h1>
- * </FadeInWhenVisible>
- * 
- * // Staggered list animation
- * {items.map((item, idx) => (
- *   <FadeInWhenVisible key={item.id} staggerIndex={idx} y={30}>
- *     <Card>{item.content}</Card>
- *   </FadeInWhenVisible>
- * ))}
- * 
- * // Custom element with repeat animations
- * <FadeInWhenVisible as="section" once={false} duration={0.8}>
- *   <Content />
- * </FadeInWhenVisible>
- * ```
- */
+/** FadeInWhenVisible - Scroll-triggered fade-in animation using IntersectionObserver */
 
 import React, { useMemo } from 'react';
-import { useEffectVisibility } from '../../../Hooks/Effect-Hooks/useEffectVisibility.jsx';
+import { useIntersection } from '../../../Hooks/Effect-Hooks/useIntersection.jsx';
 import './../../../Styles/General-Styles/DesignSystem-Styles/Design-Utility-Styles/EffectsStyles.css';
 
 /**
@@ -75,13 +22,15 @@ const FadeInWhenVisible = ({
   y = 20,
   duration = 0.6,
   className = '',
-  as: Tag = 'div',
-  onVisibleClass = 'is-visible', // new: class appended when visible
-  variants, // ignored now but accepted to avoid breaking callers
-  custom,   // ignored
+  as = 'div',
+  onVisibleClass = 'is-visible',
   ...rest
 }) => {
-  const { ref, visible } = useEffectVisibility();
+  // Use more aggressive threshold for very small screens (JioPhone, etc.)
+  const threshold = typeof window !== 'undefined' && window.innerHeight < 400 ? 0.01 : 0.1;
+  const rootMargin = typeof window !== 'undefined' && window.innerHeight < 400 ? '50px' : '0px';
+  
+  const { ref, hasIntersected: visible } = useIntersection({ threshold, rootMargin });
   const hasShownRef = React.useRef(false);
   if (visible && once) {
     if (!hasShownRef.current) {
@@ -104,16 +53,18 @@ const FadeInWhenVisible = ({
   
   const shouldShow = once ? (hasShownRef.current || visible) : visible;
   const visibilityClass = shouldShow ? onVisibleClass : '';
+  
+  const Component = as;
   return (
-    <Tag
+    <Component
       ref={ref}
       className={`fx-fade ${className} ${visibilityClass}`.trim()}
-  data-fx-state={shouldShow ? 'in' : 'out'}
+      data-fx-state={shouldShow ? 'in' : 'out'}
       style={style}
       {...rest}
     >
       {children}
-    </Tag>
+    </Component>
   );
 };
 

@@ -53,7 +53,7 @@
  * - position: fixed, inset: 0 (full viewport)
  * - pointer-events: none (non-interactive)
  * - mix-blend-mode: normal (customizable)
- * - z-index: 9999 (top layer)
+ * - z-index: var(--z-tooltip) (top layer)
  * - Progressive enhancement for cursor effects
  * 
  * Keyframes:
@@ -112,7 +112,7 @@
 	--fx-y: 24px;
 	--fx-dur-op: .65s;
 	--fx-dur-tr: .65s;
-	--fx-ease-op: cubic-bezier(.22,.61,.36,1); /* smoother accel then ease-out */
+	--fx-ease-op: cubic-bezier(.22,.61,.36,1);
 	--fx-ease-tr: var(--ease-spring, cubic-bezier(.4,.7,.25,1));
 	opacity:0;
 	transform: translateY(var(--fx-y));
@@ -121,8 +121,6 @@
 		transform var(--fx-dur-tr) var(--fx-ease-tr);
 }
 .fx-fade[data-fx-state='in'] { opacity:1; transform: translateY(0); }
-
-/* Stagger utility class (small) - applies incremental delay to direct children */
 .fx-stagger-sm > * { transition-delay: 0ms; }
 .fx-stagger-sm > *:nth-child(1) { transition-delay: calc(0 * var(--motion-stagger-sm)); }
 .fx-stagger-sm > *:nth-child(2) { transition-delay: calc(1 * var(--motion-stagger-sm)); }
@@ -135,21 +133,17 @@
 .fx-stagger-sm > *:nth-child(9) { transition-delay: calc(8 * var(--motion-stagger-sm)); }
 .fx-stagger-sm > *:nth-child(10) { transition-delay: calc(9 * var(--motion-stagger-sm)); }
 
-/* Scale subtle */
+
 .fx-scale { --fx-scale-from:.94; --fx-dur:.6s; opacity:0; transform: scale(var(--fx-scale-from)); transition: opacity var(--fx-dur) ease, transform var(--fx-dur) cubic-bezier(.4,.7,.25,1); }
 .fx-scale[data-fx-state='in'] { opacity:1; transform: scale(1); }
 
-/* Stagger container attribute (applied to parent) */
 [data-fx-stagger] > * { --_stagger: calc(var(--fx-index, 0) * 70ms); transition-delay: var(--_stagger); }
 
-/* Spotlight mask utility (optional progressive enhancement) */
-.fx-spotlight-layer { position:fixed; inset:0; pointer-events:none; mix-blend-mode:normal; z-index: 9999; }
+.fx-spotlight-layer { position:fixed; inset:0; pointer-events:none; mix-blend-mode:normal; z-index: var(--z-tooltip); }
 
-/* Keyframes palette */
 @keyframes fx-pulse-soft { 0%,100% { opacity: .85;} 50% { opacity: 1; } }
 .fx-pulse { animation: fx-pulse-soft 3s ease-in-out infinite; }
 
-/* Reduced-motion: instant reveal, no animations */
 @media (prefers-reduced-motion: reduce) {
   .fx-fade,
   .fx-scale {
@@ -163,14 +157,12 @@
     opacity: 1;
   }
   
-  /* Disable stagger delays */
   .fx-stagger-sm > *,
   [data-fx-stagger] > * {
     transition-delay: 0ms !important;
   }
 }
 
-/* Scroll performance: pause pulse during scroll */
 [data-scrolling="true"] .fx-pulse {
   animation-play-state: paused !important;
 }

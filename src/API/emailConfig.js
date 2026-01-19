@@ -108,7 +108,7 @@ export const createEmailParams = (formData) => {
     from_email: formData.email,
     subject: formData.subject || 'Contact Form Submission',
     message: formData.message,
-    to_name: 'Daniel Durant', // Your name to appear in email
+    to_name: 'Daniel Durant',
     timestamp: timestamp,
   };
 };

@@ -1,60 +1,11 @@
-/**
- * WebsiteFooter Component
- * 
- * @description Site-wide footer with social media links, resume download, and copyright information.
- * Provides consistent footer across all pages with external link safety and accessibility.
- * 
- * Features:
- * - Social media links (LinkedIn, GitHub, Email, YouTube)
- * - Resume download with dual action (view + download)
- * - External links with rel="noopener noreferrer" security
- * - ARIA labels for screen readers
- * - Icon-based social links with Font Awesome
- * - Responsive layout
- * 
- * Social Links:
- * - LinkedIn: Professional profile
- * - GitHub: Code repositories
- * - Email: Direct contact via mailto
- * - YouTube: Tutorial videos and content
- * 
- * Resume Action:
- * - Opens PDF in new tab for viewing
- * - Simultaneously triggers download
- * - Uses temporary anchor element for download
- * 
- * @component
- * 
- * @example
- * ```jsx
- * // In main App layout
- * <main>
- *   <Routes />
- * </main>
- * <WebsiteFooter />
- * ```
- */
+/** WebsiteFooter - Site-wide footer with social links and resume viewer */
 
+import useResumeViewer from '../../Hooks/Utility-Hooks/useResumeViewer.hook';
 import './../../Styles/Component-Styles/Footer-Styles/FooterStyles.css';
 
 
 const Footer = () => {
-
-  /**
-   * Handles resume download and view
-   * Opens PDF in new tab while triggering download
-   */
-  function handleResumeClick() {
-    const resumeUrl = "/Resume/DanielDurantResume.pdf";
-    window.open(resumeUrl, "_blank");
-    const link = document.createElement("a");
-    link.href = resumeUrl;
-    link.download = "DanielDurantResume.pdf";
-    link.textContent = "Resume";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+  const { openResume } = useResumeViewer();
 
   return(
     <div className="footer-container">
@@ -90,18 +41,19 @@ const Footer = () => {
           {/* Resume Download */}
           <div className="footer-resume">
             <button 
+              type="button"
               className="footer-resume-button"
-              onClick={handleResumeClick}
+              onClick={openResume}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleResumeClick();
+                  openResume();
                 }
               }}
-              aria-label="Download resume as PDF"
+              aria-label="View resume in fullscreen"
             >
-              <i className="fa-solid fa-download" aria-hidden="true"></i>
-              Download Resume
+              <i className="fa-solid fa-file-pdf" aria-hidden="true"></i>
+              View Resume
             </button>
           </div>
 

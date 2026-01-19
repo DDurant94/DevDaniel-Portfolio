@@ -101,20 +101,16 @@
  * @requires Design tokens (--btn-*, --motion-*, --elev-*)
  */
 
-/* Button utility classes generated from design tokens */
-
 .btn-base {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: var(--btn-font-weight);
   padding: var(--btn-padding-y) var(--btn-padding-x);
-  /* Was var(--btn-radius) (alias). Use scale token directly. */
   border-radius: var(--radius-md);
   line-height: 1.2;
   cursor: pointer;
   text-decoration: none;
-  /* Motion: unify pressable affordances to fade token (color/bg/shadow/border) */
   transition: background var(--motion-fade),
               color var(--motion-fade),
               box-shadow var(--motion-fade),
@@ -123,7 +119,6 @@
   position: relative;
 }
 
-/* Primary */
 .btn-primary-token {
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);

@@ -16,11 +16,12 @@ import { useEffect } from 'react';
  * @hook
  * @param {Object} targetRotationRef - useRef containing target rotation value (Y axis)
  * @param {Object} touchStartRef - useRef containing touch state { x, dragging }
+ * @param {boolean} enabled - Whether to enable interaction (default: true)
  * 
  * @example
  * const targetRotationRef = useRef(0);
  * const touchStartRef = useRef({ x: 0, dragging: false });
- * useGearInteraction(targetRotationRef, touchStartRef);
+ * useGearInteraction(targetRotationRef, touchStartRef, !isMobile);
  * 
  * // In render loop:
  * mesh.current.rotation.y = THREE.MathUtils.lerp(
@@ -29,8 +30,9 @@ import { useEffect } from 'react';
  *   0.1
  * );
  */
-export default function useGearInteraction(targetRotationRef, touchStartRef) {
+export default function useGearInteraction(targetRotationRef, touchStartRef, enabled = true) {
   useEffect(() => {
+    if (!enabled) return;
     const handleWheel = (e) => {
       if (window.scrollY === 0 && e.deltaY < 0) return;
       targetRotationRef.current += -e.deltaY * 0.0003;
@@ -64,5 +66,5 @@ export default function useGearInteraction(targetRotationRef, touchStartRef) {
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [targetRotationRef, touchStartRef]);
+  }, [targetRotationRef, touchStartRef, enabled]);
 }

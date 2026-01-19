@@ -16,7 +16,7 @@
  * - width: 100vw, height: 100vh (full viewport)
  * - display: flex (centers content)
  * - align-items: center, justify-content: center
- * - z-index: 10000 (top layer, above all)
+ * - z-index: var(--z-max) (top layer, above all)
  * - overflow: hidden (clips animations)
  * - background: var(--color-bg)
  * 
@@ -108,10 +108,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
+  z-index: var(--z-max);
   overflow: hidden;
   background: var(--color-bg);
 }
@@ -126,17 +123,13 @@ body:has(.loading-screen) .website-footer {
   visibility: hidden !important;
 }
 
-/* 3D Canvas Wrapper - fills entire screen */
 .loading-canvas-wrapper {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   z-index: 1;
 }
 
-/* Loading Content Overlay */
 .loading-content {
   position: relative;
   z-index: 2;
@@ -159,7 +152,6 @@ body:has(.loading-screen) .website-footer {
   }
 }
 
-/* Logo Animation */
 .loading-logo {
   width: 120px;
   height: 120px;
@@ -167,8 +159,6 @@ body:has(.loading-screen) .website-footer {
 }
 
 .logo-loader {
-  width: 100%;
-  height: 100%;
   filter: drop-shadow(0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent));
 }
 
@@ -197,7 +187,6 @@ body:has(.loading-screen) .website-footer {
   }
 }
 
-/* Loading Text */
 .loading-text {
   display: flex;
   flex-direction: column;
@@ -207,7 +196,7 @@ body:has(.loading-screen) .website-footer {
 
 .loading-text h2 {
   font-size: 1.5rem;
-  padding: 0.5rem;
+  padding: var(--gap-sm);
   font-weight: var(--font-weight-semibold);
   background: var(--gradient-brand-horizontal);
   background-clip: text;
@@ -216,7 +205,6 @@ body:has(.loading-screen) .website-footer {
   margin: 0;
 }
 
-/* Loading Dots */
 .loading-dots {
   margin-top: 0.25rem;
   display: flex;
@@ -255,7 +243,6 @@ body:has(.loading-screen) .website-footer {
   }
 }
 
-/* Loading Bar */
 .loading-bar {
   width: var(--container-xs);
   height: 4px;
@@ -269,8 +256,6 @@ body:has(.loading-screen) .website-footer {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
-  width: 100%;
   background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   border-radius: var(--radius-full);
   animation: progressSlide 1.5s ease-in-out infinite;
@@ -286,7 +271,6 @@ body:has(.loading-screen) .website-footer {
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .loading-logo {
     width: 80px;

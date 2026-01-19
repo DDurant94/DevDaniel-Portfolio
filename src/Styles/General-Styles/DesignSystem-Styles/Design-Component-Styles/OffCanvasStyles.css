@@ -24,7 +24,7 @@
  * Wrapper Layout:
  * - position: fixed, inset: 0 (full viewport)
  * - display: flex, justify-content: flex-end (right aligned)
- * - z-index: 2100 (above most UI)
+ * - z-index: var(--z-offcanvas) (above most UI)
  * - pointer-events: none (backdrop/panel handle their own)
  * 
  * Backdrop:
@@ -122,13 +122,12 @@
   --offcanvas-header-height: 3.25rem;
 }
 
-/* Outer wrapper to allow custom animation vs bootstrap default */
 .ds-offcanvas-wrapper {
   position: fixed;
   inset: 0;
   display: flex;
   justify-content: flex-end;
-  z-index: 2100;
+  z-index: var(--z-offcanvas);
   pointer-events: none;
 }
 
@@ -159,7 +158,6 @@
   pointer-events: auto;
 }
 
-/* Enter / Exit (data-state attribute) */
 .ds-offcanvas[data-state='enter'] {
   animation: offc-enter 0.55s var(--ease-spring, cubic-bezier(0.4, 0.7, 0.25, 1)) forwards;
 }
@@ -193,11 +191,10 @@
   }
   to {
     opacity: 0;
-    transform: translateX(14%) scale(0.95);
+    transform: translateX(14%) scale(var(--transform-scale-active));
   }
 }
 
-/* Header */
 .ds-offcanvas__header {
   display: flex;
   align-items: center;
@@ -210,7 +207,7 @@
   position: sticky;
   top: 0;
   z-index: 5;
-  border-radius: 8px 0 0 8px;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .ds-offcanvas__title {
@@ -220,8 +217,8 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  border-radius: 8px 0 0 8px;
+  gap: var(--gap-sm);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .ds-offcanvas__close-btn {
@@ -232,7 +229,12 @@
   cursor: pointer;
   color: var(--color-text-soft);
   line-height: 1;
-  padding: 0.35rem 0.55rem;
+  padding: 0.75rem 1rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-sm, 6px);
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
@@ -248,7 +250,6 @@
   transform: scale(0.9);
 }
 
-/* Body */
 .ds-offcanvas__body { 
   flex: 1 1 0%;
   min-height: 0; 
@@ -277,12 +278,10 @@
   background: color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
-/* Media Gallery */
 .ds-offcanvas-media {
   margin-bottom: var(--space-6);
 }
 
-/* Media stage & image (cover / contain toggle + parallax) */
 .ds-offcanvas-media__stage {
   position: relative;
   width: 100%;
@@ -313,8 +312,6 @@
   transition: opacity var(--motion-duration-sm) var(--ease-standard);
   pointer-events: none;
   z-index: 4;
-  
-  /* Expand icon */
   background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23eef1f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
@@ -339,7 +336,6 @@
   transition: object-fit 0.4s ease, transform 0.6s var(--ease-spring, cubic-bezier(0.4, 0.7, 0.25, 1));
 }
 
-/* Logo Overlay (for SVG over video/image) */
 .ds-offcanvas-media__logo-overlay {
   position: absolute;
   top: 50%;
@@ -354,10 +350,9 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
-/* Black background for standalone logo images */
 .ds-offcanvas-media__img--with-background {
   background-color: #000;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 1rem;
 }
 
@@ -370,7 +365,6 @@
   );
 }
 
-/* Stage vignette overlay (kept after removing parallax) */
 .ds-offcanvas-media__stage::after {
   content: "";
   position: absolute;
@@ -422,7 +416,7 @@
 .ds-offcanvas-media__thumbs {
   margin-top: 0.85rem;
   display: flex;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
   overflow-x: auto;
   padding: 1rem 0 0.35rem 0.5rem;
   scrollbar-width: thin;
@@ -452,7 +446,6 @@
   display: block;
 }
 
-/* Thumbnail logo overlay */
 .ds-offcanvas-media__thumb-logo {
   position: absolute;
   top: 50%;
@@ -466,9 +459,6 @@
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
-/* Tech & Concepts section structure now handled by utility classes (.util-section, .util-section-title) */
-
-/* Links */
 .ds-offcanvas__links {
   list-style: none;
   margin: var(--space-8) 0 0;
@@ -525,7 +515,6 @@
   background: linear-gradient(to top, var(--offcanvas-bg) 60%, transparent);
 }
 
-/* Dark theme adjustments */
 [data-theme='dark'] .ds-offcanvas {
   box-shadow: var(--shadow-panel);
 }
@@ -538,12 +527,10 @@
   );
 }
 
-/* Contrast theme */
 [data-theme='contrast'] .ds-offcanvas {
   background: #000;
   border-left: 2px solid var(--color-text);
 }
-/* Pills & badges theme variants now handled by .util-pill / .util-badge in Utilities.css */
 
 @media (max-width: 840px) {
   :root {

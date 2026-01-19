@@ -87,7 +87,6 @@
  */
 
 #about-srvs-grid {
-  /* StackedScrollCards container: let component handle layout */
   display: block;
   padding: var(--space-8) var(--space-4);
 }
@@ -122,13 +121,6 @@
 }
 
 #srvs-cta-btn-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
-/* Services CTA buttons now use BaseButton; only spacing override retained */
 #srvs-cta-btn-container .base-btn { margin: var(--space-4) var(--space-2) 0 var(--space-2); }
-
-

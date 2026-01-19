@@ -53,12 +53,17 @@
   text-decoration: none;
   font-weight: 600;
   border-radius: 0 0 var(--radius-md) 0;
-  z-index: 9999;
-  transition: top 0.2s ease-in-out;
+  z-index: var(--z-tooltip);
+  transition: top var(--motion-duration-xs) var(--ease-in-out);
+  opacity: 0;
+  pointer-events: none;
 }
 
-.skip-to-main:focus {
+.skip-to-main:focus,
+.skip-to-main:focus-visible {
   top: 0;
+  opacity: 1;
+  pointer-events: auto;
   outline: var(--outline-width-default) solid var(--color-primary);
   outline-offset: var(--outline-offset-sm);
 }

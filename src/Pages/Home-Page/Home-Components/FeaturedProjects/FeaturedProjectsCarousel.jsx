@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { allProjects } from '../../../../DataSets/Portfolio/Projects';
-import { usePageTransition } from '../../../../Hooks/Effect-Hooks/usePageTransition';
 import { getMediaType } from '../../../../Utils/mediaHelpers.js';
+import LazyImage from '../../../../Components/UI/LazyImage/LazyImage';
+import LazyVideo from '../../../../Components/UI/LazyVideo/LazyVideo';
 import '../../../../Styles/Page-Styles/Home-Styles/FeaturedProjects-Styles/FeaturedProjectsCarouselStyles.css';
 
 /**
@@ -43,6 +44,7 @@ import '../../../../Styles/Page-Styles/Home-Styles/FeaturedProjects-Styles/Featu
  * @param {Object} props
  * @param {number} props.index - Current slide index (0-based)
  * @param {Function} props.onSelect - Callback when slide changes (receives new index)
+ * @param {Function} props.onDetails - Callback when user wants to see project details
  * 
  * @example
  * const [currentIndex, setCurrentIndex] = useState(0);
@@ -50,32 +52,57 @@ import '../../../../Styles/Page-Styles/Home-Styles/FeaturedProjects-Styles/Featu
  * <FeaturedProjectsCarousel
  *   index={currentIndex}
  *   onSelect={setCurrentIndex}
+ *   onDetails={(project) => navigate('/projects', { state: { project } })}
  * />
  */
-const FeaturedProjectsCarousel = ({ index, onSelect }) => {
-  const navigateWithTransition = usePageTransition();
+const FeaturedProjectsCarousel = ({ index, onSelect, onDetails }) => {
   const [direction, setDirection] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const carouselRef = useRef(null);
+  const [shouldLoadMedia, setShouldLoadMedia] = useState(false);
+  const onSelectRef = useRef(onSelect);
+
+  // Keep ref in sync with prop
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
   
   const slides = useMemo(() => {
     return allProjects.filter(p => p.featured === true);
   }, []);
 
+  // Defer media loading until after initial page load
   useEffect(() => {
-    if (isHovered) return; // Pause auto-play when hovering
+    const timer = setTimeout(() => {
+      setShouldLoadMedia(true);
+    }, 1800); // Load media after loader fades
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isHovered) return;
     
     const timer = setInterval(() => {
       setDirection(1);
-      onSelect((index + 1) % slides.length);
+      onSelectRef.current((index + 1) % slides.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, [index, slides.length, onSelect, isHovered]);
+  }, [index, slides.length, isHovered]);
+
+  const handlePrev = useCallback(() => {
+    setDirection(-1);
+    onSelectRef.current(index === 0 ? slides.length - 1 : index - 1);
+  }, [index, slides.length]);
+
+  const handleNext = useCallback(() => {
+    setDirection(1);
+    onSelectRef.current((index + 1) % slides.length);
+  }, [index, slides.length]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Only handle if carousel or its children are focused
       if (!carouselRef.current?.contains(document.activeElement)) return;
       
       switch (e.key) {
@@ -91,35 +118,25 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
         case ' ':
           if (e.target.classList.contains('carousel-slide') || e.target.closest('.carousel-slide')) {
             e.preventDefault();
-            navigate(`/projects`, { state: { projectTitle: slides[index].title } });
+            onDetails(slides[index]);
           }
           break;
         case 'Home':
           e.preventDefault();
           setDirection(-1);
-          onSelect(0);
+          onSelectRef.current(0);
           break;
         case 'End':
           e.preventDefault();
           setDirection(1);
-          onSelect(slides.length - 1);
+          onSelectRef.current(slides.length - 1);
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [index, slides, onSelect, navigateWithTransition]);
-
-  const handlePrev = () => {
-    setDirection(-1);
-    onSelect(index === 0 ? slides.length - 1 : index - 1);
-  };
-
-  const handleNext = () => {
-    setDirection(1);
-    onSelect((index + 1) % slides.length);
-  };
+  }, [index, slides, onDetails, handleNext, handlePrev]);
 
   if (!slides.length) return null;
 
@@ -149,7 +166,7 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
 
   return (
     <div 
-      className="featured-projects-carousel-3d" 
+      className="featured-projects-carousel-3d util-overflow-hidden" 
       aria-label="Featured Projects"
       ref={carouselRef}
       role="region"
@@ -161,7 +178,7 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
       </div>
       
       <div 
-        className="carousel-container"
+        className="carousel-container util-w-full util-flex-center"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -180,12 +197,12 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
               scale: { duration: 0.4 },
               z: { duration: 0.6 }
             }}
-            className="carousel-slide"
-            onClick={() => navigateWithTransition(`/projects`, { state: { projectTitle: slides[index].title } })}
+            className="carousel-slide util-w-full util-h-full"
+            onClick={() => onDetails(slides[index])}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                navigateWithTransition(`/projects`, { state: { projectTitle: slides[index].title } });
+                onDetails(slides[index]);
               }
             }}
             tabIndex="0"
@@ -193,39 +210,52 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
             aria-label={`View details for ${slides[index].title}. Press arrow keys to navigate, Enter to view details.`}
             style={{ cursor: 'pointer' }}
           >
-            <div className="slide-card">
-              <div className="slide-image-wrapper">
-                {getMediaType(slides[index].coverImage) === 'video' ? (
-                  <video
-                    src={slides[index].coverImage}
-                    alt={`${slides[index].title} demo`}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    loading="lazy"
-                  />
+            <div className="slide-card util-full">
+              <div className="slide-image-wrapper util-full">
+                {shouldLoadMedia ? (
+                  getMediaType(slides[index].coverImage) === 'video' ? (
+                    <LazyVideo
+                      src={slides[index].coverImage}
+                      className="util-pointer-none"
+                      autoplay={true}
+                      loop={true}
+                      muted={true}
+                      playsInline={true}
+                      pauseWhenOutOfView={false}
+                      preload="auto"
+                      threshold={0}
+                      rootMargin="0px"
+                    />
+                  ) : (
+                    <LazyImage
+                      src={slides[index].coverImage}
+                      webpSrc={slides[index].coverImage.match(/\.(jpg|jpeg|png)$/i) ? slides[index].coverImage.replace(/\.(jpg|jpeg|png)$/i, '.webp') : undefined}
+                      alt={`${slides[index].title} cover`}
+                      className="util-pointer-none"
+                      fadeIn={false}
+                      threshold={0}
+                      rootMargin="0px"
+                    />
+                  )
                 ) : (
-                  <img 
-                    src={slides[index].coverImage} 
-                    alt={`${slides[index].title} cover`} 
-                    loading="lazy"
-                  />
+                  <div className="util-full" style={{ backgroundColor: '#1a1a1a' }} />
                 )}
-                {slides[index].logoOverlay && (
-                  <img
+                {shouldLoadMedia && slides[index].logoOverlay && (
+                  <LazyImage
                     src={slides[index].logoOverlay}
                     alt={`${slides[index].title} logo`}
-                    className="slide-image-wrapper__logo"
-                    loading="eager"
+                    className="slide-image-wrapper__logo util-pointer-none"
+                    fadeIn={false}
+                    threshold={0}
+                    rootMargin="0px"
                   />
                 )}
-                <div className="slide-overlay" />
+                <div className="slide-overlay util-pointer-none" />
               </div>
-              <div className="slide-content">
+              <div className="slide-content util-flex-col-justify-center">
                 <h3 className="slide-title">{slides[index].title}</h3>
                 <p className="slide-description">{slides[index].description}</p>
-                <div className="slide-tags">
+                <div className="slide-tags util-flex util-flex-wrap">
                   {slides[index].type.slice(0, 3).map((tag, i) => (
                     <span key={i} className="slide-tag">{tag}</span>
                   ))}
@@ -234,24 +264,9 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
             </div>
           </motion.div>
         </AnimatePresence>
-
-        {/* <button 
-          className="carousel-nav carousel-nav-prev" 
-          onClick={handlePrev}
-          aria-label="Previous project"
-        >
-          ‹
-        </button>
-        <button 
-          className="carousel-nav carousel-nav-next" 
-          onClick={handleNext}
-          aria-label="Next project"
-        >
-          ›
-        </button> */}
       </div>
 
-      <div className="carousel-indicators" role="tablist" aria-label="Project navigation">
+      <div className="carousel-indicators util-flex util-justify-center" role="tablist" aria-label="Project navigation">
         {slides.map((slide, i) => (
           <button
             key={i}
@@ -261,13 +276,13 @@ const FeaturedProjectsCarousel = ({ index, onSelect }) => {
             className={`indicator ${i === index ? 'active' : ''}`}
             onClick={() => {
               setDirection(i > index ? 1 : -1);
-              onSelect(i);
+              onSelectRef.current(i);
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 setDirection(i > index ? 1 : -1);
-                onSelect(i);
+                onSelectRef.current(i);
               }
             }}
             aria-label={`Go to project ${i + 1}: ${slide.title}`}

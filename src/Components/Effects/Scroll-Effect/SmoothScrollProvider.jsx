@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
-import { useMediaQuery } from '../../../Context/MediaQueryContext';
+import { useMediaQuery } from '../../../Context/MediaQueryContext.hook';
 
 export default function SmoothScrollProvider({ children, options }) {
   const rafRef = useRef();
@@ -35,7 +35,6 @@ export default function SmoothScrollProvider({ children, options }) {
       
       // Ensure Lenis is started
       lenis.start();
-    } else {
     }
 
     const raf = (time) => {
@@ -56,16 +55,12 @@ export default function SmoothScrollProvider({ children, options }) {
       }
     };
 
-    // Check on interval
-    const intervalId = setInterval(checkTransition, 100);
-
-    // Also observe body class changes
+    // Only observe body class changes (remove expensive interval polling)
     const observer = new MutationObserver(checkTransition);
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      clearInterval(intervalId);
       observer.disconnect();
       // Only destroy if we created it
       if (created) {

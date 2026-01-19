@@ -1,83 +1,44 @@
 /**
- * Home Page Component
- * 
- * @description Main landing page featuring hero section, introduction, featured projects carousel,
- * and services preview. Includes scroll animations, lazy loading, and interactive call-to-action buttons.
- * 
- * Features:
- * - 3D animated hero section with particle effects
- * - Smooth scroll navigation between sections
- * - Featured projects carousel with project selection
- * - Resume download functionality
- * - Contact aside integration
- * - Lazy-loaded components for performance
- * - Full accessibility (skip links, ARIA, keyboard navigation)
- * 
- * @component
- * @requires framer-motion - For scroll-triggered animations
- * @requires ContactAsideContext - For contact panel control
- * 
- * @example
- * ```jsx
- * <Home />
- * ```
+ * Home Page - Landing page with hero, intro, featured projects, and services preview
  */
 
-import { useState, useCallback } from 'react';
-import { useContactAside } from '../../Context/Aside-Context/ContactAsideContext';
+import { useCallback } from 'react';
+import { useContactAside } from '../../Context/Aside-Context/useContactAside';
+import useResumeViewer from '../../Hooks/Utility-Hooks/useResumeViewer.hook';
+import { usePageTransition } from '../../Context/PageTransition-Context/usePageTransition';
 import FadeInWhenVisible from '../../Components/Effects/Fade-Effect/FadeIn.jsx';
 import './../../Styles/Page-Styles/Home-Styles/HomeStyles.css';
 import './../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
 
 // Section components
-import Hero from './Home-Components/Hero/HomeHero.jsx';
+import PageHero from '../../Components/UI/PageHero/PageHero.jsx';
 import Intro from './Home-Components/Intro/HomeIntro.jsx';
 import FeaturedProjects from './Home-Components/FeaturedProjects/FeaturedProjectsSection.jsx';
 import ServicesPreview from './Home-Components/ServicesPreview/ServicesPreviewSection.jsx';
-import { useLazyComponent } from './../../Hooks/Utility-Hooks/useLazyComponent';
 import BaseButton from '../../Components/UI/BaseButton/BaseButton.jsx';
 import SkipToMain from '../../Components/UI/SkipToMain/SkipToMain';
 
 const Home = () => {
   const { openContactAside } = useContactAside();
-  
-  /** Currently selected project in the featured carousel */
-  const [selectedProject, setSelectedProject] = useState(null);
+  const { openResume } = useResumeViewer();
+  const { startTransition } = usePageTransition();
 
   /**
-   * Updates selected project state from carousel interaction
+   * Navigate to projects page and open the selected project offcanvas
    * @callback
    */
   const handleProjectSelect = useCallback((project) => {
-    setSelectedProject(project);
-  }, []);
-
-  /**
-   * Handles resume download and opens in new tab
-   * Creates temporary link element to trigger download while maintaining new tab behavior
-   */
-  function handleResumeClick() {
-    const resumeUrl = "/Resume/DanielDurantResume.pdf";
-    window.open(resumeUrl, "_blank");
-    const link = document.createElement("a");
-    link.href = resumeUrl;
-    link.download = "DanielDurantResume.pdf";
-    link.textContent = "Resume";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+    startTransition('/projects', { state: { project, openImmediately: true } });
+  }, [startTransition]);
 
   return (
-    <div id="home-container" className='container-fluid-center'>
+    <div id="home-container">
       <SkipToMain targetId="home-main-container" />
       
-      <Hero
-        onPrimaryCta={() => {
-          const el = document.getElementById('featured-projects');
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }}
-        onSecondaryCta={() => {}}
+      <PageHero
+        id="home-hero"
+        title="Engineering Intelligent Web Platforms"
+        subtitle="Hello, my name is Daniel Durant. I architect scalable backends and craft immersive interfaces."
       />
 
       <main id="home-main-container" role="main" tabIndex="-1">
@@ -94,8 +55,8 @@ const Home = () => {
           as="section"
           id='home-featured-projects-section'
           aria-labelledby='home-featured-projects'
-          y={50}
-          duration={0.8}>
+          y={20}
+          duration={0.3}>
           <FeaturedProjects onSelectProject={handleProjectSelect} />
         </FadeInWhenVisible>
 
@@ -111,7 +72,7 @@ const Home = () => {
         <FadeInWhenVisible
           as="section"
           id="home-contact-cta-section"
-          className="home-contact-cta-section"
+          className="home-contact-cta-section util-flex-col-center-all"
           aria-labelledby="home-contact-cta-heading"
           y={28}
           duration={0.7}>
@@ -129,15 +90,16 @@ const Home = () => {
                 Start Conversation
               </BaseButton>
               <button 
+                type="button"
                 className="base-btn btn-variant-outline" 
-                onClick={handleResumeClick}
+                onClick={openResume}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    handleResumeClick();
+                    openResume();
                   }
                 }}
-                aria-label="Download resume as PDF"
+                aria-label="View resume in fullscreen"
               >
                 Resume
               </button>

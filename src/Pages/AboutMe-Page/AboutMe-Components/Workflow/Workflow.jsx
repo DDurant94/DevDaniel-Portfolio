@@ -35,10 +35,9 @@ import FadeInWhenVisible from "./../../../../Components/Effects/Fade-Effect/Fade
 import './../../../../Styles/Page-Styles/AboutMe-Styles/Workflow-Styles/WorkflowStyles.css';
 
 const Workflow = () => {
-  // Row-paired stagger: 1&2 share delay 0, 3&4 share delay 1, etc.
 
   return (
-    <div id="about-workflows-container" className="mx-1 p-1">
+    <div id="about-workflows-container" className="util-mx-sm util-p-xs util-flex-col-justify-center">
       <header className="workflow-header">
         <FadeInWhenVisible as="div">
           <h2 id="workflow-heading">Workflows</h2>
@@ -49,7 +48,7 @@ const Workflow = () => {
         </FadeInWhenVisible>
       </header>
 
-      <ol id="workflow-steps-container" aria-labelledby="workflow-heading" aria-describedby="workflow-desc">
+      <ol id="workflow-steps-container" className="util-overflow-hidden util-w-full util-flex-col-justify-center util-flex-wrap" aria-labelledby="workflow-heading" aria-describedby="workflow-desc">
         {workflowSteps.map((item, index) => {
           const isEven = index % 2 === 0;
 
@@ -57,7 +56,7 @@ const Workflow = () => {
                   <FadeInWhenVisible
                     as="li"
                     key={index}
-                    className={`workflow-step ${isEven ? 'left' : 'right'}`}
+                    className={`workflow-step util-w-full util-flex-col ${isEven ? 'left' : 'right'}`}
                     style={{ '--_i': Math.floor(index / 2) }}
                     tabIndex="0"
                     role="listitem"

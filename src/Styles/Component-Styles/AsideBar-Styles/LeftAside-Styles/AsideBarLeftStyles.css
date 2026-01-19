@@ -15,7 +15,7 @@
  * - position: fixed, top: 0
  * - height: 100vh (full viewport)
  * - width: 80px (narrow column)
- * - z-index: 1000 (above content)
+ * - z-index: var(--z-navigation) (above content)
  * - display: flex, flex-direction: column
  * - align-items: center
  * - padding: 1rem 0
@@ -83,7 +83,7 @@
   top: 0;
   height: 100vh;
   width: 80px;
-  z-index: 1000;
+  z-index: var(--z-navigation);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,7 +93,6 @@
 
 /* Add left margin to main content containers */
 main,
-.container-fluid-center,
 #home-container,
 #about-container,
 #skills-container,
@@ -104,7 +103,6 @@ main,
 
 @media (max-width: 768px) {
   main,
-  .container-fluid-center,
   #home-container,
   #about-container,
   #skills-container,
@@ -127,7 +125,7 @@ main,
 /* Logo at top */
 .sidebar-logo {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-above);
   width: 64px;
   height: 64px;
   display: flex;
@@ -136,19 +134,19 @@ main,
   margin-bottom: auto;
   padding: 0.25rem;
   background: var(--color-background);
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               background 0.3s ease;
 }
 
 .sidebar-logo:hover {
-  transform: translateY(-4px) scale(1.1);
+  transform: translateY(-4px) scale(var(--transform-scale-hover-lg));
   background: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
 }
 
 /* Active/click animation with bounce */
 .sidebar-logo:active {
-  transform: scale(0.95);
+  transform: scale(var(--transform-scale-active));
   transition: transform 0.1s ease;
 }
 
@@ -162,7 +160,7 @@ main,
 }
 
 .sidebar-logo:hover .logo-svg {
-  transform: scale(1.05);
+  transform: scale(var(--transform-scale-hover));
 }
 
 /* Centered Navigation - Starts at bottom, moves to top center on scroll */
@@ -171,7 +169,7 @@ main,
   left: 50%;
   bottom: 1rem;
   transform: translateX(-50%);
-  z-index: 1001;
+  z-index: var(--z-aside);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -188,7 +186,7 @@ main,
               bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
     0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
-    0 10px 26px color-mix(in oklab, black 30%, transparent);
+    var(--shadow-elevated-sm);
 }
 
 /* Scrolled state - smoothly slides to top */
@@ -211,7 +209,7 @@ main,
   letter-spacing: 0.02em;
   transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   cursor: pointer;
   overflow: hidden;
 }
@@ -226,7 +224,7 @@ main,
   height: 0;
   background: var(--gradient-brand-horizontal);
   transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   z-index: 0;
 }
 
@@ -265,7 +263,7 @@ main,
 
 /* Click/active animation - quick scale down */
 .sidebar-nav .nav-link:active {
-  transform: scale(0.95);
+  transform: scale(var(--transform-scale-active));
   transition: transform 0.1s ease;
 }
 
@@ -286,7 +284,7 @@ main,
 /* Footer section */
 .sidebar-footer {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-above);
   margin-top: auto;
   width: 100%;
   display: flex;
@@ -315,7 +313,7 @@ main,
   height: 44px;
   color: var(--color-text);
   font-size: 1.35rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   background: var(--color-background);
   border: 1px solid var(--color-border);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -334,7 +332,7 @@ main,
   background: var(--gradient-brand-horizontal);
   opacity: 0;
   transition: opacity 0.3s ease;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
   z-index: 0;
 }
 
@@ -369,7 +367,7 @@ main,
 .sidebar-social-icon:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
-  border-radius: 12px;
+  border-radius: var(--radius-md-lg);
 }
 
 /* Theme Toggle Container - Collapsible with glassy brand style */
@@ -380,7 +378,7 @@ main,
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
   padding-top: 1rem;
   padding-bottom: 0.5rem;
   margin-top: 0.5rem;
@@ -429,7 +427,7 @@ main,
 }
 
 .sidebar-theme-handle:hover {
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-2px) scale(var(--transform-scale-hover));
   box-shadow:
     0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent) inset,
     0 0 10px color-mix(in srgb, var(--color-primary) 16%, transparent),
@@ -463,14 +461,14 @@ main,
   left: calc(100% + 1rem);
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1002;
+  z-index: var(--z-aside);
   animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideRight {
   from {
     opacity: 0;
-    transform: translate(-12px, -50%) scale(0.95);
+    transform: translate(-12px, -50%) scale(var(--transform-scale-active));
   }
   to {
     opacity: 1;
@@ -578,7 +576,7 @@ html[data-theme="dark"] .sidebar-theme-content .theme-segmented {
 .sidebar-logo:focus-visible {
   outline: 2px solid var(--color-primary, #3b82f6);
   outline-offset: 4px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 /* Smooth transitions */
