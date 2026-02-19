@@ -2,11 +2,37 @@
  * SharedHeroScene - Persistent 3D scene with route-based variants and scroll parallax
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery } from '../../../../Context/MediaQueryContext.hook';
 import GearCloudScene from './GearCloudScene.jsx';
 import '../../../../Styles/General-Styles/3D-Styles/3DHero-Styles/HeroStyles.css';
+
+/** Reducer for all scene-related state */
+const initialSceneState = {
+  currentVariant: 'home',
+  hasError: false,
+  isErrorVisible: true,
+  shouldShake: false,
+  isSceneLoaded: false,
+};
+
+function sceneReducer(state, action) {
+  switch (action.type) {
+    case 'SET_VARIANT':
+      return { ...state, currentVariant: action.payload };
+    case 'SET_ERROR':
+      return { ...state, hasError: true };
+    case 'SET_ERROR_VISIBLE':
+      return { ...state, isErrorVisible: action.payload };
+    case 'SET_SHAKE':
+      return { ...state, shouldShake: action.payload };
+    case 'SCENE_LOADED':
+      return { ...state, isSceneLoaded: true };
+    default:
+      return state;
+  }
+}
 
 /** Maps route paths to scene variant names */
 const routeToVariant = {
@@ -30,7 +56,7 @@ const loadingContainerStyle = {
   alignItems: 'center',
   gap: '12px',
   color: 'var(--color-primary)',
-  opacity: 0.7,
+  opacity: 0.85,
   zIndex: 10
 };
 
@@ -158,18 +184,18 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
   const location = useLocation();
   const containerRef = useRef(null);
   const { shouldRender3D, performanceLevel } = useMediaQuery();
-  const [currentVariant, setCurrentVariant] = useState(routeToVariant[location.pathname] || 'home');
-  const [hasError, setHasError] = useState(false);
-  const [isErrorVisible, setIsErrorVisible] = useState(true);
-  const [shouldShake, setShouldShake] = useState(false);
-  const [isSceneLoaded, setIsSceneLoaded] = useState(false);
+  const [state, dispatch] = useReducer(
+    sceneReducer,
+    { ...initialSceneState, currentVariant: routeToVariant[location.pathname] || 'home' }
+  );
+  const { currentVariant, hasError, isErrorVisible, shouldShake, isSceneLoaded } = state;
   const hasShownLoader = useRef(false);
 
   const shouldRenderScene = shouldRender3D && performanceLevel !== 'minimal';
 
   // Track when scene finishes loading - memoized to prevent re-renders
   const handleSceneReady = useCallback(() => {
-    setIsSceneLoaded(true);
+    dispatch({ type: 'SCENE_LOADED' });
     hasShownLoader.current = true;
     // Reset position to top when scene loads to prevent wrong scroll position
     if (containerRef.current) {
@@ -181,7 +207,7 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
   useEffect(() => {
     const isValidRoute = validRoutes.includes(location.pathname);
     const newVariant = isValidRoute ? routeToVariant[location.pathname] : 'notfound';
-    setCurrentVariant(newVariant);
+    dispatch({ type: 'SET_VARIANT', payload: newVariant });
   }, [location.pathname]);
 
   // Move scene up with scroll instead of hiding it - use RAF for smooth updates
@@ -242,7 +268,7 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
   useEffect(() => {
     const handleError = (event) => {
       if (event.message?.includes('WebGL') || event.message?.includes('GLTFLoader')) {
-        setHasError(true);
+        dispatch({ type: 'SET_ERROR' });
       }
     };
     
@@ -254,8 +280,8 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
     if (!hasError) return;
     
     const shakeInterval = setInterval(() => {
-      setShouldShake(true);
-      setTimeout(() => setShouldShake(false), 500);
+      dispatch({ type: 'SET_SHAKE', payload: true });
+      setTimeout(() => dispatch({ type: 'SET_SHAKE', payload: false }), 500);
     }, 4000);
     
     return () => clearInterval(shakeInterval);
@@ -288,7 +314,7 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
             >
               {/* Close button */}
               <button
-                onClick={() => setIsErrorVisible(false)}
+                onClick={() => dispatch({ type: 'SET_ERROR_VISIBLE', payload: false })}
                 style={errorCloseButtonStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(0, 0, 0, 0.1)';
@@ -314,7 +340,7 @@ export default function SharedHeroScene({ showGear = true, isMobile = false }) {
           {/* Reopen button - shows when error message is closed */}
           {hasError && !isErrorVisible && (
             <button
-              onClick={() => setIsErrorVisible(true)}
+              onClick={() => dispatch({ type: 'SET_ERROR_VISIBLE', payload: true })}
               style={{
                 ...errorReopenButtonStyle,
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
