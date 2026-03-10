@@ -31,7 +31,6 @@
  */
 
 // EmailJS Configuration
-// Sign up at https://www.emailjs.com/ and get your credentials
 
 export const EMAILJS_CONFIG = {
   // Your EmailJS Service ID (from EmailJS dashboard)
@@ -91,7 +90,7 @@ export const EMAILJS_CONFIG = {
  * // }
  * ```
  */
-// Template parameters mapping
+
 export const createEmailParams = (formData) => {
   const timestamp = new Date().toLocaleString('en-US', {
     weekday: 'short',

@@ -477,7 +477,7 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/E-Commerce-React' },
-      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
+      { label: 'Live Demo', url: 'https://ddurant94.github.io/E-Commerce-React/', isDisabled: false }
     ]
   },
   {
@@ -559,7 +559,7 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/Pokemon-API-JavaScript' },
-      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
+      { label: 'Live Demo ', url: 'https://ddurant94.github.io/Pokemon-API-JavaScript/home/index.html', isDisabled: false }
     ]
   },
   {
@@ -597,7 +597,7 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/React-BootStrap' },
-      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
+      { label: 'Live Demo', url: 'https://ddurant94.github.io/React-BootStrap/', isDisabled: false }
     ]
   },
   {
@@ -636,7 +636,7 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/Daniels-Website' },
-      { label: 'Live Demo (Unavailable)', url: null, isDisabled: true }
+      { label: 'Live Demo', url: "https://ddurant94.github.io/Daniels-Website/", isDisabled: false }
     ]
   }
   ];
