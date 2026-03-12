@@ -477,7 +477,8 @@ export const allProjects = [
     },
     links: [
       { label: 'GitHub', url: 'https://github.com/DDurant94/E-Commerce-React' },
-      { label: 'Live Demo', url: 'https://ddurant94.github.io/E-Commerce-React/', isDisabled: false }
+      { label: 'Live Demo (Front-End)', url: 'https://ddurant94.github.io/E-Commerce-React/', isDisabled: false, },
+      { label: 'Live Demo With Live API', url: null, isDisabled: true }
     ]
   },
   {
