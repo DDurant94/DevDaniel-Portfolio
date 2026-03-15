@@ -7,7 +7,6 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './Utils/pressableHelper.js';
 
-// Critical CSS only - load synchronously
 import './Styles/General-Styles/Tokens.css';
 import './Styles/General-Styles/RootStyles.css';
 

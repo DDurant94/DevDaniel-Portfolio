@@ -75,8 +75,7 @@ function AppContent() {
   const [shouldMountBackgrounds, setShouldMountBackgrounds] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
   const [SharedHeroScene, setSharedHeroScene] = React.useState(null);
-  
-  // Detect mobile based on viewport width (more reliable than user agent)
+
   React.useEffect(() => {
     const checkMobile = () => {
       const isMobileViewport = window.innerWidth < 768;
@@ -86,7 +85,6 @@ function AppContent() {
     // Check immediately
     checkMobile();
     
-    // Also check on resize (for orientation changes)
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
@@ -155,8 +153,6 @@ function AppContent() {
               <PortfolioFilterProvider>
                 <ContactAsideProvider openContactAside={handleOpenContactAside}>
                   <ProjectOffCanvasProvider openProject={handleOpenProject} closeProject={handleCloseProject}>
-              
-                    {/* Background elements - deferred load to reduce initial cost */}
                     {shouldMountBackgrounds && (
                       <div style={backgroundContainerStyle}>
                         <CodedBackground />
@@ -167,8 +163,6 @@ function AppContent() {
                     
                     <NavigationInterceptor />
                     <PageTransition />
-            
-                      {/* Persistent 3D Hero Scene - Loads progressively without blocking */}
                       {shouldMount3D && SharedHeroScene && (
                         <Suspense fallback={null}>
                           <SharedHeroScene showGear={showGear} isMobile={isMobile} />
