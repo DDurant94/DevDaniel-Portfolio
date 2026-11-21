@@ -1,4 +1,4 @@
-# My Coding Project Portfolio
+# Coding Project Portfolio
 
 Hey! This is my personal portfolio site where I showcase my work as a full-stack developer. Built it from scratch with React 19 and Three.js because I wanted something that stands out and actually reflects how I like to code.
 
